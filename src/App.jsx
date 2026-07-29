@@ -168,8 +168,7 @@ function Header() {
   const location = useLocation();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] =
-    useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const isHome = location.pathname === "/";
 
@@ -180,147 +179,219 @@ function Header() {
 
     handleScroll();
 
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      {
-        passive: true,
-      },
-    );
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll,
-      );
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   useEffect(() => {
     setIsOpen(false);
-    document.body.style.overflow = "";
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
 
   useEffect(() => {
-    document.body.style.overflow = isOpen
-      ? "hidden"
-      : "";
+    if (!isOpen) {
+      return undefined;
+    }
+
+    const currentScrollY = window.scrollY;
+
+    const previousBodyPosition =
+      document.body.style.position;
+    const previousBodyTop = document.body.style.top;
+    const previousBodyWidth = document.body.style.width;
+    const previousBodyOverflow =
+      document.body.style.overflow;
+    const previousHtmlOverflow =
+      document.documentElement.style.overflow;
+
+    document.documentElement.style.overflow = "hidden";
+
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${currentScrollY}px`;
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow = "";
+      document.documentElement.style.overflow =
+        previousHtmlOverflow;
+
+      document.body.style.position =
+        previousBodyPosition;
+      document.body.style.top = previousBodyTop;
+      document.body.style.width = previousBodyWidth;
+      document.body.style.overflow =
+        previousBodyOverflow;
+
+      window.scrollTo(0, currentScrollY);
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown,
+      );
     };
   }, [isOpen]);
 
   const getNavigationHref = (href) =>
     isHome ? href : `/${href}`;
 
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <header
-      className={[
-        "fixed top-0 left-0 z-50 w-full border-b transition duration-200",
-        isScrolled
-          ? "border-halo-brown-900/10 bg-halo-cream-50/90 shadow-halo-sm backdrop-blur-xl"
-          : "border-transparent bg-transparent",
-      ].join(" ")}
-    >
-      <div className="mx-auto flex h-[76px] w-[min(calc(100%-36px),1360px)] items-center justify-between md:h-[88px] md:w-[min(calc(100%-48px),1360px)]">
-        <Logo />
-
-        <nav
-          className="ml-auto hidden items-center gap-9 md:flex"
-          aria-label="주요 메뉴"
-        >
-          {navigationItems.map((item) => (
-            <a
-              key={item.href}
-              href={getNavigationHref(item.href)}
-              className="text-sm font-semibold text-halo-brown-600 transition hover:text-halo-orange-500"
-            >
-              {item.label}
-            </a>
-          ))}
-
-          <Link
-            to="/terms"
-            className={[
-              "text-sm font-semibold transition",
-              location.pathname !== "/"
-                ? "text-halo-orange-500"
-                : "text-halo-brown-600 hover:text-halo-orange-500",
-            ].join(" ")}
-          >
-            약관
-          </Link>
-        </nav>
-
-        <a
-          href={getNavigationHref("#team")}
-          className="ml-10 hidden min-h-12 items-center gap-4 rounded-full border border-halo-brown-900/15 px-5 text-[13px] font-semibold text-halo-brown-800 transition hover:border-halo-orange-500 hover:bg-halo-orange-500 hover:text-white lg:inline-flex"
-        >
-          Meet the team
-          <ArrowIcon />
-        </a>
-
-        <button
-          type="button"
-          className="flex size-12 items-center justify-center rounded-full border border-halo-brown-900/15 text-halo-brown-900 md:hidden"
-          aria-label={
-            isOpen ? "메뉴 닫기" : "메뉴 열기"
-          }
-          aria-expanded={isOpen}
-          onClick={() =>
-            setIsOpen((previous) => !previous)
-          }
-        >
-          {isOpen ? <CloseIcon /> : <MenuIcon />}
-        </button>
-      </div>
-
-      <div
+    <>
+      <header
         className={[
-          "fixed inset-0 top-[76px] flex flex-col justify-between bg-halo-brown-950 px-6 py-10 text-white transition duration-300 md:hidden",
+          "fixed top-0 left-0 z-[80] w-full border-b transition-colors duration-200",
           isOpen
-            ? "visible translate-y-0 opacity-100"
-            : "invisible -translate-y-4 opacity-0",
+            ? "border-white/10 bg-[#19110E]"
+            : isScrolled
+              ? "border-halo-brown-900/10 bg-halo-cream-50/95 shadow-halo-sm backdrop-blur-xl"
+              : "border-transparent bg-transparent",
         ].join(" ")}
       >
-        <nav className="flex flex-col">
-          {navigationItems.map((item, index) => (
-            <a
-              key={item.href}
-              href={getNavigationHref(item.href)}
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-5 border-b border-white/15 py-5 text-4xl font-semibold tracking-[-0.05em]"
-            >
-              <span className="text-[10px] tracking-[0.14em] text-halo-orange-300">
-                {String(index + 1).padStart(
-                  2,
-                  "0",
-                )}
-              </span>
+        <div className="relative z-[90] mx-auto flex h-[76px] w-[min(calc(100%-36px),1360px)] items-center justify-between md:h-[88px] md:w-[min(calc(100%-48px),1360px)]">
+          <Logo light={isOpen} />
 
-              {item.label}
-            </a>
-          ))}
-
-          <Link
-            to="/terms"
-            className="flex items-center gap-5 border-b border-white/15 py-5 text-4xl font-semibold tracking-[-0.05em]"
+          <nav
+            className="ml-auto hidden items-center gap-9 md:flex"
+            aria-label="주요 메뉴"
           >
-            <span className="text-[10px] tracking-[0.14em] text-halo-orange-300">
-              05
-            </span>
-            약관
-          </Link>
-        </nav>
+            {navigationItems.map((item) => (
+              <a
+                key={item.href}
+                href={getNavigationHref(item.href)}
+                className="text-sm font-semibold text-halo-brown-600 transition hover:text-halo-orange-500"
+              >
+                {item.label}
+              </a>
+            ))}
 
-        <p className="text-base leading-7 text-white/45">
-          매일 한 장,
-          <br />
-          부모님과 이어가는 따뜻한 안녕
-        </p>
-      </div>
-    </header>
+            <Link
+              to="/terms"
+              className={[
+                "text-sm font-semibold transition",
+                location.pathname !== "/"
+                  ? "text-halo-orange-500"
+                  : "text-halo-brown-600 hover:text-halo-orange-500",
+              ].join(" ")}
+            >
+              약관
+            </Link>
+          </nav>
+
+          <a
+            href={getNavigationHref("#team")}
+            className="ml-10 hidden min-h-12 items-center gap-4 rounded-full border border-halo-brown-900/15 px-5 text-[13px] font-semibold text-halo-brown-800 transition hover:border-halo-orange-500 hover:bg-halo-orange-500 hover:text-white lg:inline-flex"
+          >
+            Meet the team
+            <ArrowIcon />
+          </a>
+
+          <button
+            type="button"
+            className={[
+              "flex size-12 touch-manipulation items-center justify-center rounded-full border transition md:hidden",
+              isOpen
+                ? "border-white/20 bg-white/10 text-white"
+                : "border-halo-brown-900/15 bg-white/40 text-halo-brown-900",
+            ].join(" ")}
+            aria-label={
+              isOpen ? "메뉴 닫기" : "메뉴 열기"
+            }
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => {
+              setIsOpen((previous) => !previous);
+            }}
+          >
+            {isOpen ? <CloseIcon /> : <MenuIcon />}
+          </button>
+        </div>
+      </header>
+
+      {isOpen && (
+        <div
+          id="mobile-navigation"
+          className="fixed inset-0 z-[70] h-[100dvh] overflow-y-auto bg-[#19110E] pt-[76px] text-white md:hidden"
+        >
+          <div className="flex min-h-[calc(100dvh-76px)] flex-col justify-between px-6 py-8">
+            <nav
+              className="flex flex-col"
+              aria-label="모바일 메뉴"
+            >
+              {navigationItems.map(
+                (item, index) => (
+                  <a
+                    key={item.href}
+                    href={getNavigationHref(
+                      item.href,
+                    )}
+                    onClick={closeMenu}
+                    className="flex items-center gap-5 border-b border-white/15 py-5 text-[38px] font-semibold tracking-[-0.05em] text-white transition active:text-halo-orange-300"
+                  >
+                    <span className="text-[10px] tracking-[0.14em] text-halo-orange-300">
+                      {String(index + 1).padStart(
+                        2,
+                        "0",
+                      )}
+                    </span>
+
+                    {item.label}
+                  </a>
+                ),
+              )}
+
+              <Link
+                to="/terms"
+                onClick={closeMenu}
+                className="flex items-center gap-5 border-b border-white/15 py-5 text-[38px] font-semibold tracking-[-0.05em] text-white transition active:text-halo-orange-300"
+              >
+                <span className="text-[10px] tracking-[0.14em] text-halo-orange-300">
+                  05
+                </span>
+
+                약관
+              </Link>
+            </nav>
+
+            <div className="mt-16 border-t border-white/10 pt-8">
+              <p className="text-base leading-7 text-white/45">
+                관계가 이어지는 방식을
+                <br />
+                설계합니다.
+              </p>
+
+              <div className="mt-6 flex items-center gap-3 text-[10px] font-semibold tracking-[0.16em] text-white/30">
+                <span>TEAM HALO</span>
+                <span className="h-px w-8 bg-white/20" />
+                <span>2026</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
