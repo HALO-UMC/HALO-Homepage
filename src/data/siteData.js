@@ -18,14 +18,14 @@ export const navigationItems = [
 ];
 
 export const heroImages = {
-  main: "https://picsum.photos/seed/halo-hero-main/1200/1500",
-  subTop: "https://picsum.photos/seed/halo-hero-sub-01/900/900",
-  subBottom: "https://picsum.photos/seed/halo-hero-sub-02/900/900",
+  main: "/images/hero/hero-main.svg",
+  subTop: "/images/hero/hero-sub-01.svg",
+  subBottom: "/images/hero/hero-sub-02.svg",
 };
 
 export const productImages = {
-  main: "https://picsum.photos/seed/halo-product-main/900/1500",
-  detail: "https://picsum.photos/seed/halo-product-detail/1200/900",
+  main: "/images/product/app-main.svg",
+  detail: "/images/product/app-detail.svg",
 };
 
 export const companyStats = [
@@ -78,7 +78,7 @@ export const storybooks = [
     englishTitle: "The You Before Me",
     description:
       "부모님을 부모가 아닌 한 사람으로 바라보며, 어린 시절과 청춘 그리고 지나온 시간을 들어보는 이야기입니다.",
-    image: "https://picsum.photos/seed/halo-storybook-01/900/1200",
+    image: "/images/storybooks/storybook-01.svg",
   },
   {
     id: "parent-guide",
@@ -87,7 +87,7 @@ export const storybooks = [
     englishTitle: "A Guide to You",
     description:
       "부모님이 좋아하는 것과 불편해하는 것, 익숙한 습관과 생활의 리듬을 천천히 알아가는 이야기입니다.",
-    image: "https://picsum.photos/seed/halo-storybook-02/900/1200",
+    image: "/images/storybooks/storybook-02.svg",
   },
   {
     id: "family-temperature",
@@ -96,7 +96,7 @@ export const storybooks = [
     englishTitle: "The Warmth of Family",
     description:
       "말없이 오갔던 배려와 걱정, 웃음처럼 가족 사이에 남아 있던 여러 온도를 다시 발견하는 이야기입니다.",
-    image: "https://picsum.photos/seed/halo-storybook-03/900/1200",
+    image: "/images/storybooks/storybook-03.svg",
   },
   {
     id: "shared-taste",
@@ -105,7 +105,7 @@ export const storybooks = [
     englishTitle: "When Tastes Meet",
     description:
       "음식과 음악, 영화와 공간처럼 부모님과 나의 취향이 자연스럽게 만나는 순간을 만들어가는 이야기입니다.",
-    image: "https://picsum.photos/seed/halo-storybook-04/900/1200",
+    image: "/images/storybooks/storybook-04.svg",
   },
   {
     id: "walking-together",
@@ -114,7 +114,7 @@ export const storybooks = [
     englishTitle: "Walking Side by Side",
     description:
       "같은 장소를 걷고 같은 장면을 바라보며, 말이 많지 않아도 함께하는 시간을 쌓아가는 이야기입니다.",
-    image: "https://picsum.photos/seed/halo-storybook-05/900/1200",
+    image: "/images/storybooks/storybook-05.svg",
   },
   {
     id: "i-will-go-first",
@@ -123,7 +123,7 @@ export const storybooks = [
     englishTitle: "Today, I Go First",
     description:
       "늘 부모님이 먼저 건네던 챙김을 이번에는 내가 먼저 시작하며 돌봄의 방향을 바꾸어보는 이야기입니다.",
-    image: "https://picsum.photos/seed/halo-storybook-06/900/1200",
+    image: "/images/storybooks/storybook-06.svg",
   },
   {
     id: "birthday-ten-pages",
@@ -132,7 +132,7 @@ export const storybooks = [
     englishTitle: "Ten Pages to Your Birthday",
     description:
       "부모님의 생신을 기다리며 열 번의 이야기를 채우고, 조금 더 마음이 담긴 하루를 준비하는 스토리북입니다.",
-    image: "https://picsum.photos/seed/halo-storybook-07/900/1200",
+    image: "/images/storybooks/storybook-07.svg",
   },
   {
     id: "family-photograph",
@@ -141,7 +141,7 @@ export const storybooks = [
     englishTitle: "A Family Photograph",
     description:
       "가족사진 속에 남아 있는 사람과 장소, 표정과 시간을 다시 바라보며 우리 가족의 장면을 기록합니다.",
-    image: "https://picsum.photos/seed/halo-storybook-08/900/1200",
+    image: "/images/storybooks/storybook-08.svg",
   },
   {
     id: "reaching-out",
@@ -150,7 +150,7 @@ export const storybooks = [
     englishTitle: "Learning to Reach Out",
     description:
       "표현이 어색했던 관계에서도 짧은 안부와 작은 행동부터 시작하며 천천히 마음을 건네는 이야기입니다.",
-    image: "https://picsum.photos/seed/halo-storybook-09/900/1200",
+    image: "/images/storybooks/storybook-09.svg",
   },
   {
     id: "first-fan",
@@ -159,7 +159,7 @@ export const storybooks = [
     englishTitle: "Your First Fan",
     description:
       "부모님이 좋아하는 일과 앞으로 해보고 싶은 일을 응원하며 가장 가까운 곳에서 힘이 되어주는 이야기입니다.",
-    image: "https://picsum.photos/seed/halo-storybook-10/900/1200",
+    image: "/images/storybooks/storybook-10.svg",
   },
 ];
 

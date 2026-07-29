@@ -423,17 +423,17 @@ function HeroSection() {
           </div>
 
           <h1 className="text-[48px] leading-[1.07] font-medium tracking-[-0.065em] text-halo-brown-900 md:text-[70px] xl:text-[86px]">
-            매일 한 장,
+            안녕에서 시작된 
             <br />
             <strong className="font-bold text-halo-orange-500">
-              부모님과 이어가는 따뜻한 안녕
+              HALO
             </strong>
           </h1>
 
           <p className="mt-8 max-w-[580px] text-base leading-8 tracking-[-0.02em] text-halo-brown-500 md:text-lg">
             Team HALO는 부모님과 자녀가 서로의
             삶을 조금 더 <br></br>자연스럽게 알아갈 수
-            있도록, 대화와 행동 그리고 기록의
+            있도록, <br></br>대화와 행동 그리고 기록의
             경험을 만듭니다.
           </p>
 
@@ -519,13 +519,7 @@ function HeroSection() {
             </div>
           </div>
 
-          <div className="absolute bottom-8 -left-5 rounded-2xl border border-white/70 bg-white/90 px-5 py-4 shadow-halo backdrop-blur-xl md:-left-14">
-            <span className="text-xs leading-5 font-semibold text-halo-brown-800">
-              Designed for
-              <br />
-              lasting relationships
-            </span>
-          </div>
+
         </div>
       </div>
     </section>
