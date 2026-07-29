@@ -412,9 +412,6 @@ function HeroSection() {
       id="top"
       className="halo-light-surface relative min-h-[900px] overflow-hidden pt-[140px] pb-24 md:pt-[170px]"
     >
-      <div className="pointer-events-none absolute -top-[340px] -right-[220px] size-[850px] rounded-full border border-halo-orange-500/10" />
-      <div className="pointer-events-none absolute -top-[190px] -right-[50px] size-[540px] rounded-full border border-halo-orange-500/10" />
-
       <div className="mx-auto grid w-[min(calc(100%-36px),1240px)] items-center gap-16 md:w-[min(calc(100%-48px),1240px)] xl:grid-cols-[0.92fr_1.08fr] xl:gap-20">
         <div className="relative z-10">
           <div className="mb-8 flex items-center gap-4 text-[11px] font-bold tracking-[0.18em] text-halo-orange-600">
