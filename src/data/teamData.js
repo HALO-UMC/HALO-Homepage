@@ -15,8 +15,7 @@ export const teamGroups = [
         isLead: true,
         description:
           "서비스 방향과 정책, 사용자 경험을 설계하고 팀 전체의 일정과 의사결정을 조율합니다.",
-        image:
-          "https://picsum.photos/seed/halo-member-namhyuk/800/1000",
+        image: "/images/team/namhyuk.svg",
       },
     ],
   },
@@ -36,8 +35,7 @@ export const teamGroups = [
         isLead: true,
         description:
           "HALO의 핵심 화면과 사용자 흐름을 설계하고 일관된 디자인 시스템을 구축합니다.",
-        image:
-          "https://picsum.photos/seed/halo-member-juyeon/800/1000",
+        image: "/images/team/juyeon.svg",
       },
       {
         id: "hamin",
@@ -48,8 +46,7 @@ export const teamGroups = [
         isLead: false,
         description:
           "브랜드 아이덴티티와 캐릭터, 일러스트 등 HALO의 시각적 인상을 만드는 자산을 제작합니다.",
-        image:
-          "https://picsum.photos/seed/halo-member-hamin/800/1000",
+        image: "/images/team/hamin.svg",
       },
     ],
   },
@@ -69,8 +66,7 @@ export const teamGroups = [
         isLead: true,
         description:
           "Android 개발 기준을 정리하고 앱 구조와 주요 기능 구현, 파트 진행을 이끌고 있습니다.",
-        image:
-          "https://picsum.photos/seed/halo-member-chaeryeong/800/1000",
+        image: "/images/team/chaeryeong.svg",
       },
       {
         id: "doyeop",
@@ -81,8 +77,7 @@ export const teamGroups = [
         isLead: false,
         description:
           "소셜 로그인과 약관 동의, 캘린더 등 사용자가 서비스를 시작하고 기록하는 흐름을 구현합니다.",
-        image:
-          "https://picsum.photos/seed/halo-member-doyeop/800/1000",
+        image: "/images/team/doyeop.svg",
       },
       {
         id: "jaehwan",
@@ -93,8 +88,7 @@ export const teamGroups = [
         isLead: false,
         description:
           "홈과 스토리북, 통합 네비게이션 등 HALO의 주요 탐색 경험과 화면을 구현합니다.",
-        image:
-          "https://picsum.photos/seed/halo-member-jaehwan/800/1000",
+        image: "/images/team/jaehwan.svg",
       },
     ],
   },
@@ -114,8 +108,7 @@ export const teamGroups = [
         isLead: true,
         description:
           "서버 구조와 데이터 기준, 배포 환경을 설계하고 Spring Boot 파트의 개발을 이끌고 있습니다.",
-        image:
-          "https://picsum.photos/seed/halo-member-seohyeon/800/1000",
+        image: "/images/team/seohyeon.svg",
       },
       {
         id: "jeongmin",
@@ -126,8 +119,7 @@ export const teamGroups = [
         isLead: false,
         description:
           "테마와 캘린더 등 서비스의 주요 데이터 흐름과 사용자 기록을 위한 API를 구현합니다.",
-        image:
-          "https://picsum.photos/seed/halo-member-jeongmin/800/1000",
+        image: "/images/team/jeongmin.svg",
       },
       {
         id: "jaehyeon",
@@ -138,8 +130,7 @@ export const teamGroups = [
         isLead: false,
         description:
           "회원 온보딩과 알림, AI 요약 등 개인화된 서비스 경험을 위한 기능을 구현합니다.",
-        image:
-          "https://picsum.photos/seed/halo-member-jaehyeon/800/1000",
+        image: "/images/team/jaehyeon.svg",
       },
       {
         id: "hyedam",
@@ -150,8 +141,7 @@ export const teamGroups = [
         isLead: false,
         description:
           "기념일과 API 문서화 등 서비스 운영과 앱 연동에 필요한 서버 기능을 구현합니다.",
-        image:
-          "https://picsum.photos/seed/halo-member-hyedam/800/1000",
+        image: "/images/team/hyedam.svg",
       },
     ],
   },
