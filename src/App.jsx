@@ -1193,8 +1193,6 @@ function TeamSection() {
 function FinalSection() {
   return (
     <section className="halo-final-surface relative overflow-hidden py-32 text-center text-white md:py-48">
-      <div className="pointer-events-none absolute top-1/2 left-1/2 size-[580px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
-      <div className="pointer-events-none absolute top-1/2 left-1/2 size-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/7" />
 
       <div className="relative z-10 mx-auto flex w-[min(calc(100%-36px),900px)] flex-col items-center">
         <span className="text-[10px] font-bold tracking-[0.2em] text-halo-orange-300">
