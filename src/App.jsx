@@ -143,16 +143,11 @@ function ImageWithFallback({
   );
 }
 
-function Logo({ light = false }) {
+function Logo() {
   return (
     <Link
       to="/"
-      className={[
-        "inline-flex shrink-0 items-center rounded-xl",
-        light
-          ? "bg-white px-3 py-2"
-          : "",
-      ].join(" ")}
+      className="inline-flex shrink-0 items-center"
       aria-label="Team HALO 홈페이지"
     >
       <img
@@ -271,7 +266,7 @@ function Header() {
         ].join(" ")}
       >
         <div className="relative z-[90] mx-auto flex h-[76px] w-[min(calc(100%-36px),1360px)] items-center justify-between md:h-[88px] md:w-[min(calc(100%-48px),1360px)]">
-          <Logo light={isOpen} />
+          <Logo />
 
           <nav
             className="ml-auto hidden items-center gap-9 md:flex"
@@ -1467,7 +1462,7 @@ function Footer() {
       <div className="mx-auto w-[min(calc(100%-36px),1240px)] md:w-[min(calc(100%-48px),1240px)]">
         <div className="grid gap-12 md:grid-cols-[1fr_auto_1fr]">
           <div>
-            <Logo light />
+            <Logo />
           </div>
 
           <nav className="grid grid-cols-2 gap-x-10 gap-y-4 text-sm text-white/60">
