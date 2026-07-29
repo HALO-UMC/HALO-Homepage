@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
+import TeamShowcase from "./components/TeamShowcase";
 import {
   brandPrinciples,
   companyStats,
@@ -865,7 +865,7 @@ function App() {
         <StorybookSlider />
         <NumbersSection />
         <PrinciplesSection />
-        <TeamSection />
+        <TeamShowcase />
         <FinalSection />
       </main>
 
