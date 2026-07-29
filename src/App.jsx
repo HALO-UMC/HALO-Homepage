@@ -1006,7 +1006,7 @@ function PrinciplesSection() {
               다르게 설계되어야 합니다.
             </>
           }
-          description="Team HALO는 기능의 수보다 사용자가 관계를 이어갈 수 있는 방식과 속도를 먼저 생각합니다."
+          description="HALO는 기능의 수보다 사용자가 관계를 이어갈 수 있는 방식과 속도를 먼저 생각합니다."
         />
 
         <div className="mt-16 border-t border-halo-brown-900/15 md:mt-24">
