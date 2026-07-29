@@ -43,7 +43,7 @@ export const teamGroups = [
         englishName: "Hamin Lim",
         role: "Brand Designer",
         position: "BRANDING",
-        isLead: false,
+        isLead: true,
         description:
           "브랜드 아이덴티티와 캐릭터, 일러스트 등 HALO의 시각적 인상을 만드는 자산을 제작합니다.",
         image: "/images/team/hamin.svg",
