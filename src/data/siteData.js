@@ -77,7 +77,7 @@ export const storybooks = [
     title: "오래전 당신",
     englishTitle: "The You Before Me",
     description:
-      "부모님을 ‘부모’가 아닌 한 사람으로 바라보며, 어린 시절과 청춘 그리고 지나온 시간을 들어보는 이야기입니다.",
+      "부모님을 부모가 아닌 한 사람으로 바라보며, 어린 시절과 청춘 그리고 지나온 시간을 들어보는 이야기입니다.",
     image: "https://picsum.photos/seed/halo-storybook-01/900/1200",
   },
   {
@@ -122,7 +122,7 @@ export const storybooks = [
     title: "오늘은 내가 먼저",
     englishTitle: "Today, I Go First",
     description:
-      "늘 부모님이 먼저 건네던 챙김을 이번에는 내가 먼저 시작하며, 돌봄의 방향을 바꾸어보는 이야기입니다.",
+      "늘 부모님이 먼저 건네던 챙김을 이번에는 내가 먼저 시작하며 돌봄의 방향을 바꾸어보는 이야기입니다.",
     image: "https://picsum.photos/seed/halo-storybook-06/900/1200",
   },
   {
@@ -149,7 +149,7 @@ export const storybooks = [
     title: "손을 내미는 연습",
     englishTitle: "Learning to Reach Out",
     description:
-      "표현이 어색했던 관계에서도 짧은 안부와 작은 행동부터 시작하며, 천천히 마음을 건네는 이야기입니다.",
+      "표현이 어색했던 관계에서도 짧은 안부와 작은 행동부터 시작하며 천천히 마음을 건네는 이야기입니다.",
     image: "https://picsum.photos/seed/halo-storybook-09/900/1200",
   },
   {
@@ -158,7 +158,7 @@ export const storybooks = [
     title: "당신의 1호 팬",
     englishTitle: "Your First Fan",
     description:
-      "부모님이 좋아하는 일과 앞으로 해보고 싶은 일을 응원하며, 가장 가까운 곳에서 힘이 되어주는 이야기입니다.",
+      "부모님이 좋아하는 일과 앞으로 해보고 싶은 일을 응원하며 가장 가까운 곳에서 힘이 되어주는 이야기입니다.",
     image: "https://picsum.photos/seed/halo-storybook-10/900/1200",
   },
 ];
@@ -181,48 +181,5 @@ export const brandPrinciples = [
     title: "시간이 지나도 남도록",
     description:
       "한 번 소비되고 끝나는 콘텐츠가 아니라 다시 펼쳐볼 수 있는 기록을 만듭니다.",
-  },
-];
-
-export const teamGroups = [
-  {
-    code: "PRODUCT",
-    title: "Product",
-    description:
-      "사용자의 문제를 정의하고 HALO가 제공해야 할 경험과 서비스의 기준을 설계합니다.",
-    members: ["이남혁 · Product Manager"],
-  },
-  {
-    code: "DESIGN",
-    title: "Design",
-    description:
-      "서비스 전반의 사용자 경험과 브랜드, 캐릭터 그리고 시각적 언어를 설계합니다.",
-    members: [
-      "김주연 · UI/UX Design",
-      "임하민 · Branding & Character",
-    ],
-  },
-  {
-    code: "ANDROID",
-    title: "Android",
-    description:
-      "사용자가 HALO의 스토리북과 기록을 안정적으로 경험할 수 있는 모바일 환경을 구현합니다.",
-    members: [
-      "오채령 · Android PL",
-      "김도엽 · Android",
-      "김재환 · Android",
-    ],
-  },
-  {
-    code: "SERVER",
-    title: "Spring Boot",
-    description:
-      "회원과 스토리북, 기록과 알림을 연결하며 HALO 서비스의 데이터와 시스템을 구축합니다.",
-    members: [
-      "김서현 · Spring Boot PL",
-      "홍정민 · Spring Boot",
-      "신재현 · Spring Boot",
-      "한혜담 · Spring Boot",
-    ],
   },
 ];

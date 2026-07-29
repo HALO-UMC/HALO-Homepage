@@ -4,7 +4,7 @@ export const teamGroups = [
     code: "PRODUCT",
     title: "Product",
     description:
-      "사용자의 문제를 정의하고, HALO가 제공해야 할 경험과 서비스의 기준을 설계합니다.",
+      "사용자의 문제를 정의하고 HALO가 제공해야 할 경험과 서비스의 기준을 설계합니다.",
     members: [
       {
         id: "namhyuk",
@@ -35,7 +35,7 @@ export const teamGroups = [
         position: "UI/UX",
         isLead: true,
         description:
-          "HALO의 핵심 화면과 사용자 흐름을 설계하고, 일관된 디자인 시스템을 구축합니다.",
+          "HALO의 핵심 화면과 사용자 흐름을 설계하고 일관된 디자인 시스템을 구축합니다.",
         image:
           "https://picsum.photos/seed/halo-member-juyeon/800/1000",
       },
@@ -80,7 +80,7 @@ export const teamGroups = [
         position: "ANDROID",
         isLead: false,
         description:
-          "소셜 로그인과 온보딩, 캘린더 등 사용자가 서비스를 시작하고 기록하는 흐름을 구현합니다.",
+          "소셜 로그인과 약관 동의, 캘린더 등 사용자가 서비스를 시작하고 기록하는 흐름을 구현합니다.",
         image:
           "https://picsum.photos/seed/halo-member-doyeop/800/1000",
       },
@@ -137,7 +137,7 @@ export const teamGroups = [
         position: "SPRING BOOT",
         isLead: false,
         description:
-          "회원 온보딩과 알림, AI 기능 등 사용자에게 맞는 개인화 경험을 위한 기능을 구현합니다.",
+          "회원 온보딩과 알림, AI 요약 등 개인화된 서비스 경험을 위한 기능을 구현합니다.",
         image:
           "https://picsum.photos/seed/halo-member-jaehyeon/800/1000",
       },
