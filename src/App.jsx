@@ -55,6 +55,7 @@ function ArrowIcon({ direction = "right" }) {
           strokeWidth="1.8"
           strokeLinecap="round"
         />
+
         <path
           d="M14 7L19 12L14 17"
           stroke="currentColor"
@@ -82,6 +83,7 @@ function MenuIcon() {
         strokeWidth="1.8"
         strokeLinecap="round"
       />
+
       <path
         d="M4 18H22"
         stroke="currentColor"
@@ -107,6 +109,7 @@ function CloseIcon() {
         strokeWidth="1.8"
         strokeLinecap="round"
       />
+
       <path
         d="M20 6L6 20"
         stroke="currentColor"
@@ -198,9 +201,7 @@ function Header() {
   }, [isOpen]);
 
   return (
-    <header
-      className={`header ${isScrolled ? "header--scrolled" : ""}`}
-    >
+    <header className={`header ${isScrolled ? "header--scrolled" : ""}`}>
       <div className="header__inner">
         <Logo />
 
@@ -272,9 +273,8 @@ function Hero() {
           </h1>
 
           <p className="hero__description">
-            Team HALO는 부모님과 자녀가 서로의 삶을 조금 더
-            자연스럽게 알아갈 수 있도록, 대화와 행동 그리고 기록의
-            경험을 만듭니다.
+            Team HALO는 부모님과 자녀가 서로의 삶을 조금 더 자연스럽게
+            알아갈 수 있도록, 대화와 행동 그리고 기록의 경험을 만듭니다.
           </p>
 
           <div className="hero__actions">
@@ -291,10 +291,7 @@ function Hero() {
 
           <div className="hero__summary">
             <span>OUR FIRST PRODUCT</span>
-
-            <strong>
-              HALO: 부모님과 나의 이야기
-            </strong>
+            <strong>HALO: 부모님과 나의 이야기</strong>
           </div>
         </div>
 
@@ -374,8 +371,8 @@ function BrandStatement() {
 
         <div className="brand-statement__bottom">
           <p>
-            우리는 관계를 바꾸는 거창한 결심보다 오늘 먼저 건넬 수
-            있는 짧은 안부, 한 번의 질문, 한 장의 기록에 집중합니다.
+            우리는 관계를 바꾸는 거창한 결심보다 오늘 먼저 건넬 수 있는
+            짧은 안부, 한 번의 질문, 한 장의 기록에 집중합니다.
           </p>
 
           <p>
@@ -444,13 +441,8 @@ function ProductOverview() {
 
           <div className="product-features">
             {productFeatures.map((feature) => (
-              <article
-                className="product-feature"
-                key={feature.number}
-              >
-                <div className="product-feature__number">
-                  {feature.number}
-                </div>
+              <article className="product-feature" key={feature.number}>
+                <div className="product-feature__number">{feature.number}</div>
 
                 <div className="product-feature__content">
                   <span>{feature.eyebrow}</span>
@@ -468,7 +460,6 @@ function ProductOverview() {
 
 function StorybookSlider() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
 
   const viewportRef = useRef(null);
   const itemRefs = useRef([]);
@@ -477,14 +468,13 @@ function StorybookSlider() {
   const total = storybooks.length;
   const activeStorybook = storybooks[activeIndex];
 
-  const moveTo = (requestedIndex, behavior = "smooth") => {
-    const normalizedIndex =
-      ((requestedIndex % total) + total) % total;
+  const moveTo = (requestedIndex) => {
+    const normalizedIndex = ((requestedIndex % total) + total) % total;
 
     setActiveIndex(normalizedIndex);
 
     itemRefs.current[normalizedIndex]?.scrollIntoView({
-      behavior,
+      behavior: "smooth",
       inline: "center",
       block: "nearest",
     });
@@ -497,30 +487,6 @@ function StorybookSlider() {
   const moveNext = () => {
     moveTo(activeIndex + 1);
   };
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      moveTo(0, "auto");
-    }, 100);
-
-    return () => {
-      window.clearTimeout(timeout);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isPaused) {
-      return undefined;
-    }
-
-    const interval = window.setInterval(() => {
-      moveTo(activeIndex + 1);
-    }, 5500);
-
-    return () => {
-      window.clearInterval(interval);
-    };
-  }, [activeIndex, isPaused]);
 
   const handleScroll = () => {
     if (scrollFrameRef.current) {
@@ -535,8 +501,7 @@ function StorybookSlider() {
       }
 
       const viewportRect = viewport.getBoundingClientRect();
-      const viewportCenter =
-        viewportRect.left + viewportRect.width / 2;
+      const viewportCenter = viewportRect.left + viewportRect.width / 2;
 
       let closestIndex = activeIndex;
       let closestDistance = Number.POSITIVE_INFINITY;
@@ -575,15 +540,7 @@ function StorybookSlider() {
   };
 
   return (
-    <section
-      className="storybook-section"
-      id="storybook"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocus={() => setIsPaused(true)}
-      onBlur={() => setIsPaused(false)}
-      onKeyDown={handleKeyDown}
-    >
+    <section className="storybook-section" id="storybook">
       <div className="container">
         <div className="storybook-section__header">
           <SectionHeading
@@ -623,6 +580,7 @@ function StorybookSlider() {
         ref={viewportRef}
         className="storybook-viewport"
         onScroll={handleScroll}
+        onKeyDown={handleKeyDown}
         tabIndex="0"
         aria-label="HALO 스토리북 슬라이드"
       >
@@ -752,10 +710,7 @@ function PrinciplesSection() {
 
         <div className="principles-list">
           {brandPrinciples.map((principle) => (
-            <article
-              className="principle-item"
-              key={principle.number}
-            >
+            <article className="principle-item" key={principle.number}>
               <span>{principle.number}</span>
 
               <h3>{principle.title}</h3>
@@ -881,6 +836,7 @@ function Footer() {
 
         <div className="footer__message">
           <span>OUR PURPOSE</span>
+
           <p>
             관계가 이어지는 방식을
             <br />
