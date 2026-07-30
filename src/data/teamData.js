@@ -113,7 +113,7 @@ export const teamGroups = [
       {
         id: "jeongmin",
         name: "홍정민",
-        englishName: "Jeongmin Hong",
+        englishName: "Jungmin Hong",
         role: "Backend Developer",
         position: "SPRING BOOT",
         isLead: false,
@@ -140,7 +140,7 @@ export const teamGroups = [
         position: "SPRING BOOT",
         isLead: false,
         description:
-          "기념일과 API 문서화 등 서비스 운영과 앱 연동에 필요한 서버 기능을 구현합니다.",
+          "기념일과 API 문서화 등 서비스 운영과 앱 연동에 필요한 서버 기능과 스토리북과 관련된 데이터 등 서비스 주요 기능을 구현합니다.",
         image: "/images/team/hyedam.svg",
       },
     ],
