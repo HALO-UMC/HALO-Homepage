@@ -120,7 +120,7 @@ export const storybooks = [
     id: "i-will-go-first",
     order: "06",
     title: "오늘은 내가 먼저",
-    englishTitle: "Today, I Go First",
+    englishTitle: "Today, I Do First",
     description:
       "늘 부모님이 먼저 건네던 챙김을 이번에는 내가 먼저 시작하며 돌봄의 방향을 바꾸어보는 이야기입니다.",
     image: "/images/storybooks/storybook-06.svg",
