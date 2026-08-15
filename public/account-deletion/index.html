@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="description"
+      content="HALO 계정 및 개인정보 삭제 요청 안내"
+    />
+
+    <meta
+      name="theme-color"
+      content="#fffaf6"
+    />
+
+    <title>계정 삭제 안내 | HALO</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --orange: #ff7b10;
+        --orange-dark: #e76800;
+        --orange-light: #fff3e8;
+
+        --background: #fffaf6;
+        --surface: #ffffff;
+
+        --text-primary: #24201d;
+        --text-secondary: #726a64;
+        --text-tertiary: #a29a94;
+
+        --border: #eee8e3;
+
+        --danger: #df4c42;
+
+        --max-width: 760px;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-height: 100vh;
+        background: var(--background);
+        color: var(--text-primary);
+
+        font-family:
+          Pretendard,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+
+        -webkit-font-smoothing: antialiased;
+        word-break: keep-all;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .page {
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      /* Header */
+
+      .header {
+        width: 100%;
+        height: 72px;
+
+        display: flex;
+        align-items: center;
+
+        border-bottom: 1px solid rgba(238, 232, 227, 0.8);
+
+        background: rgba(255, 250, 246, 0.9);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .header-inner {
+        width: min(calc(100% - 40px), var(--max-width));
+        margin: 0 auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .logo {
+        height: 28px;
+        width: auto;
+        display: block;
+      }
+
+      .home-link {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-secondary);
+
+        transition:
+          color 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .home-link:hover {
+        color: var(--text-primary);
+        transform: translateY(-1px);
+      }
+
+      /* Main */
+
+      .main {
+        width: min(calc(100% - 40px), var(--max-width));
+        margin: 0 auto;
+        padding: 86px 0 120px;
+      }
+
+      .hero {
+        margin-bottom: 60px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+
+        padding: 7px 12px;
+
+        background: var(--orange-light);
+        border-radius: 999px;
+
+        color: var(--orange-dark);
+
+        font-size: 13px;
+        font-weight: 700;
+
+        margin-bottom: 20px;
+      }
+
+      .title {
+        font-size: clamp(34px, 7vw, 48px);
+        line-height: 1.18;
+        letter-spacing: -0.045em;
+        font-weight: 750;
+
+        margin-bottom: 20px;
+      }
+
+      .description {
+        max-width: 590px;
+
+        font-size: 17px;
+        line-height: 1.75;
+        letter-spacing: -0.015em;
+
+        color: var(--text-secondary);
+      }
+
+      /* Sections */
+
+      .section {
+        padding: 34px 0;
+
+        border-top: 1px solid var(--border);
+      }
+
+      .section-title {
+        font-size: 21px;
+        line-height: 1.4;
+        letter-spacing: -0.025em;
+        font-weight: 700;
+
+        margin-bottom: 18px;
+      }
+
+      .section-text {
+        font-size: 15px;
+        line-height: 1.8;
+        letter-spacing: -0.01em;
+
+        color: var(--text-secondary);
+      }
+
+      /* Steps */
+
+      .steps {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        margin-top: 22px;
+      }
+
+      .step {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+
+        padding: 18px 20px;
+
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+      }
+
+      .step-number {
+        flex-shrink: 0;
+
+        width: 28px;
+        height: 28px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: var(--orange-light);
+        color: var(--orange-dark);
+
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .step-content {
+        padding-top: 3px;
+      }
+
+      .step-title {
+        font-size: 15px;
+        font-weight: 650;
+        line-height: 1.5;
+
+        margin-bottom: 3px;
+      }
+
+      .step-description {
+        font-size: 14px;
+        line-height: 1.65;
+
+        color: var(--text-secondary);
+      }
+
+      /* Data list */
+
+      .data-list {
+        list-style: none;
+
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+
+        margin-top: 20px;
+      }
+
+      .data-item {
+        padding: 16px 18px;
+
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 15px;
+
+        font-size: 14px;
+        line-height: 1.5;
+
+        color: var(--text-secondary);
+      }
+
+      /* Request box */
+
+      .request-box {
+        margin-top: 26px;
+
+        padding: 30px;
+
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+      }
+
+      .request-box-title {
+        font-size: 20px;
+        line-height: 1.4;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+
+        margin-bottom: 10px;
+      }
+
+      .request-box-description {
+        font-size: 14px;
+        line-height: 1.75;
+
+        color: var(--text-secondary);
+
+        margin-bottom: 24px;
+      }
+
+      .email {
+        display: block;
+
+        padding: 14px 16px;
+        margin-bottom: 18px;
+
+        background: #faf8f6;
+        border-radius: 12px;
+
+        color: var(--text-secondary);
+
+        font-size: 14px;
+        line-height: 1.5;
+
+        overflow-wrap: anywhere;
+      }
+
+      .delete-button {
+        width: 100%;
+        min-height: 54px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 24px;
+
+        border: none;
+        border-radius: 16px;
+
+        background: linear-gradient(
+          135deg,
+          #ff8b2d 0%,
+          var(--orange) 60%,
+          #f26900 100%
+        );
+
+        box-shadow:
+          0 10px 28px rgba(255, 123, 16, 0.22),
+          0 3px 8px rgba(255, 123, 16, 0.14);
+
+        color: #ffffff;
+
+        font-size: 15px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .delete-button:hover {
+        transform: translateY(-2px);
+
+        box-shadow:
+          0 14px 32px rgba(255, 123, 16, 0.28),
+          0 4px 10px rgba(255, 123, 16, 0.18);
+      }
+
+      .delete-button:active {
+        transform: translateY(0);
+      }
+
+      /* Notice */
+
+      .notice {
+        display: flex;
+        gap: 12px;
+
+        margin-top: 20px;
+        padding: 18px 20px;
+
+        background: #fff7f6;
+        border-radius: 16px;
+      }
+
+      .notice-icon {
+        flex-shrink: 0;
+
+        width: 20px;
+        height: 20px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: #fde9e7;
+        color: var(--danger);
+
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .notice-text {
+        font-size: 13px;
+        line-height: 1.7;
+
+        color: #755b58;
+      }
+
+      /* Footer */
+
+      .footer {
+        padding: 28px 20px 42px;
+
+        text-align: center;
+
+        font-size: 12px;
+        line-height: 1.6;
+
+        color: var(--text-tertiary);
+      }
+
+      @media (max-width: 640px) {
+        .header {
+          height: 64px;
+        }
+
+        .header-inner {
+          width: calc(100% - 32px);
+        }
+
+        .logo {
+          height: 24px;
+        }
+
+        .main {
+          width: calc(100% - 32px);
+          padding: 62px 0 90px;
+        }
+
+        .hero {
+          margin-bottom: 44px;
+        }
+
+        .title {
+          font-size: 34px;
+        }
+
+        .description {
+          font-size: 16px;
+        }
+
+        .section {
+          padding: 28px 0;
+        }
+
+        .data-list {
+          grid-template-columns: 1fr;
+        }
+
+        .request-box {
+          padding: 24px 20px;
+          border-radius: 20px;
+        }
+
+        .step {
+          padding: 17px;
+          border-radius: 16px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+      <header class="header">
+        <div class="header-inner">
+          <a
+            href="/"
+            aria-label="HALO 홈페이지로 이동"
+          >
+            <img
+              src="../logotypo.svg"
+              alt="HALO"
+              class="logo"
+            />
+          </a>
+
+          <a
+            href="/"
+            class="home-link"
+          >
+            홈으로
+          </a>
+        </div>
+      </header>
+
+      <main class="main">
+        <section class="hero">
+          <span class="eyebrow">계정 및 데이터 관리</span>
+
+          <h1 class="title">
+            HALO 계정 삭제 안내
+          </h1>
+
+          <p class="description">
+            HALO를 이용하면서 생성된 계정과 계정에 연결된 데이터의
+            삭제를 요청할 수 있습니다. 앱을 이용할 수 있는 경우에는
+            앱 내부에서 직접 회원탈퇴를 진행할 수 있습니다.
+          </p>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">
+            앱에서 직접 계정을 삭제하는 방법
+          </h2>
+
+          <p class="section-text">
+            HALO 앱에 로그인할 수 있다면 아래 경로에서 직접 회원탈퇴를
+            진행할 수 있습니다.
+          </p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-number">1</div>
+
+              <div class="step-content">
+                <div class="step-title">
+                  HALO 앱 실행
+                </div>
+
+                <div class="step-description">
+                  삭제할 계정으로 로그인해 주세요.
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">2</div>
+
+              <div class="step-content">
+                <div class="step-title">
+                  마이페이지에서 설정으로 이동
+                </div>
+
+                <div class="step-description">
+                  계정 관련 설정 메뉴로 이동합니다.
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">3</div>
+
+              <div class="step-content">
+                <div class="step-title">
+                  회원탈퇴 선택
+                </div>
+
+                <div class="step-description">
+                  안내 내용을 확인한 뒤 회원탈퇴를 완료합니다.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">
+            앱을 이용할 수 없는 경우
+          </h2>
+
+          <p class="section-text">
+            앱에 로그인할 수 없거나 앱을 삭제한 경우에도 아래 이메일을
+            통해 HALO 계정과 관련 데이터의 삭제를 요청할 수 있습니다.
+          </p>
+
+          <div class="request-box">
+            <h3 class="request-box-title">
+              계정 삭제 요청
+            </h3>
+
+            <p class="request-box-description">
+              가입에 사용한 Google 또는 Kakao 계정을 확인할 수 있는
+              정보를 포함해 요청해 주세요. 본인 계정 확인을 위해 추가
+              확인 절차가 진행될 수 있습니다.
+            </p>
+
+            <span class="email">
+              halo.official.app@gmail.com
+            </span>
+
+            <a
+              class="delete-button"
+              href="mailto:halo.official.app@gmail.com?subject=%5BHALO%5D%20%EA%B3%84%EC%A0%95%20%EC%82%AD%EC%A0%9C%20%EC%9A%94%EC%B2%AD&body=%EC%95%88%EB%85%95%ED%95%98%EC%84%B8%EC%9A%94.%0A%0AHALO%20%EA%B3%84%EC%A0%95%20%EC%82%AD%EC%A0%9C%EB%A5%BC%20%EC%9A%94%EC%B2%AD%ED%95%A9%EB%8B%88%EB%8B%A4.%0A%0A-%20%EA%B0%80%EC%9E%85%20%EB%B0%A9%EC%8B%9D%3A%20Google%20%2F%20Kakao%0A-%20%EA%B0%80%EC%9E%85%20%EA%B3%84%EC%A0%95%20%EC%A0%95%EB%B3%B4%3A%20%0A%0A%EA%B3%84%EC%A0%95%20%EB%B0%8F%20%EA%B3%84%EC%A0%95%EA%B3%BC%20%EC%97%B0%EA%B2%B0%EB%90%9C%20%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%9D%98%20%EC%82%AD%EC%A0%9C%EB%A5%BC%20%EC%9A%94%EC%B2%AD%ED%95%A9%EB%8B%88%EB%8B%A4."
+            >
+              이메일로 계정 삭제 요청하기
+            </a>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">
+            삭제 요청 대상 데이터
+          </h2>
+
+          <p class="section-text">
+            계정 삭제 시 HALO 계정과 연결된 데이터가 삭제 대상에
+            포함됩니다.
+          </p>
+
+          <ul class="data-list">
+            <li class="data-item">
+              계정 및 회원 정보
+            </li>
+
+            <li class="data-item">
+              온보딩 및 관계 설정 정보
+            </li>
+
+            <li class="data-item">
+              스토리북 작성 기록
+            </li>
+
+            <li class="data-item">
+              업로드한 이미지 및 기록
+            </li>
+
+            <li class="data-item">
+              캘린더 및 기념일 정보
+            </li>
+
+            <li class="data-item">
+              기타 계정과 연결된 서비스 이용 데이터
+            </li>
+          </ul>
+
+          <div class="notice">
+            <div class="notice-icon">!</div>
+
+            <p class="notice-text">
+              계정 삭제가 완료된 이후에는 삭제된 정보를 복구하기
+              어렵습니다. 관계 법령에 따라 별도의 보관 의무가 있는
+              정보는 해당 기간 동안 분리하여 보관될 수 있습니다.
+            </p>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">
+            문의
+          </h2>
+
+          <p class="section-text">
+            계정 삭제 또는 개인정보 처리와 관련한 문의는
+            halo.official.app@gmail.com으로 보내주세요.
+          </p>
+        </section>
+      </main>
+
+      <footer class="footer">
+        © 2026 Team HALO. All rights reserved.
+      </footer>
+    </div>
+  </body>
+</html>
