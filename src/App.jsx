@@ -1355,13 +1355,6 @@ function LegalPage({ documentKey }) {
           </div>
 
           <div className="mt-8 rounded-[28px] border border-halo-brown-900/10 bg-white p-6 shadow-halo-sm md:p-12">
-            <div className="mb-12 rounded-2xl border border-halo-orange-200 bg-halo-orange-50 p-5 text-sm leading-7 text-halo-brown-600">
-              본 문서는 HALO MVP 기준 약관
-              초안입니다. 실제 배포 전 회사명,
-              대표자, 사업자 정보, 고객센터,
-              개인정보 보관 기간 및 외부 처리업체
-              정보를 확정한 뒤 검토가 필요합니다.
-            </div>
 
             <div className="divide-y divide-halo-brown-900/10">
               {document.sections.map(
