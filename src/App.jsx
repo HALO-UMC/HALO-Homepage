@@ -14,8 +14,6 @@ import {
 } from "react-router-dom";
 
 import {
-  brandPrinciples,
-  companyStats,
   heroImages,
   navigationItems,
   productFeatures,
@@ -59,6 +57,66 @@ function ArrowIcon({ direction = "right" }) {
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function StorybookIcon() {
+  return (
+    <svg
+      width="25"
+      height="25"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M4 5.5C4 4.672 4.672 4 5.5 4H9C10.657 4 12 5.343 12 7V20C12 18.343 10.657 17 9 17H4V5.5Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      <path
+        d="M20 5.5C20 4.672 19.328 4 18.5 4H15C13.343 4 12 5.343 12 7V20C12 18.343 13.343 17 15 17H20V5.5Z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function GooglePlayIcon() {
+  return (
+    <svg
+      width="25"
+      height="28"
+      viewBox="0 0 25 28"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M1.7 1.35C1.24 1.84 1 2.58 1 3.53V24.47C1 25.42 1.24 26.16 1.7 26.65L1.79 26.73L13.52 14.99V14.72L1.79 1.27L1.7 1.35Z"
+        fill="#00D26A"
+      />
+
+      <path
+        d="M17.43 18.91L13.52 14.99V14.72L17.44 10.8L17.53 10.85L22.17 13.49C23.5 14.24 23.5 15.47 22.17 16.23L17.53 18.86L17.43 18.91Z"
+        fill="#FFCC00"
+      />
+
+      <path
+        d="M17.53 18.86L13.52 14.86L1.7 26.65C2.43 27.43 3.65 27.52 5.03 26.74L17.53 19.65V18.86Z"
+        fill="#FF3D4A"
+      />
+
+      <path
+        d="M17.53 10.85L5.03 1.76C3.65 0.98 2.43 1.07 1.7 1.35L13.52 14.86L17.53 10.85Z"
+        fill="#2F80ED"
       />
     </svg>
   );
@@ -120,6 +178,7 @@ function ImageWithFallback({
   src,
   alt,
   className = "",
+  eager = false,
 }) {
   const handleError = (event) => {
     const image = event.currentTarget;
@@ -138,7 +197,7 @@ function ImageWithFallback({
       alt={alt}
       className={className}
       onError={handleError}
-      loading="lazy"
+      loading={eager ? "eager" : "lazy"}
     />
   );
 }
@@ -257,11 +316,11 @@ function Header() {
     <>
       <header
         className={[
-          "fixed top-0 left-0 z-[80] w-full border-b transition-colors duration-200",
+          "fixed top-0 left-0 z-[80] w-full border-b transition-all duration-300",
           isOpen
             ? "border-white/10 bg-[#19110E]"
             : isScrolled
-              ? "border-halo-brown-900/10 bg-halo-cream-50/95 shadow-halo-sm backdrop-blur-xl"
+              ? "border-halo-brown-900/10 bg-halo-cream-50/90 shadow-halo-sm backdrop-blur-xl"
               : "border-transparent bg-transparent",
         ].join(" ")}
       >
@@ -339,9 +398,7 @@ function Header() {
                 (item, index) => (
                   <a
                     key={item.href}
-                    href={getNavigationHref(
-                      item.href,
-                    )}
+                    href={getNavigationHref(item.href)}
                     onClick={closeMenu}
                     className="flex items-center gap-5 border-b border-white/15 py-5 text-[38px] font-semibold tracking-[-0.05em] text-white transition active:text-halo-orange-300"
                   >
@@ -397,10 +454,10 @@ function SectionHeading({
   light = false,
 }) {
   return (
-    <div className="max-w-[700px]">
+    <div className="max-w-[720px]">
       <span
         className={[
-          "mb-5 block text-xs font-bold tracking-[0.18em]",
+          "mb-5 block text-[10px] font-bold tracking-[0.2em]",
           light
             ? "text-halo-orange-300"
             : "text-halo-orange-600",
@@ -411,7 +468,7 @@ function SectionHeading({
 
       <h2
         className={[
-          "text-[40px] leading-[1.15] font-semibold tracking-[-0.055em] md:text-[58px] xl:text-[68px]",
+          "text-[40px] leading-[1.14] font-semibold tracking-[-0.055em] md:text-[58px] xl:text-[68px]",
           light
             ? "text-white"
             : "text-halo-brown-900",
@@ -423,7 +480,7 @@ function SectionHeading({
       {description && (
         <p
           className={[
-            "mt-6 max-w-[580px] text-[15px] leading-8 tracking-[-0.018em] md:text-[17px]",
+            "mt-6 max-w-[600px] text-[15px] leading-8 tracking-[-0.018em] md:text-[17px]",
             light
               ? "text-white/60"
               : "text-halo-brown-500",
@@ -464,8 +521,6 @@ function HomePage() {
       <BrandStatement />
       <ProductSection />
       <StorybookSection />
-      <NumbersSection />
-      <PrinciplesSection />
       <TeamSection />
       <FinalSection />
     </>
@@ -476,113 +531,208 @@ function HeroSection() {
   return (
     <section
       id="top"
-      className="halo-light-surface relative min-h-[900px] overflow-hidden pt-[140px] pb-24 md:pt-[170px]"
+      className="halo-light-surface relative min-h-screen overflow-hidden pt-[128px] pb-20 md:pt-[150px] md:pb-28"
     >
-      <div className="mx-auto grid w-[min(calc(100%-36px),1240px)] items-center gap-16 md:w-[min(calc(100%-48px),1240px)] xl:grid-cols-[0.92fr_1.08fr] xl:gap-20">
-        <div className="relative z-10">
-          <div className="mb-8 flex items-center gap-4 text-[11px] font-bold tracking-[0.18em] text-halo-orange-600">
-            <span className="h-px w-9 bg-current" />
-            RELATIONSHIP DESIGN COMPANY
+      <div className="pointer-events-none absolute top-[18%] left-[-12%] size-[420px] rounded-full bg-halo-orange-200/20 blur-[100px]" />
+
+      <div className="pointer-events-none absolute right-[-8%] bottom-[-5%] size-[520px] rounded-full bg-halo-orange-300/15 blur-[120px]" />
+
+      <div className="relative mx-auto grid w-[min(calc(100%-36px),1320px)] items-center gap-16 md:w-[min(calc(100%-48px),1320px)] xl:grid-cols-[0.83fr_1.17fr] xl:gap-12">
+        {/* LEFT CONTENT */}
+        <div className="relative z-20">
+          <div className="mb-8 flex items-center gap-4">
+            <span className="text-[10px] font-bold tracking-[0.2em] text-halo-orange-700">
+              STORYBOOK APP
+            </span>
           </div>
 
-          <h1 className="text-[48px] leading-[1.07] font-medium tracking-[-0.065em] text-halo-brown-900 md:text-[70px] xl:text-[86px]">
-            안녕에서 시작된 
+          <h1 className="max-w-[700px] text-[49px] leading-[1.06] font-semibold tracking-[-0.067em] text-halo-brown-950 md:text-[60px] xl:text-[65px]">
+            부모님과의 이야기를,
             <br />
-            <strong className="font-bold text-halo-orange-500">
-              HALO
-            </strong>
+
+            <span className="text-halo-orange-500">
+              하루 한 장씩.
+            </span>
           </h1>
 
-          <p className="mt-8 max-w-[580px] text-base leading-8 tracking-[-0.02em] text-halo-brown-500 md:text-lg">
-            Team HALO는 부모님과 자녀가 서로의
-            삶을 조금 더 <br></br>자연스럽게 알아갈 수
-            있도록, <br></br>대화와 행동 그리고 기록의
-            경험을 만듭니다.
+          <p className="mt-8 max-w-[570px] text-[16px] leading-8 tracking-[-0.02em] text-halo-brown-500 md:text-[18px]">
+            HALO는 부모님과 나누기 어려웠던 이야기를
+            하루 한 장의 스토리로 바꾸고,
+            함께한 순간을 우리 가족만의 기록으로 남깁니다.
           </p>
 
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+          {/* CTA */}
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <a
-              href="#product"
-              className="halo-primary-button inline-flex min-h-14 items-center justify-center gap-7 rounded-full px-7 text-sm font-bold text-white transition hover:-translate-y-1"
+              href="YOUR_PLAY_STORE_URL"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Google Play에서 HALO 다운로드"
+              className="group inline-flex min-h-[62px] items-center gap-4 rounded-[16px] border border-black/10 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-1 hover:bg-black hover:shadow-[0_24px_55px_rgba(0,0,0,0.26)]"
             >
-              Discover HALO
-              <ArrowIcon />
+              <GooglePlayIcon />
+
+              <span className="flex flex-col">
+                <span className="text-[9px] leading-none font-medium tracking-[0.06em] text-white/65">
+                  GET IT ON
+                </span>
+
+                <span className="mt-1 text-[18px] leading-none font-semibold tracking-[-0.03em] text-white">
+                  Google Play
+                </span>
+              </span>
             </a>
 
             <a
               href="#storybook"
-              className="inline-flex min-h-14 items-center justify-center gap-7 rounded-full border border-halo-brown-900/15 bg-white/50 px-7 text-sm font-bold text-halo-brown-800 transition hover:-translate-y-1 hover:border-halo-orange-500 hover:text-halo-orange-600"
+              aria-label="HALO 스토리북 둘러보기"
+              className="group inline-flex min-h-[62px] items-center gap-4 rounded-[16px] border border-halo-brown-900/10 bg-white/80 px-5 text-left text-halo-brown-900 shadow-[0_14px_38px_rgba(69,41,24,0.10)] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-halo-orange-300 hover:bg-white hover:shadow-[0_20px_48px_rgba(69,41,24,0.16)]"
             >
-              Explore storybooks
-              <ArrowIcon />
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-[12px] bg-halo-orange-100 text-halo-orange-600 transition duration-300 group-hover:bg-halo-orange-500 group-hover:text-white">
+                <StorybookIcon />
+              </span>
+
+              <span className="flex flex-col">
+                <span className="text-[9px] leading-none font-bold tracking-[0.12em] text-halo-brown-400">
+                  EXPLORE
+                </span>
+
+                <span className="mt-1.5 text-[17px] leading-none font-semibold tracking-[-0.03em] text-halo-brown-900">
+                  스토리북 둘러보기
+                </span>
+              </span>
             </a>
           </div>
 
-          <div className="mt-14 border-l-2 border-halo-orange-500 pl-5">
-            <span className="block text-[10px] font-bold tracking-[0.18em] text-halo-orange-600">
-              OUR FIRST PRODUCT
-            </span>
+          {/* STATS */}
+          <div className="mt-16 flex items-center gap-5 border-t border-halo-brown-900/10 pt-7">
+            <div>
+              <strong className="block text-xl font-bold tracking-[-0.04em] text-halo-brown-900">
+                10 Themes
+              </strong>
 
-            <strong className="mt-2 block text-[15px] font-semibold text-halo-brown-900">
-              HALO: 매일 한 장, 부모님과 이어가는 따뜻한 안녕
-            </strong>
+              <span className="mt-1 block text-xs text-halo-brown-400">
+                관계마다 다른 이야기
+              </span>
+            </div>
+
+            <span className="h-10 w-px bg-halo-brown-900/10" />
+
+            <div>
+              <strong className="block text-xl font-bold tracking-[-0.04em] text-halo-brown-900">
+                1 Page
+              </strong>
+
+              <span className="mt-1 block text-xs text-halo-brown-400">
+                하루 한 장의 경험
+              </span>
+            </div>
+
+            <span className="h-10 w-px bg-halo-brown-900/10" />
+
+            <div>
+              <strong className="block text-xl font-bold tracking-[-0.04em] text-halo-brown-900">
+                1 Story
+              </strong>
+
+              <span className="mt-1 block text-xs text-halo-brown-400">
+                우리 가족의 기록
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="relative grid h-[560px] grid-cols-[1fr_0.38fr] gap-4 md:h-[670px]">
-          <div className="relative overflow-hidden rounded-[32px] shadow-halo-lg">
+        {/* RIGHT VISUAL */}
+        <div className="relative mx-auto h-[620px] w-full max-w-[720px] md:h-[770px]">
+          {/* LEFT CARD */}
+          <div className="absolute top-[8%] left-[-1%] z-10 w-[36%] -rotate-[12deg] overflow-hidden rounded-[28px] bg-white p-[4px] shadow-[0_28px_70px_rgba(34,26,21,0.14)] md:left-[-3%]">
             <ImageWithFallback
-              src={heroImages.main}
-              alt="HALO 서비스 대표 이미지"
-              className="h-full w-full object-cover"
+              src={heroImages.subTop}
+              alt="HALO 스토리북 화면"
+              className="aspect-[3/4.25] w-full rounded-[24px] object-cover"
+              eager
             />
+          </div>
 
-            <div className="halo-image-overlay absolute inset-0" />
+          {/* MAIN METALLIC PHONE */}
+          <div
+            className="
+              absolute top-0 left-1/2 z-30
+              w-[49%] -translate-x-1/2
+              rounded-[47px]
+              bg-[linear-gradient(145deg,#f7f7f6_0%,#a4a3a1_18%,#eeeeec_38%,#777674_60%,#d9d8d5_82%,#999896_100%)]
+              p-[3px]
+              shadow-[0_35px_85px_rgba(25,20,17,0.24)]
+              md:w-[50%]
+            "
+          >
+            <div className="relative aspect-[9/20.4] overflow-hidden rounded-[44px] bg-[#090909] p-[4px]">
+              {/* Dynamic Island */}
+              <div className="absolute top-[11px] left-1/2 z-30 h-[18px] w-[70px] -translate-x-1/2 rounded-full bg-[#090909] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]" />
 
-            <div className="absolute right-8 bottom-8 left-8 text-white">
-              <span className="text-[10px] font-bold tracking-[0.17em]">
-                TEAM HALO
+              <ImageWithFallback
+                src={productImages.main}
+                alt="HALO 앱 메인 화면"
+                className="h-full w-full rounded-[40px] object-cover"
+                eager
+              />
+
+              {/* subtle internal highlight */}
+              <div className="pointer-events-none absolute inset-0 rounded-[44px] ring-1 ring-inset ring-white/10" />
+            </div>
+
+            {/* LEFT SIDE BUTTONS */}
+            <span className="absolute top-[108px] -left-[2px] h-[46px] w-[2px] rounded-l-full bg-[#858482]" />
+
+            <span className="absolute top-[170px] -left-[2px] h-[72px] w-[2px] rounded-l-full bg-[#858482]" />
+
+            {/* RIGHT SIDE BUTTON */}
+            <span className="absolute top-[148px] -right-[2px] h-[90px] w-[2px] rounded-r-full bg-[#72716f]" />
+          </div>
+
+          {/* RIGHT CARD */}
+          <div className="absolute top-[20%] right-[-2%] z-20 w-[35%] rotate-[13deg] overflow-hidden rounded-[27px] bg-white p-[4px] shadow-[0_28px_70px_rgba(34,26,21,0.14)] md:right-[-4%]">
+            <ImageWithFallback
+              src={heroImages.subBottom}
+              alt="HALO 기록 화면"
+              className="aspect-[3/4.25] w-full rounded-[23px] object-cover"
+              eager
+            />
+          </div>
+
+          {/* TODAY CARD */}
+          <div className="absolute right-[2%] bottom-[9%] z-40 max-w-[245px] rounded-[22px] border border-halo-brown-900/8 bg-white/94 p-5 shadow-[0_16px_45px_rgba(35,26,20,0.10)] backdrop-blur-xl md:p-6">
+            <span className="text-[9px] font-bold tracking-[0.18em] text-halo-orange-600">
+              TODAY&apos;S PAGE
+            </span>
+
+            <p className="mt-3 text-lg leading-7 font-semibold tracking-[-0.035em] text-halo-brown-900">
+              오늘 부모님과
+              <br />
+              어떤 이야기를 나눴나요?
+            </p>
+
+            <div className="mt-5 flex items-center gap-2">
+              <span className="size-2 rounded-full bg-halo-orange-500" />
+
+              <span className="text-xs font-medium text-halo-brown-400">
+                하루에 한 장씩
               </span>
-
-              <strong className="mt-3 block text-3xl leading-tight font-semibold tracking-[-0.04em] md:text-4xl">
-                Every relationship
-                <br />
-                has a story.
-              </strong>
             </div>
           </div>
 
-          <div className="grid grid-rows-[0.84fr_1.16fr] gap-4">
-            <div className="relative overflow-hidden rounded-[28px] shadow-halo">
-              <ImageWithFallback
-                src={heroImages.subTop}
-                alt="HALO 서비스 이미지"
-                className="h-full w-full object-cover"
-              />
-            </div>
+          {/* BRAND SIGNATURE */}
+          <div className="absolute bottom-[3%] left-[1%] z-40 rounded-[18px] border border-halo-brown-900/8 bg-white/94 px-5 py-4 shadow-[0_14px_38px_rgba(35,26,20,0.08)] backdrop-blur-xl">
+            <span className="block text-[8px] font-bold tracking-[0.18em] text-halo-orange-600">
+              TEAM HALO
+            </span>
 
-            <div className="relative overflow-hidden rounded-[28px] shadow-halo">
-              <ImageWithFallback
-                src={heroImages.subBottom}
-                alt="HALO 서비스 이미지"
-                className="h-full w-full object-cover"
-              />
-
-              <div className="halo-image-overlay absolute inset-0" />
-
-              <div className="absolute right-4 bottom-5 left-4 text-white">
-                <span className="text-[9px] font-semibold tracking-[0.17em]">
-                  ONE PAGE
-                </span>
-
-                <strong className="mt-1 block text-xl font-bold">
-                  A DAY
-                </strong>
-              </div>
-            </div>
+            <strong className="mt-1.5 block text-[14px] leading-[1.35] font-semibold tracking-[-0.025em] text-halo-brown-900">
+              Every relationship
+              <br />
+              has a story.
+            </strong>
           </div>
-
-
         </div>
       </div>
     </section>
@@ -593,34 +743,74 @@ function BrandStatement() {
   return (
     <section
       id="about"
-      className="bg-halo-cream-50 py-28 md:py-44"
+      className="overflow-hidden bg-halo-brown-950 py-28 text-white md:py-44"
     >
       <div className="mx-auto w-[min(calc(100%-36px),1240px)] md:w-[min(calc(100%-48px),1240px)]">
-        <div className="flex items-center gap-6 text-[11px] font-bold tracking-[0.17em] text-halo-orange-600">
-          ABOUT TEAM HALO
-          <span className="h-px w-24 bg-halo-orange-300" />
+        <div className="flex items-center gap-6 text-[10px] font-bold tracking-[0.2em] text-halo-orange-300">
+          WHY HALO
+          <span className="h-px w-24 bg-halo-orange-300/40" />
         </div>
 
-        <p className="mt-12 text-[42px] leading-[1.2] font-medium tracking-[-0.06em] text-halo-brown-900 md:text-[64px] xl:text-[82px]">
-          마음이 없어서가 아니라,
-          <br />
-          <strong className="font-bold text-halo-orange-500">
-            시작하는 방법을 몰랐기 때문입니다.
-          </strong>
-        </p>
-
-        <div className="mt-16 ml-auto grid max-w-[840px] gap-6 md:grid-cols-2 md:gap-16">
-          <p className="text-base leading-8 text-halo-brown-500">
-            우리는 관계를 바꾸는 거창한 결심보다
-            오늘 먼저 건넬 수 있는 짧은 안부, 한
-            번의 질문, 한 장의 기록에 집중합니다.
+        <div className="mt-12 grid gap-14 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+          <p className="text-[42px] leading-[1.16] font-medium tracking-[-0.06em] md:text-[45px] xl:text-[60px]">
+            가까이 지내왔지만,
+            <br></br>
+            <strong className="font-semibold text-halo-orange-300">
+              아직 모르는 이야기가 많습니다.
+            </strong>
           </p>
 
-          <p className="text-base leading-8 text-halo-brown-500">
-            HALO는 가족 관계에서 시작해 사람과
-            사람 사이의 거리를 자연스럽게 좁히는
-            경험을 만들어갑니다.
-          </p>
+          <div className="border-l border-white/15 pl-7">
+            <p className="text-base leading-8 text-white/58">
+              마음이 없어서가 아니라,<br></br>
+              어디서부터 어떻게 시작해야 할지
+              몰랐기 때문일 수 있습니다.
+            </p>
+
+            <p className="mt-7 text-xl leading-8 font-medium tracking-[-0.03em] text-white">
+              그래서 HALO는 관계의 시작을
+              <br />
+              ‘하루 한 장’으로 만들었습니다.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-20 grid gap-px overflow-hidden rounded-[30px] border border-white/10 bg-white/10 md:grid-cols-3">
+          <article className="bg-halo-brown-950 p-8 md:p-10">
+            <span className="text-[10px] font-bold tracking-[0.18em] text-white/35">
+              BEFORE
+            </span>
+
+            <strong className="mt-8 block text-2xl font-semibold tracking-[-0.04em]">
+              무슨 말을 해야 할지
+              <br />
+              모르겠는 순간
+            </strong>
+          </article>
+
+          <article className="bg-halo-brown-950 p-8 md:p-10">
+            <span className="text-[10px] font-bold tracking-[0.18em] text-halo-orange-300">
+              HALO
+            </span>
+
+            <strong className="mt-8 block text-2xl font-semibold tracking-[-0.04em]">
+              오늘 할 수 있는
+              <br />
+              하나의 이야기
+            </strong>
+          </article>
+
+          <article className="bg-halo-brown-950 p-8 md:p-10">
+            <span className="text-[10px] font-bold tracking-[0.18em] text-white/35">
+              AFTER
+            </span>
+
+            <strong className="mt-8 block text-2xl font-semibold tracking-[-0.04em]">
+              함께한 시간이 남는
+              <br />
+              우리 가족의 기록
+            </strong>
+          </article>
         </div>
       </div>
     </section>
@@ -631,99 +821,260 @@ function ProductSection() {
   return (
     <section
       id="product"
-      className="bg-halo-cream-200 py-28 md:py-44"
+      className="bg-halo-cream-50 py-28 md:py-44"
     >
       <div className="mx-auto w-[min(calc(100%-36px),1240px)] md:w-[min(calc(100%-48px),1240px)]">
-        <div className="flex flex-col justify-between gap-10 lg:flex-row lg:items-end">
+        <div className="grid gap-12 lg:grid-cols-[1fr_0.65fr] lg:items-end">
           <SectionHeading
-            eyebrow="OUR PRODUCT"
+            eyebrow="HOW HALO WORKS"
             title={
               <>
-                매일 한 장,
+                마음을,
                 <br />
-                부모님과 이어가는 안녕
+                오늘 할 수 있는 행동으로.
               </>
             }
-            description="HALO는 부모님의 삶과 취향을 알아가고, 일상 속 작은 행동으로 관계를 이어갈 수 있도록 돕는 스토리북 서비스입니다."
+            description="HALO는 추천에서 시작해 하루 한 장의 경험을 거쳐, 함께한 시간을 다시 꺼내볼 수 있는 기록으로 완성합니다."
           />
 
-          <div className="max-w-[300px] pb-2">
-            <span className="text-[11px] font-bold tracking-[0.2em] text-halo-orange-500">
-              HALO
-            </span>
-
-            <p className="mt-4 text-[15px] leading-7 text-halo-brown-500">
-              영어의 인사말과
-              <br />
-              평안할 안녕(安寧)을 함께 담았습니다.
-            </p>
-          </div>
+          <p className="max-w-[450px] text-[15px] leading-8 text-halo-brown-500 lg:justify-self-end">
+            한꺼번에 관계를 바꾸려 하지 않습니다.
+            사용자의 현재 관계와 속도에 맞춰
+            작은 행동을 반복할 수 있도록 설계했습니다.
+          </p>
         </div>
 
-        <div className="mt-20 grid items-center gap-16 xl:grid-cols-[1fr_0.9fr] xl:gap-24">
-          <div className="halo-product-surface relative flex min-h-[580px] justify-center overflow-hidden rounded-[38px] p-10 md:min-h-[720px] md:p-14">
-            <div className="relative z-10 w-[min(290px,70%)] rounded-[42px] border border-white/40 bg-halo-brown-950 p-2.5 shadow-halo-lg">
-              <div className="absolute top-5 left-1/2 z-10 h-[18px] w-[72px] -translate-x-1/2 rounded-full bg-halo-brown-950" />
+        <div className="mt-20 space-y-6 md:mt-28">
+          {productFeatures.map((feature, index) => {
+            const isReverse = index % 2 === 1;
 
-              <ImageWithFallback
-                src={productImages.main}
-                alt="HALO 앱 화면"
-                className="h-full w-full rounded-[32px] object-cover"
-              />
-            </div>
-
-            <div className="absolute right-4 bottom-8 z-20 w-[170px] rotate-[4deg] rounded-3xl bg-white/90 p-2.5 shadow-halo backdrop-blur-xl md:right-7 md:bottom-14 md:w-[220px]">
-              <ImageWithFallback
-                src={productImages.detail}
-                alt="HALO 상세 화면"
-                className="h-[120px] rounded-2xl object-cover md:h-[170px]"
-              />
-
-              <span className="block px-2 pt-4 pb-2 text-[9px] font-bold tracking-[0.18em] text-halo-brown-900">
-                DAILY STORYBOOK
-              </span>
-            </div>
-
-            <div className="absolute top-8 left-5 z-20 flex size-24 flex-col items-center justify-center rounded-full border border-white/50 bg-halo-brown-950/85 text-white shadow-halo backdrop-blur-xl md:top-14 md:left-9 md:size-28">
-              <span className="text-3xl font-bold">
-                10
-              </span>
-
-              <small className="mt-1 text-[8px] font-bold tracking-[0.14em]">
-                CHAPTERS
-              </small>
-            </div>
-          </div>
-
-          <div className="border-t border-halo-brown-900/15">
-            {productFeatures.map((feature) => (
+            return (
               <article
                 key={feature.number}
-                className="grid grid-cols-[44px_1fr] gap-4 border-b border-halo-brown-900/15 py-9 md:grid-cols-[60px_1fr] md:gap-8 md:py-11"
+                className="overflow-hidden rounded-[34px] border border-halo-brown-900/10 bg-halo-cream-100"
               >
-                <div className="pt-1 text-xs font-bold text-halo-orange-600">
-                  {feature.number}
-                </div>
+                <div
+                  className={[
+                    "grid min-h-[560px] lg:grid-cols-2",
+                    isReverse ? "lg:[&>*:first-child]:order-2" : "",
+                  ].join(" ")}
+                >
+                  <div className="flex flex-col justify-between p-8 md:p-12 lg:p-14">
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold tracking-[0.18em] text-halo-orange-600">
+                          {feature.eyebrow}
+                        </span>
 
-                <div>
-                  <span className="text-[9px] font-bold tracking-[0.17em] text-halo-orange-500">
-                    {feature.eyebrow}
-                  </span>
+                        <span className="text-sm font-bold text-halo-brown-300">
+                          {feature.number}
+                        </span>
+                      </div>
 
-                  <h3 className="mt-3 text-[27px] font-semibold tracking-[-0.04em] text-halo-brown-900 md:text-[31px]">
-                    {feature.title}
-                  </h3>
+                      <h3 className="mt-10 text-[38px] leading-[1.15] font-semibold tracking-[-0.055em] text-halo-brown-950 md:text-[50px]">
+                        {feature.title}
+                      </h3>
 
-                  <p className="mt-4 max-w-[500px] text-[15px] leading-7 text-halo-brown-500">
-                    {feature.description}
-                  </p>
+                      <p className="mt-6 max-w-[470px] text-[15px] leading-8 text-halo-brown-500 md:text-base">
+                        {feature.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-12 flex items-center gap-3 text-xs font-semibold text-halo-brown-400">
+                      <span className="flex size-8 items-center justify-center rounded-full bg-halo-orange-500 text-white">
+                        {index + 1}
+                      </span>
+
+                      <span>
+                        {index === 0 &&
+                          "관계에 맞는 시작점 찾기"}
+
+                        {index === 1 &&
+                          "부담 없이 하루 한 장 채우기"}
+
+                        {index === 2 &&
+                          "함께한 시간을 다시 꺼내보기"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <ProductVisual index={index} />
                 </div>
               </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductVisual({ index }) {
+  if (index === 0) {
+    return (
+      <div className="relative flex min-h-[460px] items-center justify-center overflow-hidden bg-[#F3B783] p-10">
+        <div className="absolute -top-16 -right-12 size-56 rounded-full bg-white/25 blur-3xl" />
+
+        <div className="absolute bottom-[-80px] left-[-50px] size-64 rounded-full bg-halo-orange-600/15 blur-3xl" />
+
+        <div className="relative z-10 w-full max-w-[380px] rounded-[30px] border border-white/60 bg-white/90 p-6 shadow-halo backdrop-blur-xl">
+          <span className="text-[9px] font-bold tracking-[0.18em] text-halo-orange-600">
+            RECOMMENDED FOR YOU
+          </span>
+
+          <h4 className="mt-4 text-2xl font-bold tracking-[-0.04em] text-halo-brown-900">
+            지금 시작하기 좋은
+            <br />
+            두 권의 스토리북
+          </h4>
+
+          <div className="mt-7 grid grid-cols-2 gap-3">
+            {storybooks.slice(0, 2).map((storybook) => (
+              <div
+                key={storybook.id}
+                className="overflow-hidden rounded-[20px] bg-halo-cream-100"
+              >
+                <ImageWithFallback
+                  src={storybook.image}
+                  alt={storybook.title}
+                  className="aspect-[3/4] w-full object-cover"
+                />
+
+                <div className="p-3">
+                  <strong className="text-sm font-semibold text-halo-brown-900">
+                    {storybook.title}
+                  </strong>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </div>
-    </section>
+    );
+  }
+
+  if (index === 1) {
+    return (
+      <div className="halo-product-surface relative flex min-h-[460px] items-center justify-center overflow-hidden p-10">
+        <div className="relative z-10 w-[220px] rounded-[38px] border border-white/40 bg-halo-brown-950 p-2 shadow-halo-lg md:w-[250px]">
+          <ImageWithFallback
+            src={productImages.main}
+            alt="HALO 하루 한 장 화면"
+            className="aspect-[9/19] w-full rounded-[31px] object-cover"
+          />
+        </div>
+
+        <div className="absolute right-[7%] bottom-[11%] z-20 w-[180px] rotate-[5deg] rounded-[24px] border border-white/60 bg-white/90 p-2 shadow-halo backdrop-blur-xl">
+          <ImageWithFallback
+            src={productImages.detail}
+            alt="HALO 기록 상세"
+            className="aspect-[4/3] w-full rounded-[18px] object-cover"
+          />
+
+          <span className="block px-2 pt-3 pb-1 text-[8px] font-bold tracking-[0.16em] text-halo-brown-900">
+            ONE PAGE A DAY
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (index === 3) {
+    return (
+      <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#F4F1ED] p-6 md:min-h-[560px] md:p-8">
+        {/* MAIN THEME COLLECTION IMAGE */}
+        <div className="relative z-10 flex h-full w-full items-center justify-center">
+          <ImageWithFallback
+            src={productImages.theme}
+            alt="HALO 테마함 카드"
+            className="max-h-[480px] w-[88%] object-contain md:max-h-[520px] md:w-[92%]"
+          />
+        </div>
+
+        {/* THEME COUNT */}
+        <div className="absolute top-6 left-6 z-20 rounded-full border border-halo-brown-900/10 bg-white/95 px-4 py-2.5 shadow-[0_8px_24px_rgba(30,24,20,0.07)] backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <strong className="text-[15px] font-bold tracking-[-0.03em] text-halo-brown-900">
+              10
+            </strong>
+
+            <span className="text-[8px] font-bold tracking-[0.16em] text-halo-orange-600">
+              THEMES
+            </span>
+          </div>
+        </div>
+
+        {/* COLLECTION LABEL */}
+        <div className="absolute right-6 bottom-6 z-20 rounded-[18px] border border-halo-brown-900/10 bg-white/95 px-5 py-4 shadow-[0_10px_30px_rgba(30,24,20,0.08)] backdrop-blur-md">
+          <span className="block text-[8px] font-bold tracking-[0.17em] text-halo-orange-600">
+            THEME COLLECTION
+          </span>
+
+          <strong className="mt-1.5 block text-[14px] leading-[1.4] font-semibold tracking-[-0.025em] text-halo-brown-900">
+            완성한 이야기를
+            <br />
+            다시 꺼내보세요.
+          </strong>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative flex min-h-[460px] items-center justify-center overflow-hidden bg-halo-brown-900 p-8 md:p-10">
+      <div className="absolute top-[-80px] right-[-80px] size-72 rounded-full bg-halo-orange-500/20 blur-[80px]" />
+
+      <div className="relative z-10 w-full max-w-[430px] rounded-[28px] border border-white/12 bg-white/[0.06] p-6 text-white shadow-halo backdrop-blur-xl md:p-8">
+        <div className="flex items-center justify-between">
+          <span className="text-[9px] font-bold tracking-[0.18em] text-halo-orange-300">
+            AUGUST 2026
+          </span>
+
+          <span className="text-xs text-white/40">
+            07 records
+          </span>
+        </div>
+
+        <div className="mt-7 grid grid-cols-7 gap-2 text-center">
+          {Array.from({ length: 35 }).map((_, dayIndex) => {
+            const activeDays = [
+              3, 6, 8, 14, 18, 23, 27,
+            ];
+
+            const isActive =
+              activeDays.includes(dayIndex);
+
+            return (
+              <div
+                key={dayIndex}
+                className={[
+                  "flex aspect-square items-center justify-center rounded-full text-[10px]",
+                  isActive
+                    ? "bg-halo-orange-500 font-bold text-white shadow-lg"
+                    : "text-white/35",
+                ].join(" ")}
+              >
+                {dayIndex < 3
+                  ? ""
+                  : dayIndex - 2 <= 31
+                    ? dayIndex - 2
+                    : ""}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-7 rounded-[20px] bg-white/[0.07] p-4">
+          <span className="text-[9px] font-bold tracking-[0.15em] text-white/40">
+            TODAY'S RECORD
+          </span>
+
+          <p className="mt-2 text-sm leading-6 font-medium text-white/80">
+            함께한 한 장이 오늘의 기록으로 남았습니다.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -736,6 +1087,7 @@ function StorybookSection() {
   const scrollFrameRef = useRef(null);
 
   const total = storybooks.length;
+
   const activeStorybook =
     storybooks[activeIndex];
 
@@ -834,12 +1186,12 @@ function StorybookSection() {
           eyebrow="HALO STORYBOOK"
           title={
             <>
-              서로 다른 관계를 위한
+              우리의 일상에는,
               <br />
-              열 권의 이야기
+              이미 많은 이야기가 있습니다.
             </>
           }
-          description="각 스토리북은 부모님과의 현재 관계와 원하는 방향에 따라 다른 시작점을 제공합니다."
+          description="누구나 공감할 수 있는 일상의 순간을 10개의 스토리북으로 담았습니다."
           light
         />
 
@@ -1006,106 +1358,6 @@ function StorybookSection() {
   );
 }
 
-function NumbersSection() {
-  return (
-    <section className="bg-halo-brown-950 pb-28 text-white">
-      <div className="mx-auto w-[min(calc(100%-36px),1240px)] md:w-[min(calc(100%-48px),1240px)]">
-        <div className="flex flex-col justify-between gap-7 border-b border-white/15 pb-12 md:flex-row md:items-end">
-          <span className="text-[10px] font-bold tracking-[0.17em] text-halo-orange-300">
-            DESIGNED AS A DAILY EXPERIENCE
-          </span>
-
-          <p className="max-w-[500px] text-2xl leading-relaxed font-medium tracking-[-0.035em]">
-            관계는 한 번의 큰 행동보다
-            <br />
-            반복할 수 있는 작은 경험으로
-            이어집니다.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3">
-          {companyStats.map(
-            (stat, index) => (
-              <article
-                key={stat.unit}
-                className={[
-                  "min-h-[230px] border-white/15 py-11 md:min-h-[280px] md:px-10 md:py-14",
-                  index !==
-                  companyStats.length - 1
-                    ? "border-b md:border-r md:border-b-0"
-                    : "",
-                  index === 0 ? "md:pl-0" : "",
-                ].join(" ")}
-              >
-                <div className="flex items-end gap-3">
-                  <strong className="text-[78px] leading-[0.88] font-medium tracking-[-0.07em] md:text-[105px]">
-                    {stat.value}
-                  </strong>
-
-                  <span className="pb-2 text-[11px] font-semibold tracking-[0.08em] text-halo-orange-300">
-                    {stat.unit}
-                  </span>
-                </div>
-
-                <p className="mt-8 text-sm text-white/50">
-                  {stat.label}
-                </p>
-              </article>
-            ),
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PrinciplesSection() {
-  return (
-    <section className="bg-halo-cream-50 py-28 md:py-44">
-      <div className="mx-auto w-[min(calc(100%-36px),1240px)] md:w-[min(calc(100%-48px),1240px)]">
-        <SectionHeading
-          eyebrow="OUR PRINCIPLES"
-          title={
-            <>
-              좋은 관계를 위한 경험은
-              <br />
-              다르게 설계되어야 합니다.
-            </>
-          }
-          description="HALO는 기능의 수보다 사용자가 관계를 이어갈 수 있는 방식과 속도를 먼저 생각합니다."
-        />
-
-        <div className="mt-16 border-t border-halo-brown-900/15 md:mt-24">
-          {brandPrinciples.map(
-            (principle) => (
-              <article
-                key={principle.number}
-                className="group grid gap-4 border-b border-halo-brown-900/15 py-9 md:grid-cols-[60px_minmax(240px,0.8fr)_minmax(300px,1fr)_52px] md:items-center md:gap-8"
-              >
-                <span className="text-xs font-bold text-halo-orange-600">
-                  {principle.number}
-                </span>
-
-                <h3 className="text-2xl font-semibold tracking-[-0.04em] text-halo-brown-900">
-                  {principle.title}
-                </h3>
-
-                <p className="max-w-[500px] text-[15px] leading-7 text-halo-brown-500">
-                  {principle.description}
-                </p>
-
-                <div className="hidden size-12 items-center justify-center rounded-full border border-halo-brown-900/15 transition group-hover:translate-x-1 group-hover:border-halo-orange-500 group-hover:bg-halo-orange-500 group-hover:text-white md:flex">
-                  <ArrowIcon />
-                </div>
-              </article>
-            ),
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function TeamMemberCard({
   member,
   groupCode,
@@ -1175,20 +1427,13 @@ function TeamSection() {
             eyebrow="TEAM HALO"
             title={
               <>
-                하나의 경험을 만드는
-                <br />
-                서로 다른 전문성
+                HALO를 만드는 사람들
               </>
             }
-            description="기획과 디자인, Android와 Spring Boot가 HALO의 경험을 만들어갑니다."
+            description="기획, 디자인, Android, Spring Boot가 함께 HALO를 만들고 있습니다."
             light
           />
 
-          <p className="text-base leading-8 text-white/60">
-            각 파트의 역할을 분리하되, <br></br>서비스의
-            기준과 사용자가 경험하는 흐름은 함께
-            설계합니다.
-          </p>
         </div>
 
         <div className="mt-20 md:mt-28">
@@ -1259,35 +1504,58 @@ function TeamSection() {
 function FinalSection() {
   return (
     <section className="halo-final-surface relative overflow-hidden py-32 text-center text-white md:py-48">
+      <div className="pointer-events-none absolute top-1/2 left-1/2 size-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5" />
+
+      <div className="pointer-events-none absolute top-1/2 left-1/2 size-[430px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5" />
 
       <div className="relative z-10 mx-auto flex w-[min(calc(100%-36px),900px)] flex-col items-center">
         <span className="text-[10px] font-bold tracking-[0.2em] text-halo-orange-300">
-          WE DESIGN THE NEXT HELLO
+          ONE PAGE AT A TIME
         </span>
 
         <h2 className="mt-8 text-[46px] leading-[1.16] font-medium tracking-[-0.06em] md:text-[70px] xl:text-[84px]">
-          열 번의 안녕이
+          부모님께 건네는
           <br />
           <strong className="font-bold">
-            한 권의 이야기가 될 때까지.
+            다음 한 장을 시작해보세요.
           </strong>
         </h2>
 
-        <p className="mt-8 max-w-[620px] text-base leading-8 text-white/65">
-          Team HALO는 사람과 사람 사이의 관계가
-          조금 더 자연스럽게 이어질 수 있는 경험을
-          만듭니다.
+        <p className="mt-8 max-w-[600px] text-base leading-8 text-white/60">
+          열 번의 작은 이야기가 모이면
+          우리 가족만의 한 권이 됩니다.
         </p>
 
-        <a
-          href="https://github.com/HALO-UMC"
-          target="_blank"
-          rel="noreferrer"
-          className="mt-11 inline-flex min-h-14 items-center gap-7 rounded-full bg-white px-7 text-sm font-bold text-halo-orange-700 shadow-halo transition hover:-translate-y-1"
-        >
-          Visit our GitHub
-          <ArrowIcon />
-        </a>
+        <div className="mt-11 flex flex-col gap-3 sm:flex-row">
+          <a
+            href="YOUR_PLAY_STORE_URL"
+            target="_blank"
+            rel="noreferrer"
+            className="group inline-flex min-h-[62px] items-center gap-4 rounded-[16px] border border-white/20 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:bg-black hover:shadow-[0_24px_55px_rgba(0,0,0,0.4)]"
+          >
+            <GooglePlayIcon />
+
+            <span className="flex flex-col">
+              <span className="text-[9px] leading-none font-medium tracking-[0.06em] text-white/65">
+                GET IT ON
+              </span>
+
+              <span className="mt-1 text-[18px] leading-none font-semibold tracking-[-0.03em] text-white">
+                Google Play
+              </span>
+            </span>
+          </a>
+
+          <a
+            href="https://github.com/HALO-UMC"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-[62px] items-center justify-center gap-7 rounded-[16px] border border-white/20 bg-white/5 px-7 text-sm font-bold text-white backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:bg-white hover:text-halo-brown-900"
+          >
+            Team HALO GitHub
+            <ArrowIcon />
+          </a>
+        </div>
       </div>
     </section>
   );
@@ -1322,12 +1590,11 @@ function LegalPage({ documentKey }) {
 
           <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-xs text-halo-brown-500">
             <span>
-              공고일자:{" "}
-              {document.announcedAt}
+              공고일자: {document.announcedAt}
             </span>
+
             <span>
-              시행일자:{" "}
-              {document.effectiveAt}
+              시행일자: {document.effectiveAt}
             </span>
           </div>
         </div>
@@ -1355,7 +1622,6 @@ function LegalPage({ documentKey }) {
           </div>
 
           <div className="mt-8 rounded-[28px] border border-halo-brown-900/10 bg-white p-6 shadow-halo-sm md:p-12">
-
             <div className="divide-y divide-halo-brown-900/10">
               {document.sections.map(
                 (section) => (
@@ -1403,8 +1669,7 @@ function LegalPage({ documentKey }) {
                                       className="grid grid-cols-[28px_1fr] gap-3 text-[15px] leading-8 text-halo-brown-600 md:text-base"
                                     >
                                       <span className="flex size-7 items-center justify-center rounded-full bg-halo-orange-100 text-[11px] font-bold text-halo-orange-700">
-                                        {itemIndex +
-                                          1}
+                                        {itemIndex + 1}
                                       </span>
 
                                       <span>
