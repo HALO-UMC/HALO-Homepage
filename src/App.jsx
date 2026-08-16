@@ -202,6 +202,123 @@ function ImageWithFallback({
   );
 }
 
+function SplashScreen() {
+  const [stage, setStage] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const secondStageTimer = window.setTimeout(() => {
+      setStage(1);
+    }, 1300);
+
+    const fadeOutTimer = window.setTimeout(() => {
+      setStage(2);
+    }, 2400);
+
+    const removeTimer = window.setTimeout(() => {
+      setIsVisible(false);
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(secondStageTimer);
+      window.clearTimeout(fadeOutTimer);
+      window.clearTimeout(removeTimer);
+    };
+  }, []);
+
+  if (!isVisible) {
+    return null;
+  }
+
+  return (
+    <>
+      <style>
+        {`
+          @keyframes haloSplashWiggle {
+            0% {
+              transform: rotate(-7deg);
+            }
+
+            50% {
+              transform: rotate(7deg);
+            }
+
+            100% {
+              transform: rotate(-7deg);
+            }
+          }
+        `}
+      </style>
+
+      <div
+        className={[
+          "fixed inset-0 z-[9999] overflow-hidden bg-[#FF7B10]",
+          "transition-opacity duration-[600ms] ease-out",
+          stage === 2
+            ? "pointer-events-none opacity-0"
+            : "opacity-100",
+        ].join(" ")}
+        aria-hidden="true"
+      >
+        {/* FIRST SPLASH */}
+        <div
+          className={[
+            "absolute inset-0 flex flex-col items-center justify-center",
+            "transition-all duration-500 ease-out",
+            stage === 0
+              ? "translate-y-0 opacity-100"
+              : "-translate-y-2 opacity-0",
+          ].join(" ")}
+        >
+          <img
+            src="/images/logo.png"
+            alt=""
+            draggable="false"
+            className="h-[190px] w-auto max-w-[86vw] select-none object-contain md:h-[240px]"
+            style={{
+              animation:
+                stage === 0
+                  ? "haloSplashWiggle 520ms ease-in-out infinite"
+                  : "none",
+              transformOrigin: "50% 78%",
+            }}
+          />
+
+          <p className="mt-7 text-[16px] font-semibold tracking-[-0.025em] text-white md:text-[18px]">
+            익숙하지만 어려운, 안녕
+          </p>
+        </div>
+
+        {/* SECOND SPLASH */}
+        <div
+          className={[
+            "absolute inset-0 flex flex-col items-center justify-center",
+            "transition-all duration-500 ease-out",
+            stage === 1
+              ? "translate-y-0 scale-100 opacity-100"
+              : stage === 0
+                ? "translate-y-3 scale-[0.98] opacity-0"
+                : "-translate-y-1 scale-[0.99] opacity-0",
+          ].join(" ")}
+        >
+          <img
+            src="/images/logotypo.png"
+            alt=""
+            draggable="false"
+            className="h-[76px] w-auto max-w-[80vw] select-none object-contain md:h-[94px]"
+          />
+
+          <p className="mt-7 text-center text-[15px] leading-6 font-medium tracking-[-0.025em] text-white md:text-[16px]">
+            부모님과의 관계를
+            <br />
+            한 권의 이야기로
+          </p>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function Logo() {
   return (
     <Link
@@ -1794,6 +1911,8 @@ function Footer() {
 function AppRoutes() {
   return (
     <>
+      <SplashScreen />
+
       <Header />
 
       <Routes>
