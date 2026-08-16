@@ -1011,6 +1011,9 @@ function ProductSection() {
 
                         {index === 2 &&
                           "함께한 시간을 다시 꺼내보기"}
+
+                        {index === 3 &&
+                          "완성한 이야기를 하나씩 모아보기"}
                       </span>
                     </div>
                   </div>
