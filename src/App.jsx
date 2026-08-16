@@ -679,13 +679,13 @@ function HeroSection() {
           </p>
 
           {/* CTA */}
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
             <a
               href="YOUR_PLAY_STORE_URL"
               target="_blank"
               rel="noreferrer"
               aria-label="Google Play에서 HALO 다운로드"
-              className="group inline-flex min-h-[62px] items-center gap-4 rounded-[16px] border border-black/10 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-1 hover:bg-black hover:shadow-[0_24px_55px_rgba(0,0,0,0.26)]"
+              className="group inline-flex min-h-[62px] w-fit shrink-0 items-center gap-4 rounded-[16px] border border-black/10 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-1 hover:bg-black hover:shadow-[0_24px_55px_rgba(0,0,0,0.26)]"
             >
               <GooglePlayIcon />
 
@@ -703,7 +703,7 @@ function HeroSection() {
             <a
               href="#storybook"
               aria-label="HALO 스토리북 둘러보기"
-              className="group inline-flex min-h-[62px] items-center gap-4 rounded-[16px] border border-halo-brown-900/10 bg-white/80 px-5 text-left text-halo-brown-900 shadow-[0_14px_38px_rgba(69,41,24,0.10)] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-halo-orange-300 hover:bg-white hover:shadow-[0_20px_48px_rgba(69,41,24,0.16)]"
+              className="group inline-flex min-h-[62px] w-fit shrink-0 items-center gap-4 rounded-[16px] border border-halo-brown-900/10 bg-white/80 px-5 text-left text-halo-brown-900 shadow-[0_14px_38px_rgba(69,41,24,0.10)] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-halo-orange-300 hover:bg-white hover:shadow-[0_20px_48px_rgba(69,41,24,0.16)]"
             >
               <span className="flex size-10 shrink-0 items-center justify-center rounded-[12px] bg-halo-orange-100 text-halo-orange-600 transition duration-300 group-hover:bg-halo-orange-500 group-hover:text-white">
                 <StorybookIcon />
@@ -1029,17 +1029,19 @@ function ProductSection() {
 function ProductVisual({ index }) {
   if (index === 0) {
     return (
-      <div className="relative flex min-h-[460px] items-center justify-center overflow-hidden bg-[#F3B783] p-10">
-        <div className="absolute -top-16 -right-12 size-56 rounded-full bg-white/25 blur-3xl" />
+      <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#111111] p-8 md:min-h-[560px] md:p-10">
+        {/* NUMBER */}
+        <span className="absolute top-7 left-7 text-[11px] font-semibold tracking-[0.14em] text-white/35">
+          01
+        </span>
 
-        <div className="absolute bottom-[-80px] left-[-50px] size-64 rounded-full bg-halo-orange-600/15 blur-3xl" />
-
-        <div className="relative z-10 w-full max-w-[380px] rounded-[30px] border border-white/60 bg-white/90 p-6 shadow-halo backdrop-blur-xl">
-          <span className="text-[9px] font-bold tracking-[0.18em] text-halo-orange-600">
+        {/* MAIN RECOMMENDATION UI */}
+        <div className="relative z-10 w-full max-w-[390px] rounded-[26px] border border-white/10 bg-[#1A1A1A] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+          <span className="text-[9px] font-bold tracking-[0.18em] text-halo-orange-300">
             RECOMMENDED FOR YOU
           </span>
 
-          <h4 className="mt-4 text-2xl font-bold tracking-[-0.04em] text-halo-brown-900">
+          <h4 className="mt-4 text-2xl font-bold tracking-[-0.04em] text-white">
             지금 시작하기 좋은
             <br />
             두 권의 스토리북
@@ -1049,7 +1051,7 @@ function ProductVisual({ index }) {
             {storybooks.slice(0, 2).map((storybook) => (
               <div
                 key={storybook.id}
-                className="overflow-hidden rounded-[20px] bg-halo-cream-100"
+                className="overflow-hidden rounded-[18px] bg-[#242424]"
               >
                 <ImageWithFallback
                   src={storybook.image}
@@ -1058,7 +1060,7 @@ function ProductVisual({ index }) {
                 />
 
                 <div className="p-3">
-                  <strong className="text-sm font-semibold text-halo-brown-900">
+                  <strong className="text-sm font-semibold text-white">
                     {storybook.title}
                   </strong>
                 </div>
@@ -1072,127 +1074,125 @@ function ProductVisual({ index }) {
 
   if (index === 1) {
     return (
-      <div className="halo-product-surface relative flex min-h-[460px] items-center justify-center overflow-hidden p-10">
-        <div className="relative z-10 w-[220px] rounded-[38px] border border-white/40 bg-halo-brown-950 p-2 shadow-halo-lg md:w-[250px]">
-          <ImageWithFallback
-            src={productImages.main}
-            alt="HALO 하루 한 장 화면"
-            className="aspect-[9/19] w-full rounded-[31px] object-cover"
-          />
+      <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#111111] p-8 md:min-h-[560px] md:p-10">
+        {/* BACKGROUND DETAIL */}
+        <div className="pointer-events-none absolute top-[-120px] right-[-100px] size-[320px] rounded-full bg-halo-orange-500/10 blur-[100px]" />
+
+        <div className="pointer-events-none absolute bottom-[-140px] left-[-120px] size-[340px] rounded-full bg-white/[0.04] blur-[100px]" />
+
+        {/* MAIN PHONE */}
+        <div className="relative z-10 w-[225px] rounded-[42px] bg-[linear-gradient(145deg,#f5f5f3_0%,#8e8d8a_18%,#ecebe8_40%,#666563_62%,#d4d3d0_82%,#888784_100%)] p-[3px] shadow-[0_32px_80px_rgba(0,0,0,0.5)] md:w-[255px]">
+          <div className="relative aspect-[9/20.3] overflow-hidden rounded-[39px] bg-black p-[4px]">
+            {/* Dynamic Island */}
+            <div className="absolute top-[10px] left-1/2 z-30 h-[17px] w-[66px] -translate-x-1/2 rounded-full bg-black" />
+
+            <ImageWithFallback
+              src={productImages.main}
+              alt="HALO 하루 한 장 화면"
+              className="h-full w-full rounded-[35px] object-cover"
+            />
+
+            <div className="pointer-events-none absolute inset-0 rounded-[39px] ring-1 ring-inset ring-white/10" />
+          </div>
         </div>
 
-        <div className="absolute right-[7%] bottom-[11%] z-20 w-[180px] rotate-[5deg] rounded-[24px] border border-white/60 bg-white/90 p-2 shadow-halo backdrop-blur-xl">
+        {/* DETAIL IMAGE */}
+        <div className="absolute right-[6%] bottom-[8%] z-20 w-[175px] md:right-[7%] md:w-[190px]">
           <ImageWithFallback
             src={productImages.detail}
-            alt="HALO 기록 상세"
-            className="aspect-[4/3] w-full rounded-[18px] object-cover"
+            alt="HALO 하루 한 장 상세 화면"
+            className="mx-auto w-[88%] object-contain"
           />
 
-          <span className="block px-2 pt-3 pb-1 text-[8px] font-bold tracking-[0.16em] text-halo-brown-900">
+          <span className="mt-3 block text-center text-[8px] font-bold tracking-[0.17em] text-white/45">
             ONE PAGE A DAY
           </span>
         </div>
+
+        {/* NUMBER */}
+        <span className="absolute top-7 left-7 text-[11px] font-semibold tracking-[0.14em] text-white/35">
+          02
+        </span>
       </div>
     );
   }
 
   if (index === 3) {
     return (
-      <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#F4F1ED] p-6 md:min-h-[560px] md:p-8">
-        {/* MAIN THEME COLLECTION IMAGE */}
+      <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#111111] p-5 md:min-h-[560px] md:p-7">
+        {/* NUMBER */}
+        <span className="absolute top-7 left-7 z-20 text-[11px] font-semibold tracking-[0.14em] text-white/35">
+          04
+        </span>
+
+        {/* MAIN THEME IMAGE */}
         <div className="relative z-10 flex h-full w-full items-center justify-center">
           <ImageWithFallback
             src={productImages.theme}
-            alt="HALO 테마함 카드"
-            className="max-h-[480px] w-[88%] object-contain md:max-h-[520px] md:w-[92%]"
+            alt="HALO 테마함"
+            className="max-h-[510px] w-[94%] object-contain md:max-h-[545px] md:w-[96%]"
           />
         </div>
 
-        {/* THEME COUNT */}
-        <div className="absolute top-6 left-6 z-20 rounded-full border border-halo-brown-900/10 bg-white/95 px-4 py-2.5 shadow-[0_8px_24px_rgba(30,24,20,0.07)] backdrop-blur-md">
-          <div className="flex items-center gap-2">
-            <strong className="text-[15px] font-bold tracking-[-0.03em] text-halo-brown-900">
-              10
-            </strong>
-
-            <span className="text-[8px] font-bold tracking-[0.16em] text-halo-orange-600">
-              THEMES
-            </span>
-          </div>
-        </div>
-
-        {/* COLLECTION LABEL */}
-        <div className="absolute right-6 bottom-6 z-20 rounded-[18px] border border-halo-brown-900/10 bg-white/95 px-5 py-4 shadow-[0_10px_30px_rgba(30,24,20,0.08)] backdrop-blur-md">
-          <span className="block text-[8px] font-bold tracking-[0.17em] text-halo-orange-600">
-            THEME COLLECTION
-          </span>
-
-          <strong className="mt-1.5 block text-[14px] leading-[1.4] font-semibold tracking-[-0.025em] text-halo-brown-900">
-            완성한 이야기를
-            <br />
-            다시 꺼내보세요.
-          </strong>
-        </div>
+        {/* LABEL */}
+        <span className="absolute right-7 bottom-7 z-20 text-[9px] font-bold tracking-[0.17em] text-white/45">
+          THEME COLLECTION
+        </span>
       </div>
     );
   }
 
-  return (
-    <div className="relative flex min-h-[460px] items-center justify-center overflow-hidden bg-halo-brown-900 p-8 md:p-10">
-      <div className="absolute top-[-80px] right-[-80px] size-72 rounded-full bg-halo-orange-500/20 blur-[80px]" />
+  if (index === 2) {
+    return (
+      <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#111111] p-8 md:min-h-[560px] md:p-10">
+        {/* NUMBER */}
+        <span className="absolute top-7 left-7 z-20 text-[11px] font-semibold tracking-[0.14em] text-white/35">
+          03
+        </span>
 
-      <div className="relative z-10 w-full max-w-[430px] rounded-[28px] border border-white/12 bg-white/[0.06] p-6 text-white shadow-halo backdrop-blur-xl md:p-8">
-        <div className="flex items-center justify-between">
-          <span className="text-[9px] font-bold tracking-[0.18em] text-halo-orange-300">
-            AUGUST 2026
-          </span>
+        {/* METALLIC PHONE */}
+        <div
+          className="
+          relative z-10
+          w-[230px]
+          rounded-[44px]
+          bg-[linear-gradient(145deg,#f7f7f6_0%,#a4a3a1_18%,#eeeeec_38%,#777674_60%,#d9d8d5_82%,#999896_100%)]
+          p-[3px]
+          shadow-[0_34px_85px_rgba(0,0,0,0.50)]
+          md:w-[260px]
+        "
+        >
+          <div className="relative aspect-[9/20.4] overflow-hidden rounded-[41px] bg-[#090909] p-[4px]">
+            {/* DYNAMIC ISLAND */}
+            <div className="absolute top-[11px] left-1/2 z-30 h-[18px] w-[68px] -translate-x-1/2 rounded-full bg-[#090909] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]" />
 
-          <span className="text-xs text-white/40">
-            07 records
-          </span>
+            {/* CALENDAR SCREEN */}
+            <ImageWithFallback
+              src={productImages.calendar}
+              alt="HALO 기록 캘린더 화면"
+              className="h-full w-full rounded-[37px] object-cover"
+            />
+
+            {/* INNER HIGHLIGHT */}
+            <div className="pointer-events-none absolute inset-0 rounded-[41px] ring-1 ring-inset ring-white/10" />
+          </div>
+
+          {/* LEFT SIDE BUTTONS */}
+          <span className="absolute top-[108px] -left-[2px] h-[44px] w-[2px] rounded-l-full bg-[#858482]" />
+
+          <span className="absolute top-[168px] -left-[2px] h-[68px] w-[2px] rounded-l-full bg-[#858482]" />
+
+          {/* RIGHT SIDE BUTTON */}
+          <span className="absolute top-[146px] -right-[2px] h-[88px] w-[2px] rounded-r-full bg-[#72716f]" />
         </div>
 
-        <div className="mt-7 grid grid-cols-7 gap-2 text-center">
-          {Array.from({ length: 35 }).map((_, dayIndex) => {
-            const activeDays = [
-              3, 6, 8, 14, 18, 23, 27,
-            ];
-
-            const isActive =
-              activeDays.includes(dayIndex);
-
-            return (
-              <div
-                key={dayIndex}
-                className={[
-                  "flex aspect-square items-center justify-center rounded-full text-[10px]",
-                  isActive
-                    ? "bg-halo-orange-500 font-bold text-white shadow-lg"
-                    : "text-white/35",
-                ].join(" ")}
-              >
-                {dayIndex < 3
-                  ? ""
-                  : dayIndex - 2 <= 31
-                    ? dayIndex - 2
-                    : ""}
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-7 rounded-[20px] bg-white/[0.07] p-4">
-          <span className="text-[9px] font-bold tracking-[0.15em] text-white/40">
-            TODAY'S RECORD
-          </span>
-
-          <p className="mt-2 text-sm leading-6 font-medium text-white/80">
-            함께한 한 장이 오늘의 기록으로 남았습니다.
-          </p>
-        </div>
+        {/* LABEL */}
+        <span className="absolute right-7 bottom-7 text-[9px] font-bold tracking-[0.17em] text-white/40">
+          MONTHLY RECORD
+        </span>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 function StorybookSection() {
@@ -1621,14 +1621,8 @@ function TeamSection() {
 function FinalSection() {
   return (
     <section className="halo-final-surface relative overflow-hidden py-32 text-center text-white md:py-48">
-      <div className="pointer-events-none absolute top-1/2 left-1/2 size-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5" />
-
-      <div className="pointer-events-none absolute top-1/2 left-1/2 size-[430px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5" />
 
       <div className="relative z-10 mx-auto flex w-[min(calc(100%-36px),900px)] flex-col items-center">
-        <span className="text-[10px] font-bold tracking-[0.2em] text-halo-orange-300">
-          ONE PAGE AT A TIME
-        </span>
 
         <h2 className="mt-8 text-[46px] leading-[1.16] font-medium tracking-[-0.06em] md:text-[70px] xl:text-[84px]">
           부모님께 건네는
