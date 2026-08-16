@@ -10,11 +10,11 @@ export const teamGroups = [
         id: "namhyuk",
         name: "이남혁",
         englishName: "Namhyuk Lee",
-        role: "Product Manager",
+        role: "Product Manager · Team Lead",
         position: "PM",
         isLead: true,
         description:
-          "서비스 방향과 정책, 사용자 경험을 설계하고 팀 전체의 일정과 의사결정을 조율합니다.",
+          "HALO의 서비스 방향과 핵심 기능을 설계하고, 일정과 파트 간 협업을 조율했습니다. 기획부터 QA와 출시 준비까지 프로젝트 전반을 리드했습니다.",
         image: "/images/team/namhyuk.svg",
       },
     ],
