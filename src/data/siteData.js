@@ -26,6 +26,7 @@ export const heroImages = {
 export const productImages = {
   main: "/images/product/app-main.svg",
   detail: "/images/product/app-detail.svg",
+  calendar: "/images/product/calendar.png",
   theme: "/images/product/theme-collection.png",
 };
 
