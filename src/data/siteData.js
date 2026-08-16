@@ -26,6 +26,7 @@ export const heroImages = {
 export const productImages = {
   main: "/images/product/app-main.svg",
   detail: "/images/product/app-detail.svg",
+  theme: "/images/product/theme-collection.png",
 };
 
 export const companyStats = [
@@ -68,6 +69,13 @@ export const productFeatures = [
     description:
       "대화와 행동으로 완성한 열 장의 기록은 시간이 지나 다시 펼쳐볼 수 있는 한 권의 이야기로 남습니다.",
   },
+  {
+  number: "04",
+  eyebrow: "THEME COLLECTION",
+  title: "완성 후 모이는 테마카드",
+  description:
+    "스토리북을 완성하면 테마 카드가 하나씩 쌓입니다. 함께 채운 이야기와 기록을 테마별로 다시 꺼내볼 수 있습니다.",
+},
 ];
 
 export const storybooks = [
