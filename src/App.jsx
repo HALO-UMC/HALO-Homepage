@@ -721,6 +721,19 @@ function HeroSection() {
             </a>
           </div>
 
+          <a
+            href="/demoday"
+            className="mt-5 inline-flex w-fit items-center gap-2 text-[13px] font-semibold tracking-[-0.025em] text-halo-brown-400 transition hover:text-halo-orange-600"
+          >
+            <span className="size-1.5 rounded-full bg-halo-orange-500" />
+
+            10th UMC DemoDay 영상 보기
+
+            <span className="text-halo-brown-300">
+              →
+            </span>
+          </a>
+
           {/* STATS */}
           <div className="mt-16 flex items-center gap-5 border-t border-halo-brown-900/10 pt-7">
             <div>
