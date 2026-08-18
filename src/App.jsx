@@ -31,9 +31,135 @@ import {
 const FALLBACK_IMAGE =
   "https://picsum.photos/seed/halo-image-fallback/1200/900";
 
-function ArrowIcon({ direction = "right" }) {
+const PLAY_STORE_URL =
+  "YOUR_PLAY_STORE_URL";
+
+const preRegisterImages = {
+  hero: "/images/preregister/halo-preregister-hero.png",
+};
+
+const preRegisterSteps = [
+  {
+    number: "01",
+    eyebrow: "FIND YOUR STORY",
+    title: (
+      <>
+        10권의 스토리북에서
+        <br />
+        나만의 이야기를 찾아보세요
+      </>
+    ),
+    description:
+      "지금의 관계와 마음에 맞는 이야기를 골라, 부모님과의 새로운 시간을 시작할 수 있어요.",
+    image:
+      "/images/preregister/halo-storybook-list.png",
+    alt: "HALO 10권의 스토리북 화면",
+  },
+  {
+    number: "02",
+    eyebrow: "ONE PAGE A DAY",
+    title: (
+      <>
+        하루 한 장,
+        <br />
+        열 개의 이야기를 채워가요
+      </>
+    ),
+    description:
+      "한 번에 많은 것을 바꾸려 하지 않아도 괜찮아요. 하루에 한 장씩 천천히 이야기를 이어가요.",
+    image:
+      "/images/preregister/halo-daily-story.png",
+    alt: "HALO 하루 한 장 스토리북 진행 화면",
+  },
+  {
+    number: "03",
+    eyebrow: "CHARACTER GUIDE",
+    title: (
+      <>
+        무엇을 남길지 고민될 때,
+        <br />
+        캐릭터가 방향을 알려줘요
+      </>
+    ),
+    description:
+      "각 이야기의 캐릭터가 오늘 어떤 장면을 바라보면 좋을지 자연스럽게 안내해요.",
+    image:
+      "/images/preregister/halo-character-guide.png",
+    alt: "HALO 캐릭터 안내 화면",
+  },
+  {
+    number: "04",
+    eyebrow: "KNOW THEM BETTER",
+    title: (
+      <>
+        준비된 질문을 통해서
+        <br />
+        부모님을 하나씩 알아가요
+      </>
+    ),
+    description:
+      "평소에는 쉽게 꺼내지 못했던 이야기도 준비된 질문을 따라가며 부담 없이 시작할 수 있어요.",
+    image:
+      "/images/preregister/halo-parent-questions.png",
+    alt: "HALO 부모님 질문 화면",
+  },
+  {
+    number: "05",
+    eyebrow: "SAVE THE MOMENT",
+    title: (
+      <>
+        사진과 장면카드로
+        <br />
+        오늘을 남겨요
+      </>
+    ),
+    description:
+      "직접 찍은 사진을 남기거나, 오늘의 순간과 닮은 장면카드를 선택해 한 페이지를 완성해요.",
+    image:
+      "/images/preregister/halo-scene-record.png",
+    alt: "HALO 사진 및 장면카드 기록 화면",
+  },
+  {
+    number: "06",
+    eyebrow: "DAILY RECORD",
+    title: (
+      <>
+        함께한 순간들이
+        <br />
+        하루하루 기록돼요
+      </>
+    ),
+    description:
+      "채워온 이야기는 캘린더에 차곡차곡 남아, 부모님과 함께한 시간을 다시 돌아볼 수 있어요.",
+    image:
+      "/images/preregister/halo-calendar-record.png",
+    alt: "HALO 기록 캘린더 화면",
+  },
+  {
+    number: "07",
+    eyebrow: "THEME COLLECTION",
+    title: (
+      <>
+        완성한 이야기를
+        <br />
+        테마함에 하나씩 모아가요
+      </>
+    ),
+    description:
+      "열 장의 이야기를 모두 채우면 하나의 테마가 완성돼요. 완성한 이야기들을 테마함에서 다시 꺼내볼 수 있어요.",
+    image:
+      "/images/preregister/halo-theme-collection.png",
+    alt: "HALO 테마함 화면",
+  },
+];
+
+function ArrowIcon({
+  direction = "right",
+}) {
   const rotateClass =
-    direction === "left" ? "rotate-180" : "";
+    direction === "left"
+      ? "rotate-180"
+      : "";
 
   return (
     <svg
@@ -181,14 +307,21 @@ function ImageWithFallback({
   eager = false,
 }) {
   const handleError = (event) => {
-    const image = event.currentTarget;
+    const image =
+      event.currentTarget;
 
-    if (image.dataset.fallbackApplied === "true") {
+    if (
+      image.dataset
+        .fallbackApplied === "true"
+    ) {
       return;
     }
 
-    image.dataset.fallbackApplied = "true";
-    image.src = FALLBACK_IMAGE;
+    image.dataset.fallbackApplied =
+      "true";
+
+    image.src =
+      FALLBACK_IMAGE;
   };
 
   return (
@@ -197,32 +330,50 @@ function ImageWithFallback({
       alt={alt}
       className={className}
       onError={handleError}
-      loading={eager ? "eager" : "lazy"}
+      loading={
+        eager ? "eager" : "lazy"
+      }
     />
   );
 }
 
 function SplashScreen() {
-  const [stage, setStage] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
+  const [stage, setStage] =
+    useState(0);
+
+  const [
+    isVisible,
+    setIsVisible,
+  ] = useState(true);
 
   useEffect(() => {
-    const secondStageTimer = window.setTimeout(() => {
-      setStage(1);
-    }, 1300);
+    const secondStageTimer =
+      window.setTimeout(() => {
+        setStage(1);
+      }, 1300);
 
-    const fadeOutTimer = window.setTimeout(() => {
-      setStage(2);
-    }, 2400);
+    const fadeOutTimer =
+      window.setTimeout(() => {
+        setStage(2);
+      }, 2400);
 
-    const removeTimer = window.setTimeout(() => {
-      setIsVisible(false);
-    }, 3000);
+    const removeTimer =
+      window.setTimeout(() => {
+        setIsVisible(false);
+      }, 3000);
 
     return () => {
-      window.clearTimeout(secondStageTimer);
-      window.clearTimeout(fadeOutTimer);
-      window.clearTimeout(removeTimer);
+      window.clearTimeout(
+        secondStageTimer,
+      );
+
+      window.clearTimeout(
+        fadeOutTimer,
+      );
+
+      window.clearTimeout(
+        removeTimer,
+      );
     };
   }, []);
 
@@ -260,7 +411,6 @@ function SplashScreen() {
         ].join(" ")}
         aria-hidden="true"
       >
-        {/* FIRST SPLASH */}
         <div
           className={[
             "absolute inset-0 flex flex-col items-center justify-center",
@@ -280,7 +430,8 @@ function SplashScreen() {
                 stage === 0
                   ? "haloSplashWiggle 520ms ease-in-out infinite"
                   : "none",
-              transformOrigin: "50% 78%",
+              transformOrigin:
+                "50% 78%",
             }}
           />
 
@@ -289,7 +440,6 @@ function SplashScreen() {
           </p>
         </div>
 
-        {/* SECOND SPLASH */}
         <div
           className={[
             "absolute inset-0 flex flex-col items-center justify-center",
@@ -338,53 +488,87 @@ function Logo() {
 function Header() {
   const location = useLocation();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isOpen, setIsOpen] =
+    useState(false);
 
-  const isHome = location.pathname === "/";
+  const [
+    isScrolled,
+    setIsScrolled,
+  ] = useState(false);
+
+  const isHome =
+    location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(
+        window.scrollY > 20,
+      );
     };
 
     handleScroll();
 
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
+    window.addEventListener(
+      "scroll",
+      handleScroll,
+      {
+        passive: true,
+      },
+    );
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener(
+        "scroll",
+        handleScroll,
+      );
     };
   }, []);
 
   useEffect(() => {
     setIsOpen(false);
-  }, [location.pathname, location.hash]);
+  }, [
+    location.pathname,
+    location.hash,
+  ]);
 
   useEffect(() => {
     if (!isOpen) {
       return undefined;
     }
 
-    const currentScrollY = window.scrollY;
+    const currentScrollY =
+      window.scrollY;
 
     const previousBodyPosition =
       document.body.style.position;
-    const previousBodyTop = document.body.style.top;
-    const previousBodyWidth = document.body.style.width;
+
+    const previousBodyTop =
+      document.body.style.top;
+
+    const previousBodyWidth =
+      document.body.style.width;
+
     const previousBodyOverflow =
       document.body.style.overflow;
+
     const previousHtmlOverflow =
-      document.documentElement.style.overflow;
+      document.documentElement
+        .style.overflow;
 
-    document.documentElement.style.overflow = "hidden";
+    document.documentElement.style.overflow =
+      "hidden";
 
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${currentScrollY}px`;
-    document.body.style.width = "100%";
-    document.body.style.overflow = "hidden";
+    document.body.style.position =
+      "fixed";
+
+    document.body.style.top =
+      `-${currentScrollY}px`;
+
+    document.body.style.width =
+      "100%";
+
+    document.body.style.overflow =
+      "hidden";
 
     return () => {
       document.documentElement.style.overflow =
@@ -392,12 +576,20 @@ function Header() {
 
       document.body.style.position =
         previousBodyPosition;
-      document.body.style.top = previousBodyTop;
-      document.body.style.width = previousBodyWidth;
+
+      document.body.style.top =
+        previousBodyTop;
+
+      document.body.style.width =
+        previousBodyWidth;
+
       document.body.style.overflow =
         previousBodyOverflow;
 
-      window.scrollTo(0, currentScrollY);
+      window.scrollTo(
+        0,
+        currentScrollY,
+      );
     };
   }, [isOpen]);
 
@@ -406,13 +598,20 @@ function Header() {
       return undefined;
     }
 
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
+    const handleKeyDown = (
+      event,
+    ) => {
+      if (
+        event.key === "Escape"
+      ) {
         setIsOpen(false);
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener(
+      "keydown",
+      handleKeyDown,
+    );
 
     return () => {
       window.removeEventListener(
@@ -422,7 +621,9 @@ function Header() {
     };
   }, [isOpen]);
 
-  const getNavigationHref = (href) =>
+  const getNavigationHref = (
+    href,
+  ) =>
     isHome ? href : `/${href}`;
 
   const closeMenu = () => {
@@ -448,21 +649,26 @@ function Header() {
             className="ml-auto hidden items-center gap-9 md:flex"
             aria-label="주요 메뉴"
           >
-            {navigationItems.map((item) => (
-              <a
-                key={item.href}
-                href={getNavigationHref(item.href)}
-                className="text-sm font-semibold text-halo-brown-600 transition hover:text-halo-orange-500"
-              >
-                {item.label}
-              </a>
-            ))}
+            {navigationItems.map(
+              (item) => (
+                <a
+                  key={item.href}
+                  href={getNavigationHref(
+                    item.href,
+                  )}
+                  className="text-sm font-semibold text-halo-brown-600 transition hover:text-halo-orange-500"
+                >
+                  {item.label}
+                </a>
+              ),
+            )}
 
             <Link
               to="/terms"
               className={[
                 "text-sm font-semibold transition",
-                location.pathname !== "/"
+                location.pathname !==
+                "/"
                   ? "text-halo-orange-500"
                   : "text-halo-brown-600 hover:text-halo-orange-500",
               ].join(" ")}
@@ -472,7 +678,9 @@ function Header() {
           </nav>
 
           <a
-            href={getNavigationHref("#team")}
+            href={getNavigationHref(
+              "#team",
+            )}
             className="ml-10 hidden min-h-12 items-center gap-4 rounded-full border border-halo-brown-900/15 px-5 text-[13px] font-semibold text-halo-brown-800 transition hover:border-halo-orange-500 hover:bg-halo-orange-500 hover:text-white lg:inline-flex"
           >
             Meet the team
@@ -488,15 +696,24 @@ function Header() {
                 : "border-halo-brown-900/15 bg-white/40 text-halo-brown-900",
             ].join(" ")}
             aria-label={
-              isOpen ? "메뉴 닫기" : "메뉴 열기"
+              isOpen
+                ? "메뉴 닫기"
+                : "메뉴 열기"
             }
             aria-expanded={isOpen}
             aria-controls="mobile-navigation"
             onClick={() => {
-              setIsOpen((previous) => !previous);
+              setIsOpen(
+                (previous) =>
+                  !previous,
+              );
             }}
           >
-            {isOpen ? <CloseIcon /> : <MenuIcon />}
+            {isOpen ? (
+              <CloseIcon />
+            ) : (
+              <MenuIcon />
+            )}
           </button>
         </div>
       </header>
@@ -512,15 +729,24 @@ function Header() {
               aria-label="모바일 메뉴"
             >
               {navigationItems.map(
-                (item, index) => (
+                (
+                  item,
+                  index,
+                ) => (
                   <a
                     key={item.href}
-                    href={getNavigationHref(item.href)}
-                    onClick={closeMenu}
+                    href={getNavigationHref(
+                      item.href,
+                    )}
+                    onClick={
+                      closeMenu
+                    }
                     className="flex items-center gap-5 border-b border-white/15 py-5 text-[38px] font-semibold tracking-[-0.05em] text-white transition active:text-halo-orange-300"
                   >
                     <span className="text-[10px] tracking-[0.14em] text-halo-orange-300">
-                      {String(index + 1).padStart(
+                      {String(
+                        index + 1,
+                      ).padStart(
                         2,
                         "0",
                       )}
@@ -552,8 +778,12 @@ function Header() {
               </p>
 
               <div className="mt-6 flex items-center gap-3 text-[10px] font-semibold tracking-[0.16em] text-white/30">
-                <span>TEAM HALO</span>
+                <span>
+                  TEAM HALO
+                </span>
+
                 <span className="h-px w-8 bg-white/20" />
+
                 <span>2026</span>
               </div>
             </div>
@@ -619,16 +849,22 @@ function HomePage() {
       return;
     }
 
-    const timeout = window.setTimeout(() => {
-      document
-        .querySelector(location.hash)
-        ?.scrollIntoView({
-          behavior: "smooth",
-        });
-    }, 50);
+    const timeout =
+      window.setTimeout(() => {
+        document
+          .querySelector(
+            location.hash,
+          )
+          ?.scrollIntoView({
+            behavior:
+              "smooth",
+          });
+      }, 50);
 
     return () => {
-      window.clearTimeout(timeout);
+      window.clearTimeout(
+        timeout,
+      );
     };
   }, [location.hash]);
 
@@ -655,7 +891,6 @@ function HeroSection() {
       <div className="pointer-events-none absolute right-[-8%] bottom-[-5%] size-[520px] rounded-full bg-halo-orange-300/15 blur-[120px]" />
 
       <div className="relative mx-auto grid w-[min(calc(100%-36px),1320px)] items-center gap-16 md:w-[min(calc(100%-48px),1320px)] xl:grid-cols-[0.83fr_1.17fr] xl:gap-12">
-        {/* LEFT CONTENT */}
         <div className="relative z-20">
           <div className="mb-8 flex items-center gap-4">
             <span className="text-[10px] font-bold tracking-[0.2em] text-halo-orange-700">
@@ -678,27 +913,24 @@ function HeroSection() {
             함께한 순간을 우리 가족만의 기록으로 남깁니다.
           </p>
 
-          {/* CTA */}
           <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-            <a
-              href="YOUR_PLAY_STORE_URL"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Google Play에서 HALO 다운로드"
+            <Link
+              to="/pre-register"
+              aria-label="HALO Google Play 사전등록 페이지"
               className="group inline-flex min-h-[62px] w-fit shrink-0 items-center gap-4 rounded-[16px] border border-black/10 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-1 hover:bg-black hover:shadow-[0_24px_55px_rgba(0,0,0,0.26)]"
             >
               <GooglePlayIcon />
 
               <span className="flex flex-col">
                 <span className="text-[9px] leading-none font-medium tracking-[0.06em] text-white/65">
-                  GET IT ON
+                  PRE-REGISTER ON
                 </span>
 
                 <span className="mt-1 text-[18px] leading-none font-semibold tracking-[-0.03em] text-white">
-                  Google Play
+                  Google Play 사전등록
                 </span>
               </span>
-            </a>
+            </Link>
 
             <a
               href="#storybook"
@@ -734,7 +966,6 @@ function HeroSection() {
             </span>
           </a>
 
-          {/* STATS */}
           <div className="mt-16 flex items-center gap-5 border-t border-halo-brown-900/10 pt-7">
             <div>
               <strong className="block text-xl font-bold tracking-[-0.04em] text-halo-brown-900">
@@ -772,9 +1003,7 @@ function HeroSection() {
           </div>
         </div>
 
-        {/* RIGHT VISUAL */}
         <div className="relative mx-auto h-[620px] w-full max-w-[720px] md:h-[770px]">
-          {/* LEFT CARD */}
           <div className="absolute top-[8%] left-[-1%] z-10 w-[36%] -rotate-[12deg] overflow-hidden rounded-[28px] bg-white p-[4px] shadow-[0_28px_70px_rgba(34,26,21,0.14)] md:left-[-3%]">
             <ImageWithFallback
               src={heroImages.subTop}
@@ -784,21 +1013,9 @@ function HeroSection() {
             />
           </div>
 
-          {/* MAIN METALLIC PHONE */}
-          <div
-            className="
-              absolute top-0 left-1/2 z-30
-              w-[49%] -translate-x-1/2
-              rounded-[47px]
-              bg-[linear-gradient(145deg,#f7f7f6_0%,#a4a3a1_18%,#eeeeec_38%,#777674_60%,#d9d8d5_82%,#999896_100%)]
-              p-[3px]
-              shadow-[0_35px_85px_rgba(25,20,17,0.24)]
-              md:w-[50%]
-            "
-          >
+          <div className="absolute top-0 left-1/2 z-30 w-[49%] -translate-x-1/2 rounded-[47px] bg-[linear-gradient(145deg,#f7f7f6_0%,#a4a3a1_18%,#eeeeec_38%,#777674_60%,#d9d8d5_82%,#999896_100%)] p-[3px] shadow-[0_35px_85px_rgba(25,20,17,0.24)] md:w-[50%]">
             <div className="relative aspect-[9/20.4] overflow-hidden rounded-[44px] bg-[#090909] p-[4px]">
-              {/* Dynamic Island */}
-              <div className="absolute top-[11px] left-1/2 z-30 h-[18px] w-[70px] -translate-x-1/2 rounded-full bg-[#090909] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]" />
+              <div className="absolute top-[11px] left-1/2 z-30 h-[18px] w-[70px] -translate-x-1/2 rounded-full bg-[#090909]" />
 
               <ImageWithFallback
                 src={productImages.main}
@@ -807,20 +1024,14 @@ function HeroSection() {
                 eager
               />
 
-              {/* subtle internal highlight */}
               <div className="pointer-events-none absolute inset-0 rounded-[44px] ring-1 ring-inset ring-white/10" />
             </div>
 
-            {/* LEFT SIDE BUTTONS */}
             <span className="absolute top-[108px] -left-[2px] h-[46px] w-[2px] rounded-l-full bg-[#858482]" />
-
             <span className="absolute top-[170px] -left-[2px] h-[72px] w-[2px] rounded-l-full bg-[#858482]" />
-
-            {/* RIGHT SIDE BUTTON */}
             <span className="absolute top-[148px] -right-[2px] h-[90px] w-[2px] rounded-r-full bg-[#72716f]" />
           </div>
 
-          {/* RIGHT CARD */}
           <div className="absolute top-[20%] right-[-2%] z-20 w-[35%] rotate-[13deg] overflow-hidden rounded-[27px] bg-white p-[4px] shadow-[0_28px_70px_rgba(34,26,21,0.14)] md:right-[-4%]">
             <ImageWithFallback
               src={heroImages.subBottom}
@@ -830,7 +1041,6 @@ function HeroSection() {
             />
           </div>
 
-          {/* TODAY CARD */}
           <div className="absolute right-[2%] bottom-[9%] z-40 max-w-[245px] rounded-[22px] border border-halo-brown-900/8 bg-white/94 p-5 shadow-[0_16px_45px_rgba(35,26,20,0.10)] backdrop-blur-xl md:p-6">
             <span className="text-[9px] font-bold tracking-[0.18em] text-halo-orange-600">
               TODAY&apos;S PAGE
@@ -851,7 +1061,6 @@ function HeroSection() {
             </div>
           </div>
 
-          {/* BRAND SIGNATURE */}
           <div className="absolute bottom-[3%] left-[1%] z-40 rounded-[18px] border border-halo-brown-900/8 bg-white/94 px-5 py-4 shadow-[0_14px_38px_rgba(35,26,20,0.08)] backdrop-blur-xl">
             <span className="block text-[8px] font-bold tracking-[0.18em] text-halo-orange-600">
               TEAM HALO
@@ -878,13 +1087,15 @@ function BrandStatement() {
       <div className="mx-auto w-[min(calc(100%-36px),1240px)] md:w-[min(calc(100%-48px),1240px)]">
         <div className="flex items-center gap-6 text-[10px] font-bold tracking-[0.2em] text-halo-orange-300">
           WHY HALO
+
           <span className="h-px w-24 bg-halo-orange-300/40" />
         </div>
 
         <div className="mt-12 grid gap-14 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
           <p className="text-[42px] leading-[1.16] font-medium tracking-[-0.06em] md:text-[45px] xl:text-[60px]">
             가까이 지내왔지만,
-            <br></br>
+            <br />
+
             <strong className="font-semibold text-halo-orange-300">
               아직 모르는 이야기가 많습니다.
             </strong>
@@ -892,7 +1103,8 @@ function BrandStatement() {
 
           <div className="border-l border-white/15 pl-7">
             <p className="text-base leading-8 text-white/58">
-              마음이 없어서가 아니라,<br></br>
+              마음이 없어서가 아니라,
+              <br />
               어디서부터 어떻게 시작해야 할지
               몰랐기 때문일 수 있습니다.
             </p>
@@ -975,83 +1187,90 @@ function ProductSection() {
         </div>
 
         <div className="mt-20 space-y-6 md:mt-28">
-          {productFeatures.map((feature, index) => {
-            const isReverse = index % 2 === 1;
+          {productFeatures.map(
+            (feature, index) => {
+              const isReverse =
+                index % 2 === 1;
 
-            return (
-              <article
-                key={feature.number}
-                className="overflow-hidden rounded-[34px] border border-halo-brown-900/10 bg-halo-cream-100"
-              >
-                <div
-                  className={[
-                    "grid min-h-[560px] lg:grid-cols-2",
-                    isReverse ? "lg:[&>*:first-child]:order-2" : "",
-                  ].join(" ")}
+              return (
+                <article
+                  key={feature.number}
+                  className="overflow-hidden rounded-[34px] border border-halo-brown-900/10 bg-halo-cream-100"
                 >
-                  <div className="flex flex-col justify-between p-8 md:p-12 lg:p-14">
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-bold tracking-[0.18em] text-halo-orange-600">
-                          {feature.eyebrow}
-                        </span>
+                  <div
+                    className={[
+                      "grid min-h-[560px] lg:grid-cols-2",
+                      isReverse
+                        ? "lg:[&>*:first-child]:order-2"
+                        : "",
+                    ].join(" ")}
+                  >
+                    <div className="flex flex-col justify-between p-8 md:p-12 lg:p-14">
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold tracking-[0.18em] text-halo-orange-600">
+                            {feature.eyebrow}
+                          </span>
 
-                        <span className="text-sm font-bold text-halo-brown-300">
-                          {feature.number}
-                        </span>
+                          <span className="text-sm font-bold text-halo-brown-300">
+                            {feature.number}
+                          </span>
+                        </div>
+
+                        <h3 className="mt-10 text-[38px] leading-[1.15] font-semibold tracking-[-0.055em] text-halo-brown-950 md:text-[50px]">
+                          {feature.title}
+                        </h3>
+
+                        <p className="mt-6 max-w-[470px] text-[15px] leading-8 text-halo-brown-500 md:text-base">
+                          {feature.description}
+                        </p>
                       </div>
 
-                      <h3 className="mt-10 text-[38px] leading-[1.15] font-semibold tracking-[-0.055em] text-halo-brown-950 md:text-[50px]">
-                        {feature.title}
-                      </h3>
+                      <div className="mt-12 flex items-center gap-3 text-xs font-semibold text-halo-brown-400">
+                        <span className="flex size-8 items-center justify-center rounded-full bg-halo-orange-500 text-white">
+                          {index + 1}
+                        </span>
 
-                      <p className="mt-6 max-w-[470px] text-[15px] leading-8 text-halo-brown-500 md:text-base">
-                        {feature.description}
-                      </p>
+                        <span>
+                          {index === 0 &&
+                            "관계에 맞는 시작점 찾기"}
+
+                          {index === 1 &&
+                            "부담 없이 하루 한 장 채우기"}
+
+                          {index === 2 &&
+                            "함께한 시간을 다시 꺼내보기"}
+
+                          {index === 3 &&
+                            "완성한 이야기를 하나씩 모아보기"}
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="mt-12 flex items-center gap-3 text-xs font-semibold text-halo-brown-400">
-                      <span className="flex size-8 items-center justify-center rounded-full bg-halo-orange-500 text-white">
-                        {index + 1}
-                      </span>
-
-                      <span>
-                        {index === 0 &&
-                          "관계에 맞는 시작점 찾기"}
-
-                        {index === 1 &&
-                          "부담 없이 하루 한 장 채우기"}
-
-                        {index === 2 &&
-                          "함께한 시간을 다시 꺼내보기"}
-
-                        {index === 3 &&
-                          "완성한 이야기를 하나씩 모아보기"}
-                      </span>
-                    </div>
+                    <ProductVisual
+                      index={index}
+                    />
                   </div>
-
-                  <ProductVisual index={index} />
-                </div>
-              </article>
-            );
-          })}
+                </article>
+              );
+            },
+          )}
         </div>
       </div>
     </section>
   );
 }
 
-function ProductVisual({ index }) {
+function ProductVisual({
+  index,
+}) {
   if (index === 0) {
     return (
       <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#111111] p-8 md:min-h-[560px] md:p-10">
-        {/* NUMBER */}
         <span className="absolute top-7 left-7 text-[11px] font-semibold tracking-[0.14em] text-white/35">
           01
         </span>
 
-        {/* MAIN RECOMMENDATION UI */}
         <div className="relative z-10 w-full max-w-[390px] rounded-[26px] border border-white/10 bg-[#1A1A1A] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
           <span className="text-[9px] font-bold tracking-[0.18em] text-halo-orange-300">
             RECOMMENDED FOR YOU
@@ -1064,24 +1283,28 @@ function ProductVisual({ index }) {
           </h4>
 
           <div className="mt-7 grid grid-cols-2 gap-3">
-            {storybooks.slice(0, 2).map((storybook) => (
-              <div
-                key={storybook.id}
-                className="overflow-hidden rounded-[18px] bg-[#242424]"
-              >
-                <ImageWithFallback
-                  src={storybook.image}
-                  alt={storybook.title}
-                  className="aspect-[3/4] w-full object-cover"
-                />
+            {storybooks
+              .slice(0, 2)
+              .map(
+                (storybook) => (
+                  <div
+                    key={storybook.id}
+                    className="overflow-hidden rounded-[18px] bg-[#242424]"
+                  >
+                    <ImageWithFallback
+                      src={storybook.image}
+                      alt={storybook.title}
+                      className="aspect-[3/4] w-full object-cover"
+                    />
 
-                <div className="p-3">
-                  <strong className="text-sm font-semibold text-white">
-                    {storybook.title}
-                  </strong>
-                </div>
-              </div>
-            ))}
+                    <div className="p-3">
+                      <strong className="text-sm font-semibold text-white">
+                        {storybook.title}
+                      </strong>
+                    </div>
+                  </div>
+                ),
+              )}
           </div>
         </div>
       </div>
@@ -1091,15 +1314,10 @@ function ProductVisual({ index }) {
   if (index === 1) {
     return (
       <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#111111] p-8 md:min-h-[560px] md:p-10">
-        {/* BACKGROUND DETAIL */}
         <div className="pointer-events-none absolute top-[-120px] right-[-100px] size-[320px] rounded-full bg-halo-orange-500/10 blur-[100px]" />
 
-        <div className="pointer-events-none absolute bottom-[-140px] left-[-120px] size-[340px] rounded-full bg-white/[0.04] blur-[100px]" />
-
-        {/* MAIN PHONE */}
         <div className="relative z-10 w-[225px] rounded-[42px] bg-[linear-gradient(145deg,#f5f5f3_0%,#8e8d8a_18%,#ecebe8_40%,#666563_62%,#d4d3d0_82%,#888784_100%)] p-[3px] shadow-[0_32px_80px_rgba(0,0,0,0.5)] md:w-[255px]">
           <div className="relative aspect-[9/20.3] overflow-hidden rounded-[39px] bg-black p-[4px]">
-            {/* Dynamic Island */}
             <div className="absolute top-[10px] left-1/2 z-30 h-[17px] w-[66px] -translate-x-1/2 rounded-full bg-black" />
 
             <ImageWithFallback
@@ -1107,52 +1325,19 @@ function ProductVisual({ index }) {
               alt="HALO 하루 한 장 화면"
               className="h-full w-full rounded-[35px] object-cover"
             />
-
-            <div className="pointer-events-none absolute inset-0 rounded-[39px] ring-1 ring-inset ring-white/10" />
           </div>
         </div>
 
-        {/* DETAIL IMAGE */}
         <div className="absolute right-[6%] bottom-[8%] z-20 w-[175px] md:right-[7%] md:w-[190px]">
           <ImageWithFallback
             src={productImages.detail}
             alt="HALO 하루 한 장 상세 화면"
             className="mx-auto w-[88%] object-contain"
           />
-
-          <span className="mt-3 block text-center text-[8px] font-bold tracking-[0.17em] text-white/45">
-            ONE PAGE A DAY
-          </span>
         </div>
 
-        {/* NUMBER */}
         <span className="absolute top-7 left-7 text-[11px] font-semibold tracking-[0.14em] text-white/35">
           02
-        </span>
-      </div>
-    );
-  }
-
-  if (index === 3) {
-    return (
-      <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#111111] p-5 md:min-h-[560px] md:p-7">
-        {/* NUMBER */}
-        <span className="absolute top-7 left-7 z-20 text-[11px] font-semibold tracking-[0.14em] text-white/35">
-          04
-        </span>
-
-        {/* MAIN THEME IMAGE */}
-        <div className="relative z-10 flex h-full w-full items-center justify-center">
-          <ImageWithFallback
-            src={productImages.theme}
-            alt="HALO 테마함"
-            className="max-h-[510px] w-[94%] object-contain md:max-h-[545px] md:w-[96%]"
-          />
-        </div>
-
-        {/* LABEL */}
-        <span className="absolute right-7 bottom-7 z-20 text-[9px] font-bold tracking-[0.17em] text-white/45">
-          THEME COLLECTION
         </span>
       </div>
     );
@@ -1161,74 +1346,77 @@ function ProductVisual({ index }) {
   if (index === 2) {
     return (
       <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#111111] p-8 md:min-h-[560px] md:p-10">
-        {/* NUMBER */}
         <span className="absolute top-7 left-7 z-20 text-[11px] font-semibold tracking-[0.14em] text-white/35">
           03
         </span>
 
-        {/* METALLIC PHONE */}
-        <div
-          className="
-          relative z-10
-          w-[230px]
-          rounded-[44px]
-          bg-[linear-gradient(145deg,#f7f7f6_0%,#a4a3a1_18%,#eeeeec_38%,#777674_60%,#d9d8d5_82%,#999896_100%)]
-          p-[3px]
-          shadow-[0_34px_85px_rgba(0,0,0,0.50)]
-          md:w-[260px]
-        "
-        >
+        <div className="relative z-10 w-[230px] rounded-[44px] bg-[linear-gradient(145deg,#f7f7f6_0%,#a4a3a1_18%,#eeeeec_38%,#777674_60%,#d9d8d5_82%,#999896_100%)] p-[3px] shadow-[0_34px_85px_rgba(0,0,0,0.50)] md:w-[260px]">
           <div className="relative aspect-[9/20.4] overflow-hidden rounded-[41px] bg-[#090909] p-[4px]">
-            {/* DYNAMIC ISLAND */}
-            <div className="absolute top-[11px] left-1/2 z-30 h-[18px] w-[68px] -translate-x-1/2 rounded-full bg-[#090909] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]" />
+            <div className="absolute top-[11px] left-1/2 z-30 h-[18px] w-[68px] -translate-x-1/2 rounded-full bg-[#090909]" />
 
-            {/* CALENDAR SCREEN */}
             <ImageWithFallback
               src={productImages.calendar}
               alt="HALO 기록 캘린더 화면"
               className="h-full w-full rounded-[37px] object-cover"
             />
-
-            {/* INNER HIGHLIGHT */}
-            <div className="pointer-events-none absolute inset-0 rounded-[41px] ring-1 ring-inset ring-white/10" />
           </div>
-
-          {/* LEFT SIDE BUTTONS */}
-          <span className="absolute top-[108px] -left-[2px] h-[44px] w-[2px] rounded-l-full bg-[#858482]" />
-
-          <span className="absolute top-[168px] -left-[2px] h-[68px] w-[2px] rounded-l-full bg-[#858482]" />
-
-          {/* RIGHT SIDE BUTTON */}
-          <span className="absolute top-[146px] -right-[2px] h-[88px] w-[2px] rounded-r-full bg-[#72716f]" />
         </div>
-
-        {/* LABEL */}
-        <span className="absolute right-7 bottom-7 text-[9px] font-bold tracking-[0.17em] text-white/40">
-          MONTHLY RECORD
-        </span>
       </div>
     );
   }
+
+  if (index === 3) {
+    return (
+      <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#111111] p-5 md:min-h-[560px] md:p-7">
+        <span className="absolute top-7 left-7 z-20 text-[11px] font-semibold tracking-[0.14em] text-white/35">
+          04
+        </span>
+
+        <div className="relative z-10 flex h-full w-full items-center justify-center">
+          <ImageWithFallback
+            src={productImages.theme}
+            alt="HALO 테마함"
+            className="max-h-[510px] w-[94%] object-contain md:max-h-[545px] md:w-[96%]"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 function StorybookSection() {
-  const [activeIndex, setActiveIndex] =
-    useState(0);
+  const [
+    activeIndex,
+    setActiveIndex,
+  ] = useState(0);
 
-  const viewportRef = useRef(null);
+  const viewportRef =
+    useRef(null);
+
   const itemRefs = useRef([]);
-  const scrollFrameRef = useRef(null);
 
-  const total = storybooks.length;
+  const scrollFrameRef =
+    useRef(null);
+
+  const total =
+    storybooks.length;
 
   const activeStorybook =
     storybooks[activeIndex];
 
-  const moveTo = (requestedIndex) => {
+  const moveTo = (
+    requestedIndex,
+  ) => {
     const normalizedIndex =
-      ((requestedIndex % total) + total) % total;
+      ((requestedIndex % total) +
+        total) %
+      total;
 
-    setActiveIndex(normalizedIndex);
+    setActiveIndex(
+      normalizedIndex,
+    );
 
     itemRefs.current[
       normalizedIndex
@@ -1240,72 +1428,109 @@ function StorybookSection() {
   };
 
   const handleScroll = () => {
-    if (scrollFrameRef.current) {
+    if (
+      scrollFrameRef.current
+    ) {
       window.cancelAnimationFrame(
         scrollFrameRef.current,
       );
     }
 
     scrollFrameRef.current =
-      window.requestAnimationFrame(() => {
-        const viewport = viewportRef.current;
+      window.requestAnimationFrame(
+        () => {
+          const viewport =
+            viewportRef.current;
 
-        if (!viewport) {
-          return;
-        }
+          if (!viewport) {
+            return;
+          }
 
-        const viewportRect =
-          viewport.getBoundingClientRect();
+          const viewportRect =
+            viewport.getBoundingClientRect();
 
-        const viewportCenter =
-          viewportRect.left +
-          viewportRect.width / 2;
+          const viewportCenter =
+            viewportRect.left +
+            viewportRect.width /
+              2;
 
-        let closestIndex = activeIndex;
-        let closestDistance =
-          Number.POSITIVE_INFINITY;
+          let closestIndex =
+            activeIndex;
 
-        itemRefs.current.forEach(
-          (item, index) => {
-            if (!item) {
-              return;
-            }
+          let closestDistance =
+            Number.POSITIVE_INFINITY;
 
-            const itemRect =
-              item.getBoundingClientRect();
+          itemRefs.current.forEach(
+            (
+              item,
+              index,
+            ) => {
+              if (!item) {
+                return;
+              }
 
-            const itemCenter =
-              itemRect.left +
-              itemRect.width / 2;
+              const itemRect =
+                item.getBoundingClientRect();
 
-            const distance = Math.abs(
-              viewportCenter - itemCenter,
+              const itemCenter =
+                itemRect.left +
+                itemRect.width /
+                  2;
+
+              const distance =
+                Math.abs(
+                  viewportCenter -
+                    itemCenter,
+                );
+
+              if (
+                distance <
+                closestDistance
+              ) {
+                closestDistance =
+                  distance;
+
+                closestIndex =
+                  index;
+              }
+            },
+          );
+
+          if (
+            closestIndex !==
+            activeIndex
+          ) {
+            setActiveIndex(
+              closestIndex,
             );
-
-            if (
-              distance < closestDistance
-            ) {
-              closestDistance = distance;
-              closestIndex = index;
-            }
-          },
-        );
-
-        if (closestIndex !== activeIndex) {
-          setActiveIndex(closestIndex);
-        }
-      });
+          }
+        },
+      );
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === "ArrowLeft") {
+  const handleKeyDown = (
+    event,
+  ) => {
+    if (
+      event.key ===
+      "ArrowLeft"
+    ) {
       event.preventDefault();
-      moveTo(activeIndex - 1);
+
+      moveTo(
+        activeIndex - 1,
+      );
     }
 
-    if (event.key === "ArrowRight") {
+    if (
+      event.key ===
+      "ArrowRight"
+    ) {
       event.preventDefault();
-      moveTo(activeIndex + 1);
+
+      moveTo(
+        activeIndex + 1,
+      );
     }
   };
 
@@ -1333,7 +1558,9 @@ function StorybookSection() {
             type="button"
             aria-label="이전 스토리북"
             onClick={() =>
-              moveTo(activeIndex - 1)
+              moveTo(
+                activeIndex - 1,
+              )
             }
             className="flex size-14 items-center justify-center rounded-full border border-white/20 transition hover:-translate-y-1 hover:bg-white hover:text-halo-brown-950"
           >
@@ -1344,7 +1571,9 @@ function StorybookSection() {
             type="button"
             aria-label="다음 스토리북"
             onClick={() =>
-              moveTo(activeIndex + 1)
+              moveTo(
+                activeIndex + 1,
+              )
             }
             className="flex size-14 items-center justify-center rounded-full border border-white/20 transition hover:-translate-y-1 hover:bg-white hover:text-halo-brown-950"
           >
@@ -1356,26 +1585,42 @@ function StorybookSection() {
       <div
         ref={viewportRef}
         onScroll={handleScroll}
-        onKeyDown={handleKeyDown}
+        onKeyDown={
+          handleKeyDown
+        }
         tabIndex="0"
         className="hide-scrollbar mt-12 w-full snap-x snap-mandatory overflow-x-auto px-[calc((100vw-min(76vw,350px))/2)] py-10 md:mt-16 md:px-[calc((100vw-clamp(290px,29vw,390px))/2)]"
         aria-label="HALO 스토리북 슬라이드"
       >
         <div className="flex w-max items-center gap-5 md:gap-6">
           {storybooks.map(
-            (storybook, index) => {
+            (
+              storybook,
+              index,
+            ) => {
               const isActive =
-                activeIndex === index;
+                activeIndex ===
+                index;
 
               return (
                 <button
                   type="button"
-                  key={storybook.id}
-                  ref={(element) => {
-                    itemRefs.current[index] =
+                  key={
+                    storybook.id
+                  }
+                  ref={(
+                    element,
+                  ) => {
+                    itemRefs.current[
+                      index
+                    ] =
                       element;
                   }}
-                  onClick={() => moveTo(index)}
+                  onClick={() =>
+                    moveTo(
+                      index,
+                    )
+                  }
                   className={[
                     "w-[min(76vw,350px)] shrink-0 snap-center overflow-hidden rounded-[28px] text-left transition duration-500 md:w-[clamp(290px,29vw,390px)]",
                     isActive
@@ -1385,7 +1630,9 @@ function StorybookSection() {
                 >
                   <div className="relative aspect-[3/4] overflow-hidden rounded-[28px] shadow-[0_30px_80px_rgba(0,0,0,0.4)]">
                     <ImageWithFallback
-                      src={storybook.image}
+                      src={
+                        storybook.image
+                      }
                       alt={`${storybook.title} 대표 이미지`}
                       className={[
                         "h-full w-full object-cover transition duration-700",
@@ -1399,7 +1646,9 @@ function StorybookSection() {
 
                     <span className="absolute top-6 left-6 text-[9px] font-bold tracking-[0.17em] text-white/75">
                       STORYBOOK{" "}
-                      {storybook.order}
+                      {
+                        storybook.order
+                      }
                     </span>
 
                     <div className="absolute right-7 bottom-7 left-7">
@@ -1410,7 +1659,9 @@ function StorybookSection() {
                       </small>
 
                       <strong className="mt-2 block text-[29px] leading-tight font-semibold tracking-[-0.045em] text-white md:text-4xl">
-                        {storybook.title}
+                        {
+                          storybook.title
+                        }
                       </strong>
                     </div>
                   </div>
@@ -1423,17 +1674,23 @@ function StorybookSection() {
 
       <div className="mx-auto w-[min(calc(100%-36px),970px)] md:w-[min(calc(100%-48px),970px)]">
         <div
-          key={activeStorybook.id}
+          key={
+            activeStorybook.id
+          }
           className="animate-detail-fade mt-8 grid gap-6 border-t border-white/15 pt-8 md:grid-cols-[100px_1fr_auto] md:items-end md:gap-10"
         >
           <div className="flex items-baseline gap-2">
             <strong className="text-4xl font-semibold">
-              {activeStorybook.order}
+              {
+                activeStorybook.order
+              }
             </strong>
 
             <span className="text-xs text-white/35">
               /{" "}
-              {String(total).padStart(
+              {String(
+                total,
+              ).padStart(
                 2,
                 "0",
               )}
@@ -1448,27 +1705,39 @@ function StorybookSection() {
             </span>
 
             <h3 className="mt-2 text-3xl font-semibold tracking-[-0.04em]">
-              {activeStorybook.title}
+              {
+                activeStorybook.title
+              }
             </h3>
 
             <p className="mt-3 max-w-[640px] text-sm leading-7 text-white/58">
-              {activeStorybook.description}
+              {
+                activeStorybook.description
+              }
             </p>
           </div>
 
           <div className="flex items-center gap-1">
             {storybooks.map(
-              (storybook, index) => (
+              (
+                storybook,
+                index,
+              ) => (
                 <button
                   type="button"
-                  key={storybook.id}
+                  key={
+                    storybook.id
+                  }
                   onClick={() =>
-                    moveTo(index)
+                    moveTo(
+                      index,
+                    )
                   }
                   aria-label={`${storybook.title}로 이동`}
                   className={[
                     "flex h-5 items-center transition",
-                    activeIndex === index
+                    activeIndex ===
+                    index
                       ? "w-8"
                       : "w-4",
                   ].join(" ")}
@@ -1476,7 +1745,8 @@ function StorybookSection() {
                   <span
                     className={[
                       "block h-0.5 w-full transition",
-                      activeIndex === index
+                      activeIndex ===
+                      index
                         ? "bg-halo-orange-500"
                         : "bg-white/20",
                     ].join(" ")}
@@ -1566,12 +1836,14 @@ function TeamSection() {
             description="기획, 디자인, Android, Spring Boot가 함께 HALO를 만들고 있습니다."
             light
           />
-
         </div>
 
         <div className="mt-20 md:mt-28">
           {teamGroups.map(
-            (group, groupIndex) => (
+            (
+              group,
+              groupIndex,
+            ) => (
               <section
                 key={group.id}
                 className="border-t border-white/15 py-16 first:pt-16 last:pb-0 md:py-20"
@@ -1580,7 +1852,10 @@ function TeamSection() {
                   <span className="pt-1 text-xs font-bold text-halo-orange-300">
                     {String(
                       groupIndex + 1,
-                    ).padStart(2, "0")}
+                    ).padStart(
+                      2,
+                      "0",
+                    )}
                   </span>
 
                   <div>
@@ -1594,23 +1869,33 @@ function TeamSection() {
                   </div>
 
                   <p className="max-w-[580px] text-base leading-8 text-white/57">
-                    {group.description}
+                    {
+                      group.description
+                    }
                   </p>
                 </div>
 
                 <div
                   className={[
                     "grid gap-6",
-                    group.members.length === 1
+                    group.members
+                      .length ===
+                    1
                       ? "md:grid-cols-[minmax(300px,420px)]"
                       : "",
-                    group.members.length === 2
+                    group.members
+                      .length ===
+                    2
                       ? "md:grid-cols-2 xl:grid-cols-[repeat(2,minmax(300px,420px))]"
                       : "",
-                    group.members.length === 3
+                    group.members
+                      .length ===
+                    3
                       ? "md:grid-cols-2 xl:grid-cols-3"
                       : "",
-                    group.members.length >= 4
+                    group.members
+                      .length >=
+                    4
                       ? "md:grid-cols-2 xl:grid-cols-4"
                       : "",
                   ].join(" ")}
@@ -1618,9 +1903,15 @@ function TeamSection() {
                   {group.members.map(
                     (member) => (
                       <TeamMemberCard
-                        key={member.id}
-                        member={member}
-                        groupCode={group.code}
+                        key={
+                          member.id
+                        }
+                        member={
+                          member
+                        }
+                        groupCode={
+                          group.code
+                        }
                       />
                     ),
                   )}
@@ -1637,12 +1928,11 @@ function TeamSection() {
 function FinalSection() {
   return (
     <section className="halo-final-surface relative overflow-hidden py-32 text-center text-white md:py-48">
-
       <div className="relative z-10 mx-auto flex w-[min(calc(100%-36px),900px)] flex-col items-center">
-
         <h2 className="mt-8 text-[46px] leading-[1.16] font-medium tracking-[-0.06em] md:text-[70px] xl:text-[84px]">
           부모님께 건네는
           <br />
+
           <strong className="font-bold">
             다음 한 장을 시작해보세요.
           </strong>
@@ -1654,24 +1944,22 @@ function FinalSection() {
         </p>
 
         <div className="mt-11 flex flex-col gap-3 sm:flex-row">
-          <a
-            href="YOUR_PLAY_STORE_URL"
-            target="_blank"
-            rel="noreferrer"
-            className="group inline-flex min-h-[62px] items-center gap-4 rounded-[16px] border border-white/20 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:bg-black hover:shadow-[0_24px_55px_rgba(0,0,0,0.4)]"
+          <Link
+            to="/pre-register"
+            className="group inline-flex min-h-[62px] items-center gap-4 rounded-[16px] border border-white/20 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:bg-black"
           >
             <GooglePlayIcon />
 
             <span className="flex flex-col">
               <span className="text-[9px] leading-none font-medium tracking-[0.06em] text-white/65">
-                GET IT ON
+                PRE-REGISTER ON
               </span>
 
               <span className="mt-1 text-[18px] leading-none font-semibold tracking-[-0.03em] text-white">
-                Google Play
+                Google Play 사전등록
               </span>
             </span>
-          </a>
+          </Link>
 
           <a
             href="https://github.com/HALO-UMC"
@@ -1688,15 +1976,415 @@ function FinalSection() {
   );
 }
 
-function LegalPage({ documentKey }) {
-  const document = legalDocuments[documentKey];
+/* =========================================================
+   PRE-REGISTER
+========================================================= */
+
+function PreRegisterPlayButton({
+  light = false,
+}) {
+  return (
+    <a
+      href={PLAY_STORE_URL}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Google Play에서 HALO 사전등록하기"
+      className={[
+        "group inline-flex min-h-[66px] w-fit shrink-0 items-center gap-4 rounded-[18px] border px-6 text-left transition duration-300 hover:-translate-y-1",
+        light
+          ? "border-white/20 bg-white text-halo-brown-950 shadow-[0_20px_55px_rgba(0,0,0,0.20)]"
+          : "border-black/10 bg-[#111111] text-white shadow-[0_20px_55px_rgba(26,18,13,0.18)] hover:bg-black",
+      ].join(" ")}
+    >
+      <GooglePlayIcon />
+
+      <span className="flex flex-col">
+        <span
+          className={[
+            "text-[9px] leading-none font-semibold tracking-[0.08em]",
+            light
+              ? "text-halo-brown-400"
+              : "text-white/60",
+          ].join(" ")}
+        >
+          PRE-REGISTER ON
+        </span>
+
+        <span className="mt-1.5 text-[19px] leading-none font-semibold tracking-[-0.035em]">
+          Google Play
+        </span>
+      </span>
+
+      <span
+        className={[
+          "ml-2 flex size-8 items-center justify-center rounded-full transition duration-300 group-hover:translate-x-1",
+          light
+            ? "bg-halo-orange-100 text-halo-orange-600"
+            : "bg-white/10 text-white",
+        ].join(" ")}
+      >
+        <ArrowIcon />
+      </span>
+    </a>
+  );
+}
+
+function PreRegisterStep({
+  step,
+  index,
+}) {
+  const isReverse =
+    index % 2 === 1;
+
+  const dark =
+    index === 2 ||
+    index === 5;
+
+  return (
+    <section
+      className={[
+        "py-24 md:py-36",
+        dark
+          ? "bg-halo-brown-950 text-white"
+          : index % 3 === 1
+            ? "bg-[#F1EAE1]"
+            : "bg-halo-cream-50",
+      ].join(" ")}
+    >
+      <div
+        className={[
+          "mx-auto grid w-[min(calc(100%-36px),1240px)] items-center gap-14 md:w-[min(calc(100%-48px),1240px)] lg:grid-cols-2 lg:gap-24",
+          isReverse
+            ? "lg:[&>*:first-child]:order-2"
+            : "",
+        ].join(" ")}
+      >
+        <div>
+          <div className="flex items-center gap-4">
+            <span
+              className={[
+                "text-[11px] font-bold tracking-[0.18em]",
+                dark
+                  ? "text-halo-orange-300"
+                  : "text-halo-orange-600",
+              ].join(" ")}
+            >
+              {step.number}
+            </span>
+
+            <span
+              className={[
+                "h-px w-10",
+                dark
+                  ? "bg-white/20"
+                  : "bg-halo-brown-900/15",
+              ].join(" ")}
+            />
+
+            <span
+              className={[
+                "text-[9px] font-bold tracking-[0.18em]",
+                dark
+                  ? "text-white/40"
+                  : "text-halo-brown-400",
+              ].join(" ")}
+            >
+              {step.eyebrow}
+            </span>
+          </div>
+
+          <h2
+            className={[
+              "mt-7 text-[39px] leading-[1.15] font-semibold tracking-[-0.055em] md:text-[54px] xl:text-[60px]",
+              dark
+                ? "text-white"
+                : "text-halo-brown-950",
+            ].join(" ")}
+          >
+            {step.title}
+          </h2>
+
+          <p
+            className={[
+              "mt-7 max-w-[500px] text-[15px] leading-8 tracking-[-0.018em] md:text-[17px]",
+              dark
+                ? "text-white/55"
+                : "text-halo-brown-500",
+            ].join(" ")}
+          >
+            {step.description}
+          </p>
+        </div>
+
+        <div className="relative flex items-center justify-center">
+          <ImageWithFallback
+            src={step.image}
+            alt={step.alt}
+            className="block h-auto max-h-[760px] w-full object-contain"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PreRegisterPage() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <main className="overflow-hidden bg-halo-cream-50 pt-[76px] md:pt-[88px]">
+      {/* HERO */}
+      <section className="relative min-h-[calc(100svh-76px)] overflow-hidden md:min-h-[calc(100svh-88px)]">
+        <div className="absolute inset-0">
+          <ImageWithFallback
+            src={
+              preRegisterImages.hero
+            }
+            alt="HALO 사전등록 메인 비주얼"
+            className="h-full w-full object-cover"
+            eager
+          />
+
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(31,18,12,0.84)_0%,rgba(31,18,12,0.62)_42%,rgba(31,18,12,0.16)_72%,rgba(31,18,12,0.10)_100%)]" />
+
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(31,18,12,0.42)_0%,transparent_45%)]" />
+        </div>
+
+        <div className="relative z-10 mx-auto flex min-h-[calc(100svh-76px)] w-[min(calc(100%-36px),1320px)] items-center py-16 md:min-h-[calc(100svh-88px)] md:w-[min(calc(100%-48px),1320px)] md:py-20">
+          <div className="max-w-[760px]">
+            <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-md">
+              <span className="size-2 rounded-full bg-halo-orange-400 shadow-[0_0_18px_rgba(255,123,16,0.85)]" />
+
+              <span className="text-[10px] font-bold tracking-[0.18em] text-white/85">
+                HALO PRE-REGISTRATION
+              </span>
+            </div>
+
+            <h1 className="mt-8 text-[50px] leading-[1.04] font-semibold tracking-[-0.065em] text-white md:text-[72px] xl:text-[88px]">
+              매일 한 장,
+              <br />
+              부모님과 이어가는
+              <br />
+
+              <span className="text-halo-orange-300">
+                따뜻한 안녕.
+              </span>
+            </h1>
+
+            <p className="mt-8 max-w-[610px] text-[16px] leading-8 tracking-[-0.02em] text-white/70 md:text-[18px]">
+              마음은 있지만 어떻게 시작해야 할지 몰랐던 순간들.
+              HALO는 하루 한 장의 이야기로 부모님과의 시간을
+              천천히 이어갑니다.
+            </p>
+
+            <div className="mt-10">
+              <PreRegisterPlayButton
+                light
+              />
+            </div>
+
+            <div className="mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 text-[11px] font-semibold text-white/50">
+              <span>
+                10개의 스토리북
+              </span>
+
+              <span className="size-1 rounded-full bg-white/30" />
+
+              <span>
+                하루 한 장
+              </span>
+
+              <span className="size-1 rounded-full bg-white/30" />
+
+              <span>
+                우리 가족만의 기록
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute right-6 bottom-7 z-10 hidden items-center gap-3 text-[9px] font-bold tracking-[0.18em] text-white/45 md:flex">
+          SCROLL TO DISCOVER
+
+          <span className="h-px w-14 bg-white/30" />
+        </div>
+      </section>
+
+      {/* HOOK */}
+      <section className="relative overflow-hidden bg-halo-brown-950 py-28 text-white md:py-44">
+        <div className="pointer-events-none absolute top-[-140px] right-[-80px] size-[430px] rounded-full bg-halo-orange-500/10 blur-[120px]" />
+
+        <div className="relative mx-auto w-[min(calc(100%-36px),1180px)] md:w-[min(calc(100%-48px),1180px)]">
+          <span className="text-[10px] font-bold tracking-[0.2em] text-halo-orange-300">
+            WHY HALO
+          </span>
+
+          <h2 className="mt-8 max-w-[900px] text-[43px] leading-[1.14] font-medium tracking-[-0.06em] md:text-[64px] xl:text-[72px]">
+            가장 가까운 사람에게,
+            <br />
+            우리는 얼마나 가까이
+            <br className="hidden md:block" />
+            다가가고 있을까요?
+          </h2>
+
+          <div className="mt-16 grid gap-12 border-t border-white/15 pt-12 md:mt-20 md:grid-cols-[0.9fr_1.1fr] md:gap-20 md:pt-16">
+            <div>
+              <p className="text-[18px] leading-9 tracking-[-0.025em] text-white/62 md:text-[21px]">
+                친구의 최애 메뉴는 쉽게 떠올리고,
+                <br />
+                연인에게는 보고 싶다는 말을
+                <br className="hidden md:block" />
+                자연스럽게 건넵니다.
+              </p>
+
+              <span className="mt-10 inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.16em] text-halo-orange-300">
+                그렇다면
+
+                <span className="h-px w-16 bg-halo-orange-300/50" />
+              </span>
+            </div>
+
+            <div className="space-y-8 md:space-y-10">
+              <p className="text-[29px] leading-[1.35] font-semibold tracking-[-0.045em] text-white md:text-[38px]">
+                부모님이 요즘 가장 좋아하는 것은
+                <br className="hidden md:block" />
+                무엇인가요?
+              </p>
+
+              <p className="text-[29px] leading-[1.35] font-semibold tracking-[-0.045em] text-white md:text-[38px]">
+                마지막으로{" "}
+
+                <span className="text-halo-orange-300">
+                  “사랑해”
+                </span>
+
+                라고 말한 건
+                <br className="hidden md:block" />
+                언제였나요?
+              </p>
+            </div>
+          </div>
+
+          <p className="mt-16 max-w-[680px] text-[16px] leading-8 text-white/45 md:mt-20 md:text-[18px]">
+            우리는 부모님을 사랑하지만,
+            생각보다 부모님의 오늘을 잘 모를 수 있습니다.
+          </p>
+        </div>
+      </section>
+
+      {/* 01 ~ 07 */}
+      {preRegisterSteps.map(
+        (step, index) => (
+          <PreRegisterStep
+            key={step.number}
+            step={step}
+            index={index}
+          />
+        ),
+      )}
+
+      {/* BRAND MESSAGE */}
+      <section className="relative overflow-hidden bg-[#F3E5D5] py-32 text-center md:py-52">
+        <div className="pointer-events-none absolute top-1/2 left-1/2 size-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-halo-orange-300/20 blur-[130px]" />
+
+        <div className="relative mx-auto w-[min(calc(100%-36px),960px)] md:w-[min(calc(100%-48px),960px)]">
+          <span className="text-[10px] font-bold tracking-[0.2em] text-halo-orange-600">
+            HELLO, HALO
+          </span>
+
+          <h2 className="mt-8 text-[42px] leading-[1.18] font-medium tracking-[-0.06em] text-halo-brown-950 md:text-[66px]">
+            하루에도 수없이
+            <br />
+            “안녕”이라는 말을 건넵니다.
+          </h2>
+
+          <p className="mt-16 text-[21px] font-medium tracking-[-0.035em] text-halo-brown-500 md:text-[28px]">
+            그런데,
+          </p>
+
+          <p className="mt-5 text-[40px] leading-[1.2] font-semibold tracking-[-0.06em] text-halo-brown-950 md:text-[64px]">
+            가장 가까운 사람은
+            <br />
+            정말{" "}
+
+            <span className="text-halo-orange-600">
+              ‘안녕’
+            </span>
+
+            하신가요?
+          </p>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="relative overflow-hidden bg-halo-orange-500 py-28 text-white md:py-44">
+        <div className="pointer-events-none absolute top-[-180px] right-[-100px] size-[520px] rounded-full bg-white/10 blur-[130px]" />
+
+        <div className="pointer-events-none absolute bottom-[-220px] left-[-120px] size-[600px] rounded-full bg-halo-brown-950/15 blur-[150px]" />
+
+        <div className="relative mx-auto grid w-[min(calc(100%-36px),1180px)] gap-12 md:w-[min(calc(100%-48px),1180px)] lg:grid-cols-[1fr_auto] lg:items-end">
+          <div>
+            <span className="text-[10px] font-bold tracking-[0.2em] text-white/65">
+              COMING SOON
+            </span>
+
+            <h2 className="mt-7 text-[46px] leading-[1.1] font-semibold tracking-[-0.06em] md:text-[72px]">
+              HALO의 첫 번째 안녕을,
+              <br />
+              가장 먼저 만나보세요.
+            </h2>
+
+            <p className="mt-7 max-w-[610px] text-[16px] leading-8 text-white/70 md:text-[18px]">
+              Google Play에서 사전등록하고,
+              부모님과 시작할 수 있는 첫 번째 이야기를 만나보세요.
+            </p>
+          </div>
+
+          <div className="lg:pb-2">
+            <PreRegisterPlayButton
+              light
+            />
+          </div>
+        </div>
+
+        <div className="relative mx-auto mt-20 flex w-[min(calc(100%-36px),1180px)] flex-col gap-3 border-t border-white/20 pt-7 text-[10px] font-semibold tracking-[0.13em] text-white/45 md:w-[min(calc(100%-48px),1180px)] md:flex-row md:items-center md:justify-between">
+          <span>
+            TEAM HALO · PRE-REGISTRATION 2026
+          </span>
+
+          <Link
+            to="/"
+            className="inline-flex w-fit items-center gap-2 transition hover:text-white"
+          >
+            HALO 공식 홈페이지로 돌아가기
+
+            <ArrowIcon />
+          </Link>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function LegalPage({
+  documentKey,
+}) {
+  const document =
+    legalDocuments[documentKey];
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [documentKey]);
 
   if (!document) {
-    return <Navigate to="/terms" replace />;
+    return (
+      <Navigate
+        to="/terms"
+        replace
+      />
+    );
   }
 
   return (
@@ -1712,16 +2400,20 @@ function LegalPage({ documentKey }) {
           </h1>
 
           <p className="mt-5 max-w-[700px] text-base leading-8 text-halo-brown-500">
-            {document.description}
+            {
+              document.description
+            }
           </p>
 
           <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-xs text-halo-brown-500">
             <span>
-              공고일자: {document.announcedAt}
+              공고일자:{" "}
+              {document.announcedAt}
             </span>
 
             <span>
-              시행일자: {document.effectiveAt}
+              시행일자:{" "}
+              {document.effectiveAt}
             </span>
           </div>
         </div>
@@ -1731,20 +2423,23 @@ function LegalPage({ documentKey }) {
         <div className="mx-auto w-[min(calc(100%-36px),1080px)] md:w-[min(calc(100%-48px),1080px)]">
           <div className="hide-scrollbar sticky top-[76px] z-20 overflow-x-auto border-b border-halo-brown-900/10 bg-halo-cream-100/95 py-4 backdrop-blur-xl md:top-[88px]">
             <div className="flex min-w-max gap-2">
-              {legalTabs.map((tab) => (
-                <Link
-                  key={tab.key}
-                  to={tab.path}
-                  className={[
-                    "rounded-full px-5 py-3 text-sm font-semibold transition",
-                    tab.key === documentKey
-                      ? "bg-halo-orange-500 text-white shadow-halo-sm"
-                      : "border border-halo-brown-900/10 bg-white text-halo-brown-600 hover:border-halo-orange-300 hover:text-halo-orange-600",
-                  ].join(" ")}
-                >
-                  {tab.label}
-                </Link>
-              ))}
+              {legalTabs.map(
+                (tab) => (
+                  <Link
+                    key={tab.key}
+                    to={tab.path}
+                    className={[
+                      "rounded-full px-5 py-3 text-sm font-semibold transition",
+                      tab.key ===
+                      documentKey
+                        ? "bg-halo-orange-500 text-white shadow-halo-sm"
+                        : "border border-halo-brown-900/10 bg-white text-halo-brown-600 hover:border-halo-orange-300 hover:text-halo-orange-600",
+                    ].join(" ")}
+                  >
+                    {tab.label}
+                  </Link>
+                ),
+              )}
             </div>
           </div>
 
@@ -1753,16 +2448,23 @@ function LegalPage({ documentKey }) {
               {document.sections.map(
                 (section) => (
                   <article
-                    key={section.title}
+                    key={
+                      section.title
+                    }
                     className="py-10 first:pt-0 last:pb-0"
                   >
                     <h2 className="text-[24px] font-bold tracking-[-0.035em] text-halo-brown-900 md:text-[28px]">
-                      {section.title}
+                      {
+                        section.title
+                      }
                     </h2>
 
                     <div className="mt-6 space-y-5">
                       {section.blocks.map(
-                        (block, index) => {
+                        (
+                          block,
+                          index,
+                        ) => {
                           if (
                             block.type ===
                             "paragraph"
@@ -1796,7 +2498,8 @@ function LegalPage({ documentKey }) {
                                       className="grid grid-cols-[28px_1fr] gap-3 text-[15px] leading-8 text-halo-brown-600 md:text-base"
                                     >
                                       <span className="flex size-7 items-center justify-center rounded-full bg-halo-orange-100 text-[11px] font-bold text-halo-orange-700">
-                                        {itemIndex + 1}
+                                        {itemIndex +
+                                          1}
                                       </span>
 
                                       <span>
@@ -1851,15 +2554,17 @@ function Footer() {
           </div>
 
           <nav className="grid grid-cols-2 gap-x-10 gap-y-4 text-sm text-white/60">
-            {navigationItems.map((item) => (
-              <a
-                key={item.href}
-                href={`/${item.href}`}
-                className="transition hover:text-halo-orange-300"
-              >
-                {item.label}
-              </a>
-            ))}
+            {navigationItems.map(
+              (item) => (
+                <a
+                  key={item.href}
+                  href={`/${item.href}`}
+                  className="transition hover:text-halo-orange-300"
+                >
+                  {item.label}
+                </a>
+              ),
+            )}
 
             <Link
               to="/terms"
@@ -1905,8 +2610,7 @@ function Footer() {
 
         <div className="mt-16 flex flex-col gap-3 border-t border-white/10 pt-6 text-[9px] font-semibold tracking-[0.14em] text-white/30 md:flex-row md:justify-between">
           <span>
-            © {currentYear} TEAM HALO. ALL
-            RIGHTS RESERVED.
+            © {currentYear} TEAM HALO. ALL RIGHTS RESERVED.
           </span>
 
           <span>
@@ -1919,9 +2623,14 @@ function Footer() {
 }
 
 function AppRoutes() {
+  const location = useLocation();
+
   return (
     <>
-      <SplashScreen />
+      {location.pathname ===
+        "/" && (
+        <SplashScreen />
+      )}
 
       <Header />
 
@@ -1929,6 +2638,13 @@ function AppRoutes() {
         <Route
           path="/"
           element={<HomePage />}
+        />
+
+        <Route
+          path="/pre-register"
+          element={
+            <PreRegisterPage />
+          }
         />
 
         <Route
@@ -1961,7 +2677,12 @@ function AppRoutes() {
 
         <Route
           path="*"
-          element={<Navigate to="/" replace />}
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
+          }
         />
       </Routes>
 
