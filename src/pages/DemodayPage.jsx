@@ -304,6 +304,8 @@ function DemodayPage() {
           // YouTube 자체 키보드 단축키 허용
           disablekb: 0,
 
+          cc_load_policy: 0,
+
           fs: 0,
           iv_load_policy: 3,
           playsinline: 1,
