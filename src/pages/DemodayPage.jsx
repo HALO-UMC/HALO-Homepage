@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 const YOUTUBE_VIDEO_ID = "9-VkbFe2U3U";
 
 // 4분 12초
-const CUT_AT_SECONDS = 4 * 60 + 12;
+const CUT_AT_SECONDS = 3 * 60 + 57;
 
 const SCENE = {
   VIDEO: "video",
