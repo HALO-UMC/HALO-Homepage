@@ -32,13 +32,13 @@ const FALLBACK_IMAGE =
   "https://picsum.photos/seed/halo-image-fallback/1200/900";
 
 const PLAY_STORE_URL =
-  "YOUR_PLAY_STORE_URL";
+  "https://play.google.com/store/apps/details?id=com.umc.halo";
 
-const preRegisterImages = {
+const downloadImages = {
   hero: "/images/preregister/halo-preregister-hero.png",
 };
 
-const preRegisterSteps = [
+const downloadSteps = [
   {
     number: "01",
     eyebrow: "FIND YOUR STORY",
@@ -892,10 +892,23 @@ function HeroSection() {
 
       <div className="relative mx-auto grid w-[min(calc(100%-36px),1320px)] items-center gap-16 md:w-[min(calc(100%-48px),1320px)] xl:grid-cols-[0.83fr_1.17fr] xl:gap-12">
         <div className="relative z-20">
-          <div className="mb-8 flex items-center gap-4">
+          <div className="mb-8 flex flex-wrap items-center gap-3">
             <span className="text-[10px] font-bold tracking-[0.2em] text-halo-orange-700">
               STORYBOOK APP
             </span>
+
+            <span className="h-3 w-px bg-halo-brown-900/15" />
+
+            <a
+              href={PLAY_STORE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.12em] text-halo-brown-400 transition hover:text-halo-orange-600"
+            >
+              <span className="size-1.5 rounded-full bg-halo-orange-500 shadow-[0_0_10px_rgba(255,123,16,0.45)]" />
+
+              NOW AVAILABLE ON GOOGLE PLAY
+            </a>
           </div>
 
           <h1 className="max-w-[700px] text-[49px] leading-[1.06] font-semibold tracking-[-0.067em] text-halo-brown-950 md:text-[60px] xl:text-[65px]">
@@ -914,23 +927,25 @@ function HeroSection() {
           </p>
 
           <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-            <Link
-              to="/pre-register"
-              aria-label="HALO Google Play 사전등록 페이지"
+            <a
+              href={PLAY_STORE_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Google Play에서 HALO 다운로드하기"
               className="group inline-flex min-h-[62px] w-fit shrink-0 items-center gap-4 rounded-[16px] border border-black/10 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-1 hover:bg-black hover:shadow-[0_24px_55px_rgba(0,0,0,0.26)]"
             >
               <GooglePlayIcon />
 
               <span className="flex flex-col">
                 <span className="text-[9px] leading-none font-medium tracking-[0.06em] text-white/65">
-                  PRE-REGISTER ON
+                  GET IT ON
                 </span>
 
                 <span className="mt-1 text-[18px] leading-none font-semibold tracking-[-0.03em] text-white">
-                  Google Play 사전등록
+                  Google Play
                 </span>
               </span>
-            </Link>
+            </a>
 
             <a
               href="#storybook"
@@ -953,18 +968,17 @@ function HeroSection() {
             </a>
           </div>
 
-          <a
-            href="/demoday"
-            className="mt-5 inline-flex w-fit items-center gap-2 text-[13px] font-semibold tracking-[-0.025em] text-halo-brown-400 transition hover:text-halo-orange-600"
-          >
-            <span className="size-1.5 rounded-full bg-halo-orange-500" />
-
-            10th UMC DemoDay 영상 보기
-
-            <span className="text-halo-brown-300">
-              →
+          <div className="mt-5 flex flex-wrap items-center gap-3 text-[12px] font-medium tracking-[-0.02em] text-halo-brown-400">
+            <span>
+              Android
             </span>
-          </a>
+
+            <span className="size-1 rounded-full bg-halo-brown-300" />
+
+            <span>
+              Google Play에서 지금 만나보세요
+            </span>
+          </div>
 
           <div className="mt-16 flex items-center gap-5 border-t border-halo-brown-900/10 pt-7">
             <div>
@@ -1929,6 +1943,10 @@ function FinalSection() {
   return (
     <section className="halo-final-surface relative overflow-hidden py-32 text-center text-white md:py-48">
       <div className="relative z-10 mx-auto flex w-[min(calc(100%-36px),900px)] flex-col items-center">
+        <span className="text-[10px] font-bold tracking-[0.2em] text-halo-orange-300">
+          AVAILABLE NOW
+        </span>
+
         <h2 className="mt-8 text-[46px] leading-[1.16] font-medium tracking-[-0.06em] md:text-[70px] xl:text-[84px]">
           부모님께 건네는
           <br />
@@ -1941,35 +1959,38 @@ function FinalSection() {
         <p className="mt-8 max-w-[600px] text-base leading-8 text-white/60">
           열 번의 작은 이야기가 모이면
           우리 가족만의 한 권이 됩니다.
+          <br />
+          HALO는 지금 Google Play에서 만나볼 수 있어요.
         </p>
 
         <div className="mt-11 flex flex-col gap-3 sm:flex-row">
-          <Link
-            to="/pre-register"
-            className="group inline-flex min-h-[62px] items-center gap-4 rounded-[16px] border border-white/20 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:bg-black"
+          <a
+            href={PLAY_STORE_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Google Play에서 HALO 다운로드하기"
+            className="group inline-flex min-h-[62px] items-center gap-4 rounded-[16px] border border-white/20 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:bg-black hover:shadow-[0_24px_55px_rgba(0,0,0,0.4)]"
           >
             <GooglePlayIcon />
 
             <span className="flex flex-col">
               <span className="text-[9px] leading-none font-medium tracking-[0.06em] text-white/65">
-                PRE-REGISTER ON
+                GET IT ON
               </span>
 
               <span className="mt-1 text-[18px] leading-none font-semibold tracking-[-0.03em] text-white">
-                Google Play 사전등록
+                Google Play
               </span>
             </span>
-          </Link>
+          </a>
 
-          <a
-            href="https://github.com/HALO-UMC"
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            to="/download"
             className="inline-flex min-h-[62px] items-center justify-center gap-7 rounded-[16px] border border-white/20 bg-white/5 px-7 text-sm font-bold text-white backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:bg-white hover:text-halo-brown-900"
           >
-            Team HALO GitHub
+            HALO 자세히 보기
             <ArrowIcon />
-          </a>
+          </Link>
         </div>
       </div>
     </section>
@@ -1977,10 +1998,10 @@ function FinalSection() {
 }
 
 /* =========================================================
-   PRE-REGISTER
+   DOWNLOAD
 ========================================================= */
 
-function PreRegisterPlayButton({
+function DownloadPlayButton({
   light = false,
 }) {
   return (
@@ -1988,7 +2009,7 @@ function PreRegisterPlayButton({
       href={PLAY_STORE_URL}
       target="_blank"
       rel="noreferrer"
-      aria-label="Google Play에서 HALO 사전등록하기"
+      aria-label="Google Play에서 HALO 다운로드하기"
       className={[
         "group inline-flex min-h-[66px] w-fit shrink-0 items-center gap-4 rounded-[18px] border px-6 text-left transition duration-300 hover:-translate-y-1",
         light
@@ -2007,7 +2028,7 @@ function PreRegisterPlayButton({
               : "text-white/60",
           ].join(" ")}
         >
-          PRE-REGISTER ON
+          GET IT ON
         </span>
 
         <span className="mt-1.5 text-[19px] leading-none font-semibold tracking-[-0.035em]">
@@ -2029,7 +2050,7 @@ function PreRegisterPlayButton({
   );
 }
 
-function PreRegisterStep({
+function DownloadStep({
   step,
   index,
 }) {
@@ -2128,7 +2149,7 @@ function PreRegisterStep({
   );
 }
 
-function PreRegisterPage() {
+function DownloadPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -2140,9 +2161,9 @@ function PreRegisterPage() {
         <div className="absolute inset-0">
           <ImageWithFallback
             src={
-              preRegisterImages.hero
+              downloadImages.hero
             }
-            alt="HALO 사전등록 메인 비주얼"
+            alt="HALO 앱 메인 비주얼"
             className="h-full w-full object-cover"
             eager
           />
@@ -2158,7 +2179,7 @@ function PreRegisterPage() {
               <span className="size-2 rounded-full bg-halo-orange-400 shadow-[0_0_18px_rgba(255,123,16,0.85)]" />
 
               <span className="text-[10px] font-bold tracking-[0.18em] text-white/85">
-                HALO PRE-REGISTRATION
+                NOW AVAILABLE ON GOOGLE PLAY
               </span>
             </div>
 
@@ -2180,7 +2201,7 @@ function PreRegisterPage() {
             </p>
 
             <div className="mt-10">
-              <PreRegisterPlayButton
+              <DownloadPlayButton
                 light
               />
             </div>
@@ -2275,9 +2296,9 @@ function PreRegisterPage() {
       </section>
 
       {/* 01 ~ 07 */}
-      {preRegisterSteps.map(
+      {downloadSteps.map(
         (step, index) => (
-          <PreRegisterStep
+          <DownloadStep
             key={step.number}
             step={step}
             index={index}
@@ -2327,23 +2348,23 @@ function PreRegisterPage() {
         <div className="relative mx-auto grid w-[min(calc(100%-36px),1180px)] gap-12 md:w-[min(calc(100%-48px),1180px)] lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
             <span className="text-[10px] font-bold tracking-[0.2em] text-white/65">
-              COMING SOON
+              AVAILABLE NOW
             </span>
 
             <h2 className="mt-7 text-[46px] leading-[1.1] font-semibold tracking-[-0.06em] md:text-[72px]">
               HALO의 첫 번째 안녕을,
               <br />
-              가장 먼저 만나보세요.
+              지금 시작해보세요.
             </h2>
 
             <p className="mt-7 max-w-[610px] text-[16px] leading-8 text-white/70 md:text-[18px]">
-              Google Play에서 사전등록하고,
-              부모님과 시작할 수 있는 첫 번째 이야기를 만나보세요.
+              Google Play에서 HALO를 설치하고,
+              부모님과 함께할 첫 번째 이야기를 시작해보세요.
             </p>
           </div>
 
           <div className="lg:pb-2">
-            <PreRegisterPlayButton
+            <DownloadPlayButton
               light
             />
           </div>
@@ -2351,7 +2372,7 @@ function PreRegisterPage() {
 
         <div className="relative mx-auto mt-20 flex w-[min(calc(100%-36px),1180px)] flex-col gap-3 border-t border-white/20 pt-7 text-[10px] font-semibold tracking-[0.13em] text-white/45 md:w-[min(calc(100%-48px),1180px)] md:flex-row md:items-center md:justify-between">
           <span>
-            TEAM HALO · PRE-REGISTRATION 2026
+            TEAM HALO · GOOGLE PLAY 2026
           </span>
 
           <Link
@@ -2551,6 +2572,16 @@ function Footer() {
         <div className="grid gap-12 md:grid-cols-[1fr_auto_1fr]">
           <div>
             <Logo />
+
+            <a
+              href={PLAY_STORE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-white/45 transition hover:text-halo-orange-300"
+            >
+              <span className="size-1.5 rounded-full bg-halo-orange-500" />
+              Google Play에서 HALO 만나보기
+            </a>
           </div>
 
           <nav className="grid grid-cols-2 gap-x-10 gap-y-4 text-sm text-white/60">
@@ -2565,6 +2596,13 @@ function Footer() {
                 </a>
               ),
             )}
+
+            <Link
+              to="/download"
+              className="transition hover:text-halo-orange-300"
+            >
+              앱 소개
+            </Link>
 
             <Link
               to="/terms"
@@ -2641,9 +2679,19 @@ function AppRoutes() {
         />
 
         <Route
+          path="/download"
+          element={
+            <DownloadPage />
+          }
+        />
+
+        <Route
           path="/pre-register"
           element={
-            <PreRegisterPage />
+            <Navigate
+              to="/download"
+              replace
+            />
           }
         />
 
