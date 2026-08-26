@@ -153,17 +153,47 @@ const downloadSteps = [
   },
 ];
 
+function trackPlayStoreClick(position) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  if (typeof window.gtag === "function") {
+    window.gtag(
+      "event",
+      "playstore_click",
+      {
+        event_category: "download",
+        event_label: position,
+      },
+    );
+
+    return;
+  }
+
+  if (
+    Array.isArray(
+      window.dataLayer,
+    )
+  ) {
+    window.dataLayer.push({
+      event:
+        "playstore_click",
+      position,
+    });
+  }
+}
+
 function ArrowIcon({
   direction = "right",
 }) {
-  const rotateClass =
-    direction === "left"
-      ? "rotate-180"
-      : "";
-
   return (
     <svg
-      className={rotateClass}
+      className={
+        direction === "left"
+          ? "rotate-180"
+          : ""
+      }
       width="22"
       height="22"
       viewBox="0 0 24 24"
@@ -306,13 +336,16 @@ function ImageWithFallback({
   className = "",
   eager = false,
 }) {
-  const handleError = (event) => {
+  const handleError = (
+    event,
+  ) => {
     const image =
       event.currentTarget;
 
     if (
       image.dataset
-        .fallbackApplied === "true"
+        .fallbackApplied ===
+      "true"
     ) {
       return;
     }
@@ -328,10 +361,16 @@ function ImageWithFallback({
     <img
       src={src}
       alt={alt}
-      className={className}
-      onError={handleError}
+      className={
+        className
+      }
+      onError={
+        handleError
+      }
       loading={
-        eager ? "eager" : "lazy"
+        eager
+          ? "eager"
+          : "lazy"
       }
     />
   );
@@ -344,23 +383,56 @@ function SplashScreen() {
   const [
     isVisible,
     setIsVisible,
-  ] = useState(true);
+  ] = useState(() => {
+    if (
+      typeof window ===
+      "undefined"
+    ) {
+      return true;
+    }
+
+    return (
+      window.sessionStorage.getItem(
+        "halo_splash_seen",
+      ) !== "true"
+    );
+  });
 
   useEffect(() => {
+    if (!isVisible) {
+      return undefined;
+    }
+
     const secondStageTimer =
-      window.setTimeout(() => {
-        setStage(1);
-      }, 1300);
+      window.setTimeout(
+        () => {
+          setStage(1);
+        },
+        620,
+      );
 
     const fadeOutTimer =
-      window.setTimeout(() => {
-        setStage(2);
-      }, 2400);
+      window.setTimeout(
+        () => {
+          setStage(2);
+        },
+        1180,
+      );
 
     const removeTimer =
-      window.setTimeout(() => {
-        setIsVisible(false);
-      }, 3000);
+      window.setTimeout(
+        () => {
+          window.sessionStorage.setItem(
+            "halo_splash_seen",
+            "true",
+          );
+
+          setIsVisible(
+            false,
+          );
+        },
+        1650,
+      );
 
     return () => {
       window.clearTimeout(
@@ -375,7 +447,7 @@ function SplashScreen() {
         removeTimer,
       );
     };
-  }, []);
+  }, [isVisible]);
 
   if (!isVisible) {
     return null;
@@ -387,15 +459,15 @@ function SplashScreen() {
         {`
           @keyframes haloSplashWiggle {
             0% {
-              transform: rotate(-7deg);
+              transform: rotate(-6deg);
             }
 
             50% {
-              transform: rotate(7deg);
+              transform: rotate(6deg);
             }
 
             100% {
-              transform: rotate(-7deg);
+              transform: rotate(-6deg);
             }
           }
         `}
@@ -404,7 +476,7 @@ function SplashScreen() {
       <div
         className={[
           "fixed inset-0 z-[9999] overflow-hidden bg-[#FF7B10]",
-          "transition-opacity duration-[600ms] ease-out",
+          "transition-opacity duration-[470ms] ease-out",
           stage === 2
             ? "pointer-events-none opacity-0"
             : "opacity-100",
@@ -414,7 +486,7 @@ function SplashScreen() {
         <div
           className={[
             "absolute inset-0 flex flex-col items-center justify-center",
-            "transition-all duration-500 ease-out",
+            "transition-all duration-300 ease-out",
             stage === 0
               ? "translate-y-0 opacity-100"
               : "-translate-y-2 opacity-0",
@@ -424,26 +496,28 @@ function SplashScreen() {
             src="/images/logo.png"
             alt=""
             draggable="false"
-            className="h-[190px] w-auto max-w-[86vw] select-none object-contain md:h-[240px]"
+            className="h-[180px] w-auto max-w-[86vw] select-none object-contain md:h-[220px]"
             style={{
               animation:
-                stage === 0
-                  ? "haloSplashWiggle 520ms ease-in-out infinite"
+                stage ===
+                0
+                  ? "haloSplashWiggle 420ms ease-in-out infinite"
                   : "none",
               transformOrigin:
                 "50% 78%",
             }}
           />
 
-          <p className="mt-7 text-[16px] font-semibold tracking-[-0.025em] text-white md:text-[18px]">
-            익숙하지만 어려운, 안녕
+          <p className="mt-6 text-[15px] font-semibold tracking-[-0.025em] text-white md:text-[17px]">
+            익숙하지만
+            어려운, 안녕
           </p>
         </div>
 
         <div
           className={[
             "absolute inset-0 flex flex-col items-center justify-center",
-            "transition-all duration-500 ease-out",
+            "transition-all duration-300 ease-out",
             stage === 1
               ? "translate-y-0 scale-100 opacity-100"
               : stage === 0
@@ -455,13 +529,15 @@ function SplashScreen() {
             src="/images/logotypo.png"
             alt=""
             draggable="false"
-            className="h-[76px] w-auto max-w-[80vw] select-none object-contain md:h-[94px]"
+            className="h-[72px] w-auto max-w-[80vw] select-none object-contain md:h-[88px]"
           />
 
-          <p className="mt-7 text-center text-[15px] leading-6 font-medium tracking-[-0.025em] text-white md:text-[16px]">
-            부모님과의 관계를
+          <p className="mt-6 text-center text-[14px] leading-6 font-medium tracking-[-0.025em] text-white md:text-[15px]">
+            부모님과의
+            관계를
             <br />
-            한 권의 이야기로
+            한 권의
+            이야기로
           </p>
         </div>
       </div>
@@ -474,7 +550,7 @@ function Logo() {
     <Link
       to="/"
       className="inline-flex shrink-0 items-center"
-      aria-label="Team HALO 홈페이지"
+      aria-label="HALO 홈페이지"
     >
       <img
         src="/logotypo.svg"
@@ -486,10 +562,13 @@ function Logo() {
 }
 
 function Header() {
-  const location = useLocation();
+  const location =
+    useLocation();
 
-  const [isOpen, setIsOpen] =
-    useState(false);
+  const [
+    isOpen,
+    setIsOpen,
+  ] = useState(false);
 
   const [
     isScrolled,
@@ -497,14 +576,17 @@ function Header() {
   ] = useState(false);
 
   const isHome =
-    location.pathname === "/";
+    location.pathname ===
+    "/";
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(
-        window.scrollY > 20,
-      );
-    };
+    const handleScroll =
+      () => {
+        setIsScrolled(
+          window.scrollY >
+            20,
+        );
+      };
 
     handleScroll();
 
@@ -536,23 +618,28 @@ function Header() {
       return undefined;
     }
 
-    const currentScrollY =
+    const scrollY =
       window.scrollY;
 
-    const previousBodyPosition =
-      document.body.style.position;
+    const bodyPosition =
+      document.body.style
+        .position;
 
-    const previousBodyTop =
-      document.body.style.top;
+    const bodyTop =
+      document.body.style
+        .top;
 
-    const previousBodyWidth =
-      document.body.style.width;
+    const bodyWidth =
+      document.body.style
+        .width;
 
-    const previousBodyOverflow =
-      document.body.style.overflow;
+    const bodyOverflow =
+      document.body.style
+        .overflow;
 
-    const previousHtmlOverflow =
-      document.documentElement
+    const htmlOverflow =
+      document
+        .documentElement
         .style.overflow;
 
     document.documentElement.style.overflow =
@@ -562,7 +649,7 @@ function Header() {
       "fixed";
 
     document.body.style.top =
-      `-${currentScrollY}px`;
+      `-${scrollY}px`;
 
     document.body.style.width =
       "100%";
@@ -572,23 +659,23 @@ function Header() {
 
     return () => {
       document.documentElement.style.overflow =
-        previousHtmlOverflow;
+        htmlOverflow;
 
       document.body.style.position =
-        previousBodyPosition;
+        bodyPosition;
 
       document.body.style.top =
-        previousBodyTop;
+        bodyTop;
 
       document.body.style.width =
-        previousBodyWidth;
+        bodyWidth;
 
       document.body.style.overflow =
-        previousBodyOverflow;
+        bodyOverflow;
 
       window.scrollTo(
         0,
-        currentScrollY,
+        scrollY,
       );
     };
   }, [isOpen]);
@@ -598,15 +685,17 @@ function Header() {
       return undefined;
     }
 
-    const handleKeyDown = (
-      event,
-    ) => {
-      if (
-        event.key === "Escape"
-      ) {
-        setIsOpen(false);
-      }
-    };
+    const handleKeyDown =
+      (event) => {
+        if (
+          event.key ===
+          "Escape"
+        ) {
+          setIsOpen(
+            false,
+          );
+        }
+      };
 
     window.addEventListener(
       "keydown",
@@ -621,14 +710,11 @@ function Header() {
     };
   }, [isOpen]);
 
-  const getNavigationHref = (
-    href,
-  ) =>
-    isHome ? href : `/${href}`;
-
-  const closeMenu = () => {
-    setIsOpen(false);
-  };
+  const getNavigationHref =
+    (href) =>
+      isHome
+        ? href
+        : `/${href}`;
 
   return (
     <>
@@ -652,13 +738,17 @@ function Header() {
             {navigationItems.map(
               (item) => (
                 <a
-                  key={item.href}
+                  key={
+                    item.href
+                  }
                   href={getNavigationHref(
                     item.href,
                   )}
                   className="text-sm font-semibold text-halo-brown-600 transition hover:text-halo-orange-500"
                 >
-                  {item.label}
+                  {
+                    item.label
+                  }
                 </a>
               ),
             )}
@@ -671,7 +761,9 @@ function Header() {
                 "/"
                   ? "text-halo-orange-500"
                   : "text-halo-brown-600 hover:text-halo-orange-500",
-              ].join(" ")}
+              ].join(
+                " ",
+              )}
             >
               약관
             </Link>
@@ -700,14 +792,16 @@ function Header() {
                 ? "메뉴 닫기"
                 : "메뉴 열기"
             }
-            aria-expanded={isOpen}
+            aria-expanded={
+              isOpen
+            }
             aria-controls="mobile-navigation"
-            onClick={() => {
+            onClick={() =>
               setIsOpen(
                 (previous) =>
                   !previous,
-              );
-            }}
+              )
+            }
           >
             {isOpen ? (
               <CloseIcon />
@@ -734,32 +828,43 @@ function Header() {
                   index,
                 ) => (
                   <a
-                    key={item.href}
+                    key={
+                      item.href
+                    }
                     href={getNavigationHref(
                       item.href,
                     )}
-                    onClick={
-                      closeMenu
+                    onClick={() =>
+                      setIsOpen(
+                        false,
+                      )
                     }
                     className="flex items-center gap-5 border-b border-white/15 py-5 text-[38px] font-semibold tracking-[-0.05em] text-white transition active:text-halo-orange-300"
                   >
                     <span className="text-[10px] tracking-[0.14em] text-halo-orange-300">
                       {String(
-                        index + 1,
+                        index +
+                          1,
                       ).padStart(
                         2,
                         "0",
                       )}
                     </span>
 
-                    {item.label}
+                    {
+                      item.label
+                    }
                   </a>
                 ),
               )}
 
               <Link
                 to="/terms"
-                onClick={closeMenu}
+                onClick={() =>
+                  setIsOpen(
+                    false,
+                  )
+                }
                 className="flex items-center gap-5 border-b border-white/15 py-5 text-[38px] font-semibold tracking-[-0.05em] text-white transition active:text-halo-orange-300"
               >
                 <span className="text-[10px] tracking-[0.14em] text-halo-orange-300">
@@ -772,7 +877,8 @@ function Header() {
 
             <div className="mt-16 border-t border-white/10 pt-8">
               <p className="text-base leading-7 text-white/45">
-                관계가 이어지는 방식을
+                관계가
+                이어지는 방식을
                 <br />
                 설계합니다.
               </p>
@@ -784,7 +890,9 @@ function Header() {
 
                 <span className="h-px w-8 bg-white/20" />
 
-                <span>2026</span>
+                <span>
+                  2026
+                </span>
               </div>
             </div>
           </div>
@@ -841,31 +949,42 @@ function SectionHeading({
 }
 
 function HomePage() {
-  const location = useLocation();
+  const location =
+    useLocation();
 
   useEffect(() => {
-    if (!location.hash) {
-      window.scrollTo(0, 0);
+    if (
+      !location.hash
+    ) {
+      window.scrollTo(
+        0,
+        0,
+      );
+
       return;
     }
 
     const timeout =
-      window.setTimeout(() => {
-        document
-          .querySelector(
-            location.hash,
-          )
-          ?.scrollIntoView({
-            behavior:
-              "smooth",
-          });
-      }, 50);
+      window.setTimeout(
+        () => {
+          document
+            .querySelector(
+              location.hash,
+            )
+            ?.scrollIntoView(
+              {
+                behavior:
+                  "smooth",
+              },
+            );
+        },
+        50,
+      );
 
-    return () => {
+    return () =>
       window.clearTimeout(
         timeout,
       );
-    };
   }, [location.hash]);
 
   return (
@@ -899,20 +1018,17 @@ function HeroSection() {
 
             <span className="h-3 w-px bg-halo-brown-900/15" />
 
-            <a
-              href={PLAY_STORE_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.12em] text-halo-brown-400 transition hover:text-halo-orange-600"
-            >
-              <span className="size-1.5 rounded-full bg-halo-orange-500 shadow-[0_0_10px_rgba(255,123,16,0.45)]" />
+            <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.12em] text-halo-brown-400">
+              <span className="size-1.5 rounded-full bg-halo-orange-500 shadow-[0_0_10px_rgba(255,123,16,0.4)]" />
 
-              NOW AVAILABLE ON GOOGLE PLAY
-            </a>
+              GOOGLE PLAY
+              정식 출시
+            </span>
           </div>
 
           <h1 className="max-w-[700px] text-[49px] leading-[1.06] font-semibold tracking-[-0.067em] text-halo-brown-950 md:text-[60px] xl:text-[65px]">
-            부모님과의 이야기를,
+            부모님과의
+            이야기를,
             <br />
 
             <span className="text-halo-orange-500">
@@ -921,16 +1037,27 @@ function HeroSection() {
           </h1>
 
           <p className="mt-8 max-w-[570px] text-[16px] leading-8 tracking-[-0.02em] text-halo-brown-500 md:text-[18px]">
-            HALO는 부모님과 나누기 어려웠던 이야기를
-            하루 한 장의 스토리로 바꾸고,
-            함께한 순간을 우리 가족만의 기록으로 남깁니다.
+            HALO는 부모님과
+            나누기 어려웠던
+            이야기를 하루 한
+            장의 스토리로 바꾸고,
+            함께한 순간을 우리
+            가족만의 기록으로
+            남깁니다.
           </p>
 
           <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
             <a
-              href={PLAY_STORE_URL}
+              href={
+                PLAY_STORE_URL
+              }
               target="_blank"
               rel="noreferrer"
+              onClick={() =>
+                trackPlayStoreClick(
+                  "hero",
+                )
+              }
               aria-label="Google Play에서 HALO 다운로드하기"
               className="group inline-flex min-h-[62px] w-fit shrink-0 items-center gap-4 rounded-[16px] border border-black/10 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-1 hover:bg-black hover:shadow-[0_24px_55px_rgba(0,0,0,0.26)]"
             >
@@ -962,22 +1089,11 @@ function HeroSection() {
                 </span>
 
                 <span className="mt-1.5 text-[17px] leading-none font-semibold tracking-[-0.03em] text-halo-brown-900">
-                  스토리북 둘러보기
+                  스토리북
+                  둘러보기
                 </span>
               </span>
             </a>
-          </div>
-
-          <div className="mt-5 flex flex-wrap items-center gap-3 text-[12px] font-medium tracking-[-0.02em] text-halo-brown-400">
-            <span>
-              Android
-            </span>
-
-            <span className="size-1 rounded-full bg-halo-brown-300" />
-
-            <span>
-              Google Play에서 지금 만나보세요
-            </span>
           </div>
 
           <div className="mt-16 flex items-center gap-5 border-t border-halo-brown-900/10 pt-7">
@@ -987,7 +1103,8 @@ function HeroSection() {
               </strong>
 
               <span className="mt-1 block text-xs text-halo-brown-400">
-                관계마다 다른 이야기
+                관계마다 다른
+                이야기
               </span>
             </div>
 
@@ -999,7 +1116,8 @@ function HeroSection() {
               </strong>
 
               <span className="mt-1 block text-xs text-halo-brown-400">
-                하루 한 장의 경험
+                하루 한 장의
+                경험
               </span>
             </div>
 
@@ -1011,7 +1129,8 @@ function HeroSection() {
               </strong>
 
               <span className="mt-1 block text-xs text-halo-brown-400">
-                우리 가족의 기록
+                우리 가족의
+                기록
               </span>
             </div>
           </div>
@@ -1020,7 +1139,9 @@ function HeroSection() {
         <div className="relative mx-auto h-[620px] w-full max-w-[720px] md:h-[770px]">
           <div className="absolute top-[8%] left-[-1%] z-10 w-[36%] -rotate-[12deg] overflow-hidden rounded-[28px] bg-white p-[4px] shadow-[0_28px_70px_rgba(34,26,21,0.14)] md:left-[-3%]">
             <ImageWithFallback
-              src={heroImages.subTop}
+              src={
+                heroImages.subTop
+              }
               alt="HALO 스토리북 화면"
               className="aspect-[3/4.25] w-full rounded-[24px] object-cover"
               eager
@@ -1032,7 +1153,9 @@ function HeroSection() {
               <div className="absolute top-[11px] left-1/2 z-30 h-[18px] w-[70px] -translate-x-1/2 rounded-full bg-[#090909]" />
 
               <ImageWithFallback
-                src={productImages.main}
+                src={
+                  productImages.main
+                }
                 alt="HALO 앱 메인 화면"
                 className="h-full w-full rounded-[40px] object-cover"
                 eager
@@ -1042,13 +1165,17 @@ function HeroSection() {
             </div>
 
             <span className="absolute top-[108px] -left-[2px] h-[46px] w-[2px] rounded-l-full bg-[#858482]" />
+
             <span className="absolute top-[170px] -left-[2px] h-[72px] w-[2px] rounded-l-full bg-[#858482]" />
+
             <span className="absolute top-[148px] -right-[2px] h-[90px] w-[2px] rounded-r-full bg-[#72716f]" />
           </div>
 
           <div className="absolute top-[20%] right-[-2%] z-20 w-[35%] rotate-[13deg] overflow-hidden rounded-[27px] bg-white p-[4px] shadow-[0_28px_70px_rgba(34,26,21,0.14)] md:right-[-4%]">
             <ImageWithFallback
-              src={heroImages.subBottom}
+              src={
+                heroImages.subBottom
+              }
               alt="HALO 기록 화면"
               className="aspect-[3/4.25] w-full rounded-[23px] object-cover"
               eager
@@ -1057,13 +1184,15 @@ function HeroSection() {
 
           <div className="absolute right-[2%] bottom-[9%] z-40 max-w-[245px] rounded-[22px] border border-halo-brown-900/8 bg-white/94 p-5 shadow-[0_16px_45px_rgba(35,26,20,0.10)] backdrop-blur-xl md:p-6">
             <span className="text-[9px] font-bold tracking-[0.18em] text-halo-orange-600">
-              TODAY&apos;S PAGE
+              TODAY&apos;S
+              PAGE
             </span>
 
             <p className="mt-3 text-lg leading-7 font-semibold tracking-[-0.035em] text-halo-brown-900">
               오늘 부모님과
               <br />
-              어떤 이야기를 나눴나요?
+              어떤 이야기를
+              나눴나요?
             </p>
 
             <div className="mt-5 flex items-center gap-2">
@@ -1081,7 +1210,8 @@ function HeroSection() {
             </span>
 
             <strong className="mt-1.5 block text-[14px] leading-[1.35] font-semibold tracking-[-0.025em] text-halo-brown-900">
-              Every relationship
+              Every
+              relationship
               <br />
               has a story.
             </strong>
@@ -1107,26 +1237,32 @@ function BrandStatement() {
 
         <div className="mt-12 grid gap-14 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
           <p className="text-[42px] leading-[1.16] font-medium tracking-[-0.06em] md:text-[45px] xl:text-[60px]">
-            가까이 지내왔지만,
+            가까이
+            지내왔지만,
             <br />
 
             <strong className="font-semibold text-halo-orange-300">
-              아직 모르는 이야기가 많습니다.
+              아직 모르는
+              이야기가 많습니다.
             </strong>
           </p>
 
           <div className="border-l border-white/15 pl-7">
             <p className="text-base leading-8 text-white/58">
-              마음이 없어서가 아니라,
+              마음이 없어서가
+              아니라,
               <br />
-              어디서부터 어떻게 시작해야 할지
-              몰랐기 때문일 수 있습니다.
+              어디서부터 어떻게
+              시작해야 할지 몰랐기
+              때문일 수 있습니다.
             </p>
 
             <p className="mt-7 text-xl leading-8 font-medium tracking-[-0.03em] text-white">
-              그래서 HALO는 관계의 시작을
+              그래서 HALO는
+              관계의 시작을
               <br />
-              ‘하루 한 장’으로 만들었습니다.
+              ‘하루 한 장’으로
+              만들었습니다.
             </p>
           </div>
         </div>
@@ -1138,7 +1274,8 @@ function BrandStatement() {
             </span>
 
             <strong className="mt-8 block text-2xl font-semibold tracking-[-0.04em]">
-              무슨 말을 해야 할지
+              무슨 말을 해야
+              할지
               <br />
               모르겠는 순간
             </strong>
@@ -1150,7 +1287,8 @@ function BrandStatement() {
             </span>
 
             <strong className="mt-8 block text-2xl font-semibold tracking-[-0.04em]">
-              오늘 할 수 있는
+              오늘 할 수
+              있는
               <br />
               하나의 이야기
             </strong>
@@ -1162,7 +1300,8 @@ function BrandStatement() {
             </span>
 
             <strong className="mt-8 block text-2xl font-semibold tracking-[-0.04em]">
-              함께한 시간이 남는
+              함께한 시간이
+              남는
               <br />
               우리 가족의 기록
             </strong>
@@ -1187,28 +1326,39 @@ function ProductSection() {
               <>
                 마음을,
                 <br />
-                오늘 할 수 있는 행동으로.
+                오늘 할 수 있는
+                행동으로.
               </>
             }
             description="HALO는 추천에서 시작해 하루 한 장의 경험을 거쳐, 함께한 시간을 다시 꺼내볼 수 있는 기록으로 완성합니다."
           />
 
           <p className="max-w-[450px] text-[15px] leading-8 text-halo-brown-500 lg:justify-self-end">
-            한꺼번에 관계를 바꾸려 하지 않습니다.
-            사용자의 현재 관계와 속도에 맞춰
-            작은 행동을 반복할 수 있도록 설계했습니다.
+            한꺼번에 관계를
+            바꾸려 하지
+            않습니다. 사용자의
+            현재 관계와 속도에
+            맞춰 작은 행동을
+            반복할 수 있도록
+            설계했습니다.
           </p>
         </div>
 
         <div className="mt-20 space-y-6 md:mt-28">
           {productFeatures.map(
-            (feature, index) => {
+            (
+              feature,
+              index,
+            ) => {
               const isReverse =
-                index % 2 === 1;
+                index % 2 ===
+                1;
 
               return (
                 <article
-                  key={feature.number}
+                  key={
+                    feature.number
+                  }
                   className="overflow-hidden rounded-[34px] border border-halo-brown-900/10 bg-halo-cream-100"
                 >
                   <div
@@ -1217,52 +1367,69 @@ function ProductSection() {
                       isReverse
                         ? "lg:[&>*:first-child]:order-2"
                         : "",
-                    ].join(" ")}
+                    ].join(
+                      " ",
+                    )}
                   >
                     <div className="flex flex-col justify-between p-8 md:p-12 lg:p-14">
                       <div>
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-bold tracking-[0.18em] text-halo-orange-600">
-                            {feature.eyebrow}
+                            {
+                              feature.eyebrow
+                            }
                           </span>
 
                           <span className="text-sm font-bold text-halo-brown-300">
-                            {feature.number}
+                            {
+                              feature.number
+                            }
                           </span>
                         </div>
 
                         <h3 className="mt-10 text-[38px] leading-[1.15] font-semibold tracking-[-0.055em] text-halo-brown-950 md:text-[50px]">
-                          {feature.title}
+                          {
+                            feature.title
+                          }
                         </h3>
 
                         <p className="mt-6 max-w-[470px] text-[15px] leading-8 text-halo-brown-500 md:text-base">
-                          {feature.description}
+                          {
+                            feature.description
+                          }
                         </p>
                       </div>
 
                       <div className="mt-12 flex items-center gap-3 text-xs font-semibold text-halo-brown-400">
                         <span className="flex size-8 items-center justify-center rounded-full bg-halo-orange-500 text-white">
-                          {index + 1}
+                          {index +
+                            1}
                         </span>
 
                         <span>
-                          {index === 0 &&
+                          {index ===
+                            0 &&
                             "관계에 맞는 시작점 찾기"}
 
-                          {index === 1 &&
+                          {index ===
+                            1 &&
                             "부담 없이 하루 한 장 채우기"}
 
-                          {index === 2 &&
+                          {index ===
+                            2 &&
                             "함께한 시간을 다시 꺼내보기"}
 
-                          {index === 3 &&
+                          {index ===
+                            3 &&
                             "완성한 이야기를 하나씩 모아보기"}
                         </span>
                       </div>
                     </div>
 
                     <ProductVisual
-                      index={index}
+                      index={
+                        index
+                      }
                     />
                   </div>
                 </article>
@@ -1291,29 +1458,43 @@ function ProductVisual({
           </span>
 
           <h4 className="mt-4 text-2xl font-bold tracking-[-0.04em] text-white">
-            지금 시작하기 좋은
+            지금 시작하기
+            좋은
             <br />
             두 권의 스토리북
           </h4>
 
           <div className="mt-7 grid grid-cols-2 gap-3">
             {storybooks
-              .slice(0, 2)
+              .slice(
+                0,
+                2,
+              )
               .map(
-                (storybook) => (
+                (
+                  storybook,
+                ) => (
                   <div
-                    key={storybook.id}
+                    key={
+                      storybook.id
+                    }
                     className="overflow-hidden rounded-[18px] bg-[#242424]"
                   >
                     <ImageWithFallback
-                      src={storybook.image}
-                      alt={storybook.title}
+                      src={
+                        storybook.image
+                      }
+                      alt={
+                        storybook.title
+                      }
                       className="aspect-[3/4] w-full object-cover"
                     />
 
                     <div className="p-3">
                       <strong className="text-sm font-semibold text-white">
-                        {storybook.title}
+                        {
+                          storybook.title
+                        }
                       </strong>
                     </div>
                   </div>
@@ -1335,7 +1516,9 @@ function ProductVisual({
             <div className="absolute top-[10px] left-1/2 z-30 h-[17px] w-[66px] -translate-x-1/2 rounded-full bg-black" />
 
             <ImageWithFallback
-              src={productImages.main}
+              src={
+                productImages.main
+              }
               alt="HALO 하루 한 장 화면"
               className="h-full w-full rounded-[35px] object-cover"
             />
@@ -1344,7 +1527,9 @@ function ProductVisual({
 
         <div className="absolute right-[6%] bottom-[8%] z-20 w-[175px] md:right-[7%] md:w-[190px]">
           <ImageWithFallback
-            src={productImages.detail}
+            src={
+              productImages.detail
+            }
             alt="HALO 하루 한 장 상세 화면"
             className="mx-auto w-[88%] object-contain"
           />
@@ -1369,7 +1554,9 @@ function ProductVisual({
             <div className="absolute top-[11px] left-1/2 z-30 h-[18px] w-[68px] -translate-x-1/2 rounded-full bg-[#090909]" />
 
             <ImageWithFallback
-              src={productImages.calendar}
+              src={
+                productImages.calendar
+              }
               alt="HALO 기록 캘린더 화면"
               className="h-full w-full rounded-[37px] object-cover"
             />
@@ -1388,7 +1575,9 @@ function ProductVisual({
 
         <div className="relative z-10 flex h-full w-full items-center justify-center">
           <ImageWithFallback
-            src={productImages.theme}
+            src={
+              productImages.theme
+            }
             alt="HALO 테마함"
             className="max-h-[510px] w-[94%] object-contain md:max-h-[545px] md:w-[96%]"
           />
@@ -1409,7 +1598,8 @@ function StorybookSection() {
   const viewportRef =
     useRef(null);
 
-  const itemRefs = useRef([]);
+  const itemRefs =
+    useRef([]);
 
   const scrollFrameRef =
     useRef(null);
@@ -1418,13 +1608,16 @@ function StorybookSection() {
     storybooks.length;
 
   const activeStorybook =
-    storybooks[activeIndex];
+    storybooks[
+      activeIndex
+    ];
 
   const moveTo = (
     requestedIndex,
   ) => {
     const normalizedIndex =
-      ((requestedIndex % total) +
+      ((requestedIndex %
+        total) +
         total) %
       total;
 
@@ -1435,118 +1628,125 @@ function StorybookSection() {
     itemRefs.current[
       normalizedIndex
     ]?.scrollIntoView({
-      behavior: "smooth",
+      behavior:
+        "smooth",
       inline: "center",
       block: "nearest",
     });
   };
 
-  const handleScroll = () => {
-    if (
-      scrollFrameRef.current
-    ) {
-      window.cancelAnimationFrame(
-        scrollFrameRef.current,
-      );
-    }
+  const handleScroll =
+    () => {
+      if (
+        scrollFrameRef.current
+      ) {
+        window.cancelAnimationFrame(
+          scrollFrameRef.current,
+        );
+      }
 
-    scrollFrameRef.current =
-      window.requestAnimationFrame(
-        () => {
-          const viewport =
-            viewportRef.current;
+      scrollFrameRef.current =
+        window.requestAnimationFrame(
+          () => {
+            const viewport =
+              viewportRef.current;
 
-          if (!viewport) {
-            return;
-          }
+            if (
+              !viewport
+            ) {
+              return;
+            }
 
-          const viewportRect =
-            viewport.getBoundingClientRect();
+            const viewportRect =
+              viewport.getBoundingClientRect();
 
-          const viewportCenter =
-            viewportRect.left +
-            viewportRect.width /
-              2;
+            const center =
+              viewportRect.left +
+              viewportRect.width /
+                2;
 
-          let closestIndex =
-            activeIndex;
+            let nextIndex =
+              activeIndex;
 
-          let closestDistance =
-            Number.POSITIVE_INFINITY;
+            let minDistance =
+              Number.POSITIVE_INFINITY;
 
-          itemRefs.current.forEach(
-            (
-              item,
-              index,
-            ) => {
-              if (!item) {
-                return;
-              }
+            itemRefs.current.forEach(
+              (
+                item,
+                index,
+              ) => {
+                if (
+                  !item
+                ) {
+                  return;
+                }
 
-              const itemRect =
-                item.getBoundingClientRect();
+                const rect =
+                  item.getBoundingClientRect();
 
-              const itemCenter =
-                itemRect.left +
-                itemRect.width /
-                  2;
+                const itemCenter =
+                  rect.left +
+                  rect.width /
+                    2;
 
-              const distance =
-                Math.abs(
-                  viewportCenter -
-                    itemCenter,
-                );
+                const distance =
+                  Math.abs(
+                    center -
+                      itemCenter,
+                  );
 
-              if (
-                distance <
-                closestDistance
-              ) {
-                closestDistance =
-                  distance;
+                if (
+                  distance <
+                  minDistance
+                ) {
+                  minDistance =
+                    distance;
 
-                closestIndex =
-                  index;
-              }
-            },
-          );
-
-          if (
-            closestIndex !==
-            activeIndex
-          ) {
-            setActiveIndex(
-              closestIndex,
+                  nextIndex =
+                    index;
+                }
+              },
             );
-          }
-        },
-      );
-  };
 
-  const handleKeyDown = (
-    event,
-  ) => {
-    if (
-      event.key ===
-      "ArrowLeft"
-    ) {
-      event.preventDefault();
+            if (
+              nextIndex !==
+              activeIndex
+            ) {
+              setActiveIndex(
+                nextIndex,
+              );
+            }
+          },
+        );
+    };
 
-      moveTo(
-        activeIndex - 1,
-      );
-    }
+  const handleKeyDown =
+    (event) => {
+      if (
+        event.key ===
+        "ArrowLeft"
+      ) {
+        event.preventDefault();
 
-    if (
-      event.key ===
-      "ArrowRight"
-    ) {
-      event.preventDefault();
+        moveTo(
+          activeIndex -
+            1,
+        );
+      }
 
-      moveTo(
-        activeIndex + 1,
-      );
-    }
-  };
+      if (
+        event.key ===
+        "ArrowRight"
+      ) {
+        event.preventDefault();
+
+        moveTo(
+          activeIndex +
+            1,
+        );
+      }
+    };
 
   return (
     <section
@@ -1558,9 +1758,12 @@ function StorybookSection() {
           eyebrow="HALO STORYBOOK"
           title={
             <>
-              우리의 일상에는,
+              우리의
+              일상에는,
               <br />
-              이미 많은 이야기가 있습니다.
+              이미 많은
+              이야기가
+              있습니다.
             </>
           }
           description="누구나 공감할 수 있는 일상의 순간을 10개의 스토리북으로 담았습니다."
@@ -1573,7 +1776,8 @@ function StorybookSection() {
             aria-label="이전 스토리북"
             onClick={() =>
               moveTo(
-                activeIndex - 1,
+                activeIndex -
+                  1,
               )
             }
             className="flex size-14 items-center justify-center rounded-full border border-white/20 transition hover:-translate-y-1 hover:bg-white hover:text-halo-brown-950"
@@ -1586,7 +1790,8 @@ function StorybookSection() {
             aria-label="다음 스토리북"
             onClick={() =>
               moveTo(
-                activeIndex + 1,
+                activeIndex +
+                  1,
               )
             }
             className="flex size-14 items-center justify-center rounded-full border border-white/20 transition hover:-translate-y-1 hover:bg-white hover:text-halo-brown-950"
@@ -1597,8 +1802,12 @@ function StorybookSection() {
       </div>
 
       <div
-        ref={viewportRef}
-        onScroll={handleScroll}
+        ref={
+          viewportRef
+        }
+        onScroll={
+          handleScroll
+        }
         onKeyDown={
           handleKeyDown
         }
@@ -1640,7 +1849,9 @@ function StorybookSection() {
                     isActive
                       ? "relative z-10 scale-100 opacity-100"
                       : "scale-[0.86] opacity-40 hover:scale-[0.9] hover:opacity-70",
-                  ].join(" ")}
+                  ].join(
+                    " ",
+                  )}
                 >
                   <div className="relative aspect-[3/4] overflow-hidden rounded-[28px] shadow-[0_30px_80px_rgba(0,0,0,0.4)]">
                     <ImageWithFallback
@@ -1653,7 +1864,9 @@ function StorybookSection() {
                         isActive
                           ? "scale-[1.025] saturate-100"
                           : "saturate-[0.7]",
-                      ].join(" ")}
+                      ].join(
+                        " ",
+                      )}
                     />
 
                     <div className="halo-image-overlay absolute inset-0" />
@@ -1754,7 +1967,9 @@ function StorybookSection() {
                     index
                       ? "w-8"
                       : "w-4",
-                  ].join(" ")}
+                  ].join(
+                    " ",
+                  )}
                 >
                   <span
                     className={[
@@ -1763,7 +1978,9 @@ function StorybookSection() {
                       index
                         ? "bg-halo-orange-500"
                         : "bg-white/20",
-                    ].join(" ")}
+                    ].join(
+                      " ",
+                    )}
                   />
                 </button>
               ),
@@ -1783,7 +2000,9 @@ function TeamMemberCard({
     <article className="group overflow-hidden rounded-[28px] border border-white/15 bg-white/[0.035] shadow-[0_28px_60px_rgba(20,8,3,0.18)] transition duration-300 hover:-translate-y-2 hover:border-halo-orange-300/40 hover:bg-halo-orange-500/[0.07]">
       <div className="relative aspect-[4/4.7] overflow-hidden bg-halo-brown-800">
         <ImageWithFallback
-          src={member.image}
+          src={
+            member.image
+          }
           alt={`${member.name} 프로필`}
           className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.035]"
         />
@@ -1797,13 +2016,17 @@ function TeamMemberCard({
 
           {member.isLead && (
             <span className="rounded-full border border-white/35 bg-halo-brown-950/60 px-3 py-2 text-[9px] font-bold text-white backdrop-blur-md">
-              {member.position}
+              {
+                member.position
+              }
             </span>
           )}
         </div>
 
         <span className="absolute right-6 bottom-5 left-6 text-[10px] font-semibold tracking-[0.08em] text-white/65">
-          {member.englishName}
+          {
+            member.englishName
+          }
         </span>
       </div>
 
@@ -1811,11 +2034,15 @@ function TeamMemberCard({
         <div className="flex items-start justify-between gap-5">
           <div>
             <h4 className="text-[31px] leading-tight font-bold tracking-[-0.045em] text-white md:text-[34px]">
-              {member.name}
+              {
+                member.name
+              }
             </h4>
 
             <p className="mt-2 text-[15px] font-medium text-halo-orange-300">
-              {member.role}
+              {
+                member.role
+              }
             </p>
           </div>
 
@@ -1825,7 +2052,9 @@ function TeamMemberCard({
         </div>
 
         <p className="mt-6 min-h-[84px] text-base leading-7 text-white/62">
-          {member.description}
+          {
+            member.description
+          }
         </p>
       </div>
     </article>
@@ -1839,18 +2068,12 @@ function TeamSection() {
       className="halo-team-surface py-28 text-white md:py-44"
     >
       <div className="mx-auto w-[min(calc(100%-36px),1240px)] md:w-[min(calc(100%-48px),1240px)]">
-        <div className="grid items-end gap-10 lg:grid-cols-[1.3fr_0.7fr] lg:gap-20">
-          <SectionHeading
-            eyebrow="TEAM HALO"
-            title={
-              <>
-                HALO를 만드는 사람들
-              </>
-            }
-            description="기획, 디자인, Android, Spring Boot가 함께 HALO를 만들고 있습니다."
-            light
-          />
-        </div>
+        <SectionHeading
+          eyebrow="TEAM HALO"
+          title="HALO를 만드는 사람들"
+          description="기획, 디자인, Android, Spring Boot가 함께 HALO를 만들고 있습니다."
+          light
+        />
 
         <div className="mt-20 md:mt-28">
           {teamGroups.map(
@@ -1859,13 +2082,16 @@ function TeamSection() {
               groupIndex,
             ) => (
               <section
-                key={group.id}
+                key={
+                  group.id
+                }
                 className="border-t border-white/15 py-16 first:pt-16 last:pb-0 md:py-20"
               >
                 <div className="mb-11 grid gap-5 md:grid-cols-[60px_220px_1fr] md:gap-8">
                   <span className="pt-1 text-xs font-bold text-halo-orange-300">
                     {String(
-                      groupIndex + 1,
+                      groupIndex +
+                        1,
                     ).padStart(
                       2,
                       "0",
@@ -1874,11 +2100,15 @@ function TeamSection() {
 
                   <div>
                     <span className="text-[9px] font-bold tracking-[0.18em] text-halo-orange-500">
-                      {group.code}
+                      {
+                        group.code
+                      }
                     </span>
 
                     <h3 className="mt-2 text-[35px] font-semibold tracking-[-0.045em]">
-                      {group.title}
+                      {
+                        group.title
+                      }
                     </h3>
                   </div>
 
@@ -1892,30 +2122,38 @@ function TeamSection() {
                 <div
                   className={[
                     "grid gap-6",
-                    group.members
+                    group
+                      .members
                       .length ===
                     1
                       ? "md:grid-cols-[minmax(300px,420px)]"
                       : "",
-                    group.members
+                    group
+                      .members
                       .length ===
                     2
                       ? "md:grid-cols-2 xl:grid-cols-[repeat(2,minmax(300px,420px))]"
                       : "",
-                    group.members
+                    group
+                      .members
                       .length ===
                     3
                       ? "md:grid-cols-2 xl:grid-cols-3"
                       : "",
-                    group.members
+                    group
+                      .members
                       .length >=
                     4
                       ? "md:grid-cols-2 xl:grid-cols-4"
                       : "",
-                  ].join(" ")}
+                  ].join(
+                    " ",
+                  )}
                 >
                   {group.members.map(
-                    (member) => (
+                    (
+                      member,
+                    ) => (
                       <TeamMemberCard
                         key={
                           member.id
@@ -1952,22 +2190,30 @@ function FinalSection() {
           <br />
 
           <strong className="font-bold">
-            다음 한 장을 시작해보세요.
+            다음 한 장을
+            시작해보세요.
           </strong>
         </h2>
 
         <p className="mt-8 max-w-[600px] text-base leading-8 text-white/60">
-          열 번의 작은 이야기가 모이면
-          우리 가족만의 한 권이 됩니다.
-          <br />
-          HALO는 지금 Google Play에서 만나볼 수 있어요.
+          열 번의 작은
+          이야기가 모이면
+          우리 가족만의 한
+          권이 됩니다.
         </p>
 
-        <div className="mt-11 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-11">
           <a
-            href={PLAY_STORE_URL}
+            href={
+              PLAY_STORE_URL
+            }
             target="_blank"
             rel="noreferrer"
+            onClick={() =>
+              trackPlayStoreClick(
+                "final",
+              )
+            }
             aria-label="Google Play에서 HALO 다운로드하기"
             className="group inline-flex min-h-[62px] items-center gap-4 rounded-[16px] border border-white/20 bg-[#111111] px-6 text-left text-white shadow-[0_18px_45px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:bg-black hover:shadow-[0_24px_55px_rgba(0,0,0,0.4)]"
           >
@@ -1983,14 +2229,6 @@ function FinalSection() {
               </span>
             </span>
           </a>
-
-          <Link
-            to="/download"
-            className="inline-flex min-h-[62px] items-center justify-center gap-7 rounded-[16px] border border-white/20 bg-white/5 px-7 text-sm font-bold text-white backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:bg-white hover:text-halo-brown-900"
-          >
-            HALO 자세히 보기
-            <ArrowIcon />
-          </Link>
         </div>
       </div>
     </section>
@@ -1998,53 +2236,35 @@ function FinalSection() {
 }
 
 /* =========================================================
-   DOWNLOAD
+   DOWNLOAD DETAIL PAGE
 ========================================================= */
 
-function DownloadPlayButton({
-  light = false,
-}) {
+function DownloadPlayButton() {
   return (
     <a
-      href={PLAY_STORE_URL}
+      href={
+        PLAY_STORE_URL
+      }
       target="_blank"
       rel="noreferrer"
+      onClick={() =>
+        trackPlayStoreClick(
+          "download_page",
+        )
+      }
       aria-label="Google Play에서 HALO 다운로드하기"
-      className={[
-        "group inline-flex min-h-[66px] w-fit shrink-0 items-center gap-4 rounded-[18px] border px-6 text-left transition duration-300 hover:-translate-y-1",
-        light
-          ? "border-white/20 bg-white text-halo-brown-950 shadow-[0_20px_55px_rgba(0,0,0,0.20)]"
-          : "border-black/10 bg-[#111111] text-white shadow-[0_20px_55px_rgba(26,18,13,0.18)] hover:bg-black",
-      ].join(" ")}
+      className="group inline-flex min-h-[66px] w-fit shrink-0 items-center gap-4 rounded-[18px] border border-white/20 bg-white px-6 text-left text-halo-brown-950 shadow-[0_20px_55px_rgba(0,0,0,0.20)] transition duration-300 hover:-translate-y-1"
     >
       <GooglePlayIcon />
 
       <span className="flex flex-col">
-        <span
-          className={[
-            "text-[9px] leading-none font-semibold tracking-[0.08em]",
-            light
-              ? "text-halo-brown-400"
-              : "text-white/60",
-          ].join(" ")}
-        >
+        <span className="text-[9px] leading-none font-semibold tracking-[0.08em] text-halo-brown-400">
           GET IT ON
         </span>
 
         <span className="mt-1.5 text-[19px] leading-none font-semibold tracking-[-0.035em]">
           Google Play
         </span>
-      </span>
-
-      <span
-        className={[
-          "ml-2 flex size-8 items-center justify-center rounded-full transition duration-300 group-hover:translate-x-1",
-          light
-            ? "bg-halo-orange-100 text-halo-orange-600"
-            : "bg-white/10 text-white",
-        ].join(" ")}
-      >
-        <ArrowIcon />
       </span>
     </a>
   );
@@ -2067,7 +2287,8 @@ function DownloadStep({
         "py-24 md:py-36",
         dark
           ? "bg-halo-brown-950 text-white"
-          : index % 3 === 1
+          : index % 3 ===
+              1
             ? "bg-[#F1EAE1]"
             : "bg-halo-cream-50",
       ].join(" ")}
@@ -2088,9 +2309,13 @@ function DownloadStep({
                 dark
                   ? "text-halo-orange-300"
                   : "text-halo-orange-600",
-              ].join(" ")}
+              ].join(
+                " ",
+              )}
             >
-              {step.number}
+              {
+                step.number
+              }
             </span>
 
             <span
@@ -2099,7 +2324,9 @@ function DownloadStep({
                 dark
                   ? "bg-white/20"
                   : "bg-halo-brown-900/15",
-              ].join(" ")}
+              ].join(
+                " ",
+              )}
             />
 
             <span
@@ -2108,9 +2335,13 @@ function DownloadStep({
                 dark
                   ? "text-white/40"
                   : "text-halo-brown-400",
-              ].join(" ")}
+              ].join(
+                " ",
+              )}
             >
-              {step.eyebrow}
+              {
+                step.eyebrow
+              }
             </span>
           </div>
 
@@ -2133,14 +2364,20 @@ function DownloadStep({
                 : "text-halo-brown-500",
             ].join(" ")}
           >
-            {step.description}
+            {
+              step.description
+            }
           </p>
         </div>
 
         <div className="relative flex items-center justify-center">
           <ImageWithFallback
-            src={step.image}
-            alt={step.alt}
+            src={
+              step.image
+            }
+            alt={
+              step.alt
+            }
             className="block h-auto max-h-[760px] w-full object-contain"
           />
         </div>
@@ -2151,12 +2388,14 @@ function DownloadStep({
 
 function DownloadPage() {
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo(
+      0,
+      0,
+    );
   }, []);
 
   return (
     <main className="overflow-hidden bg-halo-cream-50 pt-[76px] md:pt-[88px]">
-      {/* HERO */}
       <section className="relative min-h-[calc(100svh-76px)] overflow-hidden md:min-h-[calc(100svh-88px)]">
         <div className="absolute inset-0">
           <ImageWithFallback
@@ -2179,14 +2418,15 @@ function DownloadPage() {
               <span className="size-2 rounded-full bg-halo-orange-400 shadow-[0_0_18px_rgba(255,123,16,0.85)]" />
 
               <span className="text-[10px] font-bold tracking-[0.18em] text-white/85">
-                NOW AVAILABLE ON GOOGLE PLAY
+                AVAILABLE NOW
               </span>
             </div>
 
             <h1 className="mt-8 text-[50px] leading-[1.04] font-semibold tracking-[-0.065em] text-white md:text-[72px] xl:text-[88px]">
               매일 한 장,
               <br />
-              부모님과 이어가는
+              부모님과
+              이어가는
               <br />
 
               <span className="text-halo-orange-300">
@@ -2195,15 +2435,17 @@ function DownloadPage() {
             </h1>
 
             <p className="mt-8 max-w-[610px] text-[16px] leading-8 tracking-[-0.02em] text-white/70 md:text-[18px]">
-              마음은 있지만 어떻게 시작해야 할지 몰랐던 순간들.
-              HALO는 하루 한 장의 이야기로 부모님과의 시간을
-              천천히 이어갑니다.
+              마음은 있지만
+              어떻게 시작해야
+              할지 몰랐던 순간들.
+              HALO는 하루 한 장의
+              이야기로 부모님과의
+              시간을 천천히
+              이어갑니다.
             </p>
 
             <div className="mt-10">
-              <DownloadPlayButton
-                light
-              />
+              <DownloadPlayButton />
             </div>
 
             <div className="mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 text-[11px] font-semibold text-white/50">
@@ -2233,7 +2475,6 @@ function DownloadPage() {
         </div>
       </section>
 
-      {/* HOOK */}
       <section className="relative overflow-hidden bg-halo-brown-950 py-28 text-white md:py-44">
         <div className="pointer-events-none absolute top-[-140px] right-[-80px] size-[430px] rounded-full bg-halo-orange-500/10 blur-[120px]" />
 
@@ -2243,9 +2484,11 @@ function DownloadPage() {
           </span>
 
           <h2 className="mt-8 max-w-[900px] text-[43px] leading-[1.14] font-medium tracking-[-0.06em] md:text-[64px] xl:text-[72px]">
-            가장 가까운 사람에게,
+            가장 가까운
+            사람에게,
             <br />
-            우리는 얼마나 가까이
+            우리는 얼마나
+            가까이
             <br className="hidden md:block" />
             다가가고 있을까요?
           </h2>
@@ -2253,11 +2496,14 @@ function DownloadPage() {
           <div className="mt-16 grid gap-12 border-t border-white/15 pt-12 md:mt-20 md:grid-cols-[0.9fr_1.1fr] md:gap-20 md:pt-16">
             <div>
               <p className="text-[18px] leading-9 tracking-[-0.025em] text-white/62 md:text-[21px]">
-                친구의 최애 메뉴는 쉽게 떠올리고,
+                친구의 최애
+                메뉴는 쉽게
+                떠올리고,
                 <br />
-                연인에게는 보고 싶다는 말을
-                <br className="hidden md:block" />
-                자연스럽게 건넵니다.
+                연인에게는 보고
+                싶다는 말을
+                자연스럽게
+                건넵니다.
               </p>
 
               <span className="mt-10 inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.16em] text-halo-orange-300">
@@ -2269,9 +2515,9 @@ function DownloadPage() {
 
             <div className="space-y-8 md:space-y-10">
               <p className="text-[29px] leading-[1.35] font-semibold tracking-[-0.045em] text-white md:text-[38px]">
-                부모님이 요즘 가장 좋아하는 것은
-                <br className="hidden md:block" />
-                무엇인가요?
+                부모님이 요즘
+                가장 좋아하는
+                것은 무엇인가요?
               </p>
 
               <p className="text-[29px] leading-[1.35] font-semibold tracking-[-0.045em] text-white md:text-[38px]">
@@ -2282,31 +2528,39 @@ function DownloadPage() {
                 </span>
 
                 라고 말한 건
-                <br className="hidden md:block" />
                 언제였나요?
               </p>
             </div>
           </div>
 
           <p className="mt-16 max-w-[680px] text-[16px] leading-8 text-white/45 md:mt-20 md:text-[18px]">
-            우리는 부모님을 사랑하지만,
-            생각보다 부모님의 오늘을 잘 모를 수 있습니다.
+            우리는 부모님을
+            사랑하지만, 생각보다
+            부모님의 오늘을 잘
+            모를 수 있습니다.
           </p>
         </div>
       </section>
 
-      {/* 01 ~ 07 */}
       {downloadSteps.map(
-        (step, index) => (
+        (
+          step,
+          index,
+        ) => (
           <DownloadStep
-            key={step.number}
-            step={step}
-            index={index}
+            key={
+              step.number
+            }
+            step={
+              step
+            }
+            index={
+              index
+            }
           />
         ),
       )}
 
-      {/* BRAND MESSAGE */}
       <section className="relative overflow-hidden bg-[#F3E5D5] py-32 text-center md:py-52">
         <div className="pointer-events-none absolute top-1/2 left-1/2 size-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-halo-orange-300/20 blur-[130px]" />
 
@@ -2318,7 +2572,8 @@ function DownloadPage() {
           <h2 className="mt-8 text-[42px] leading-[1.18] font-medium tracking-[-0.06em] text-halo-brown-950 md:text-[66px]">
             하루에도 수없이
             <br />
-            “안녕”이라는 말을 건넵니다.
+            “안녕”이라는 말을
+            건넵니다.
           </h2>
 
           <p className="mt-16 text-[21px] font-medium tracking-[-0.035em] text-halo-brown-500 md:text-[28px]">
@@ -2336,50 +2591,13 @@ function DownloadPage() {
 
             하신가요?
           </p>
-        </div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className="relative overflow-hidden bg-halo-orange-500 py-28 text-white md:py-44">
-        <div className="pointer-events-none absolute top-[-180px] right-[-100px] size-[520px] rounded-full bg-white/10 blur-[130px]" />
-
-        <div className="pointer-events-none absolute bottom-[-220px] left-[-120px] size-[600px] rounded-full bg-halo-brown-950/15 blur-[150px]" />
-
-        <div className="relative mx-auto grid w-[min(calc(100%-36px),1180px)] gap-12 md:w-[min(calc(100%-48px),1180px)] lg:grid-cols-[1fr_auto] lg:items-end">
-          <div>
-            <span className="text-[10px] font-bold tracking-[0.2em] text-white/65">
-              AVAILABLE NOW
-            </span>
-
-            <h2 className="mt-7 text-[46px] leading-[1.1] font-semibold tracking-[-0.06em] md:text-[72px]">
-              HALO의 첫 번째 안녕을,
-              <br />
-              지금 시작해보세요.
-            </h2>
-
-            <p className="mt-7 max-w-[610px] text-[16px] leading-8 text-white/70 md:text-[18px]">
-              Google Play에서 HALO를 설치하고,
-              부모님과 함께할 첫 번째 이야기를 시작해보세요.
-            </p>
-          </div>
-
-          <div className="lg:pb-2">
-            <DownloadPlayButton
-              light
-            />
-          </div>
-        </div>
-
-        <div className="relative mx-auto mt-20 flex w-[min(calc(100%-36px),1180px)] flex-col gap-3 border-t border-white/20 pt-7 text-[10px] font-semibold tracking-[0.13em] text-white/45 md:w-[min(calc(100%-48px),1180px)] md:flex-row md:items-center md:justify-between">
-          <span>
-            TEAM HALO · GOOGLE PLAY 2026
-          </span>
 
           <Link
             to="/"
-            className="inline-flex w-fit items-center gap-2 transition hover:text-white"
+            className="mt-14 inline-flex items-center gap-3 text-sm font-semibold text-halo-brown-500 transition hover:text-halo-orange-600"
           >
-            HALO 공식 홈페이지로 돌아가기
+            HALO 공식
+            홈페이지로 돌아가기
 
             <ArrowIcon />
           </Link>
@@ -2393,10 +2611,15 @@ function LegalPage({
   documentKey,
 }) {
   const document =
-    legalDocuments[documentKey];
+    legalDocuments[
+      documentKey
+    ];
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo(
+      0,
+      0,
+    );
   }, [documentKey]);
 
   if (!document) {
@@ -2413,11 +2636,15 @@ function LegalPage({
       <section className="halo-light-surface border-b border-halo-brown-900/10 py-20 md:py-28">
         <div className="mx-auto w-[min(calc(100%-36px),1080px)] md:w-[min(calc(100%-48px),1080px)]">
           <span className="text-[11px] font-bold tracking-[0.18em] text-halo-orange-600">
-            {document.eyebrow}
+            {
+              document.eyebrow
+            }
           </span>
 
           <h1 className="mt-5 text-[43px] font-bold tracking-[-0.055em] text-halo-brown-900 md:text-[64px]">
-            {document.title}
+            {
+              document.title
+            }
           </h1>
 
           <p className="mt-5 max-w-[700px] text-base leading-8 text-halo-brown-500">
@@ -2429,12 +2656,16 @@ function LegalPage({
           <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-xs text-halo-brown-500">
             <span>
               공고일자:{" "}
-              {document.announcedAt}
+              {
+                document.announcedAt
+              }
             </span>
 
             <span>
               시행일자:{" "}
-              {document.effectiveAt}
+              {
+                document.effectiveAt
+              }
             </span>
           </div>
         </div>
@@ -2447,17 +2678,25 @@ function LegalPage({
               {legalTabs.map(
                 (tab) => (
                   <Link
-                    key={tab.key}
-                    to={tab.path}
+                    key={
+                      tab.key
+                    }
+                    to={
+                      tab.path
+                    }
                     className={[
                       "rounded-full px-5 py-3 text-sm font-semibold transition",
                       tab.key ===
                       documentKey
                         ? "bg-halo-orange-500 text-white shadow-halo-sm"
                         : "border border-halo-brown-900/10 bg-white text-halo-brown-600 hover:border-halo-orange-300 hover:text-halo-orange-600",
-                    ].join(" ")}
+                    ].join(
+                      " ",
+                    )}
                   >
-                    {tab.label}
+                    {
+                      tab.label
+                    }
                   </Link>
                 ),
               )}
@@ -2467,7 +2706,9 @@ function LegalPage({
           <div className="mt-8 rounded-[28px] border border-halo-brown-900/10 bg-white p-6 shadow-halo-sm md:p-12">
             <div className="divide-y divide-halo-brown-900/10">
               {document.sections.map(
-                (section) => (
+                (
+                  section,
+                ) => (
                   <article
                     key={
                       section.title
@@ -2495,7 +2736,9 @@ function LegalPage({
                                 key={`${section.title}-${index}`}
                                 className="text-[15px] leading-8 text-halo-brown-600 md:text-base"
                               >
-                                {block.text}
+                                {
+                                  block.text
+                                }
                               </p>
                             );
                           }
@@ -2515,7 +2758,9 @@ function LegalPage({
                                     itemIndex,
                                   ) => (
                                     <li
-                                      key={item}
+                                      key={
+                                        item
+                                      }
                                       className="grid grid-cols-[28px_1fr] gap-3 text-[15px] leading-8 text-halo-brown-600 md:text-base"
                                     >
                                       <span className="flex size-7 items-center justify-center rounded-full bg-halo-orange-100 text-[11px] font-bold text-halo-orange-700">
@@ -2524,7 +2769,9 @@ function LegalPage({
                                       </span>
 
                                       <span>
-                                        {item}
+                                        {
+                                          item
+                                        }
                                       </span>
                                     </li>
                                   ),
@@ -2542,7 +2789,9 @@ function LegalPage({
                                 key={`${section.title}-${index}`}
                                 className="rounded-2xl border-l-4 border-halo-orange-500 bg-halo-orange-50 px-5 py-4 text-[15px] leading-7 text-halo-brown-700"
                               >
-                                {block.text}
+                                {
+                                  block.text
+                                }
                               </div>
                             );
                           }
@@ -2572,27 +2821,21 @@ function Footer() {
         <div className="grid gap-12 md:grid-cols-[1fr_auto_1fr]">
           <div>
             <Logo />
-
-            <a
-              href={PLAY_STORE_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-white/45 transition hover:text-halo-orange-300"
-            >
-              <span className="size-1.5 rounded-full bg-halo-orange-500" />
-              Google Play에서 HALO 만나보기
-            </a>
           </div>
 
           <nav className="grid grid-cols-2 gap-x-10 gap-y-4 text-sm text-white/60">
             {navigationItems.map(
               (item) => (
                 <a
-                  key={item.href}
+                  key={
+                    item.href
+                  }
                   href={`/${item.href}`}
                   className="transition hover:text-halo-orange-300"
                 >
-                  {item.label}
+                  {
+                    item.label
+                  }
                 </a>
               ),
             )}
@@ -2615,7 +2858,8 @@ function Footer() {
               to="/privacy"
               className="transition hover:text-halo-orange-300"
             >
-              개인정보 처리방침
+              개인정보
+              처리방침
             </Link>
 
             <Link
@@ -2641,18 +2885,22 @@ function Footer() {
             <p className="mt-3 text-lg leading-7 font-semibold">
               매일 한 장,
               <br />
-              부모님과 이어가는 따뜻한 안녕
+              부모님과 이어가는
+              따뜻한 안녕
             </p>
           </div>
         </div>
 
         <div className="mt-16 flex flex-col gap-3 border-t border-white/10 pt-6 text-[9px] font-semibold tracking-[0.14em] text-white/30 md:flex-row md:justify-between">
           <span>
-            © {currentYear} TEAM HALO. ALL RIGHTS RESERVED.
+            © {currentYear} TEAM
+            HALO. ALL RIGHTS
+            RESERVED.
           </span>
 
           <span>
-            PRODUCT · DESIGN · TECHNOLOGY
+            PRODUCT · DESIGN ·
+            TECHNOLOGY
           </span>
         </div>
       </div>
@@ -2661,7 +2909,8 @@ function Footer() {
 }
 
 function AppRoutes() {
-  const location = useLocation();
+  const location =
+    useLocation();
 
   return (
     <>
@@ -2675,7 +2924,9 @@ function AppRoutes() {
       <Routes>
         <Route
           path="/"
-          element={<HomePage />}
+          element={
+            <HomePage />
+          }
         />
 
         <Route
