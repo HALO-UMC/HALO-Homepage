@@ -88,37 +88,37 @@ function CompanyHeader() {
 }
 
 function RelationFigure() {
-  return (
-    <figure className="relation-figure" aria-label="관계의 계기를 표현한 편집형 그래픽">
-      <div className="relation-figure__topline">
-        <span>관계 노트 · 제1호</span>
-        <span>HALO</span>
-      </div>
-      <p className="relation-figure__word">사이</p>
-      <div className="relation-figure__orbit" aria-hidden="true">
-        <span />
-        <span />
-      </div>
-      <div className="relation-figure__index">
-        <div>
-          <span>01</span>
-          <p>대화에서 시작되는 이해</p>
-        </div>
-        <div>
-          <span>02</span>
-          <p>관심에서 이어지는 경험</p>
-        </div>
-      </div>
-      <figcaption>
-        서로를 알아보는 작은 질문과 함께할 수 있는 경험 사이에 HALO가 있습니다.
-      </figcaption>
-    </figure>
-  );
+  // return (
+  //   <figure className="relation-figure" aria-label="관계의 계기를 표현한 편집형 그래픽">
+  //     <div className="relation-figure__topline">
+  //       <span>관계 노트 · 제1호</span>
+  //       <span>HALO</span>
+  //     </div>
+  //     <p className="relation-figure__word">사이</p>
+  //     <div className="relation-figure__orbit" aria-hidden="true">
+  //       <span />
+  //       <span />
+  //     </div>
+  //     <div className="relation-figure__index">
+  //       <div>
+  //         <span>01</span>
+  //         <p>대화에서 시작되는 이해</p>
+  //       </div>
+  //       <div>
+  //         <span>02</span>
+  //         <p>관심에서 이어지는 경험</p>
+  //       </div>
+  //     </div>
+  //     <figcaption>
+  //       서로를 알아보는 작은 질문과 함께할 수 있는 경험 사이에 HALO가 있습니다.
+  //     </figcaption>
+  //   </figure>
+  // );
 }
 
 export default function CompanyPage() {
   usePageMeta({
-    title: "HALO — 사람과 사람 사이, 가까워질 계기를 만듭니다",
+    title: "HALO는 사람과 사람 사이, 가까워질 계기를 만듭니다",
     description:
       "HALO는 대화와 경험을 통해 사람들이 서로를 알아가고 함께할 계기를 만드는 서비스를 개발합니다.",
     themeColor: "#f3efe6",
@@ -132,13 +132,13 @@ export default function CompanyPage() {
         <section className="company-hero" aria-labelledby="company-hero-title">
           <div className="editorial-container company-hero__grid">
             <div className="company-hero__copy">
-              <p className="company-hero__issue">HALO COMPANY · 관계의 다음 장면</p>
+              <p className="company-hero__issue">HALO COMPANY</p>
               <h1 id="company-hero-title">
-                사람과 사람 사이,
+                가까운 사람에게 마음을 전하고, 
                 <br />
-                <em>가까워질 계기</em>를
+                <em>함께할 계기</em>를
                 <br />
-                만듭니다.
+                만드는 기업
               </h1>
               <div className="company-hero__intro">
                 <p>

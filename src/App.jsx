@@ -2909,9 +2909,9 @@ function Footer() {
         </div>
 
         <div className="mt-14 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/10 pt-6 text-[12px] leading-5 text-white/60">
-          <span>상호명 할로(HALO)</span>
-          <span>대표자 이남혁</span>
-          <span>사업자등록번호 624-21-02643</span>
+          <span>상호명 : 할로(HALO)</span>
+          <span>대표자 : 이남혁</span>
+          <span>사업자등록번호 : 624-21-02643</span>
         </div>
 
         <div className="mt-5 flex flex-col gap-3 text-[9px] font-semibold tracking-[0.14em] text-white/30 md:flex-row md:justify-between">
