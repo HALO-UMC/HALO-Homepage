@@ -28,6 +28,9 @@ import {
   legalTabs,
 } from "./data/legalData.js";
 
+import WebEditorialRoutes from "./webeditorial/WebEditorialRoutes.jsx";
+import usePageMeta from "./webeditorial/usePageMeta.js";
+
 const FALLBACK_IMAGE =
   "https://picsum.photos/seed/halo-image-fallback/1200/900";
 
@@ -548,9 +551,9 @@ function SplashScreen() {
 function Logo() {
   return (
     <Link
-      to="/"
+      to="/halo"
       className="inline-flex shrink-0 items-center"
-      aria-label="HALO 홈페이지"
+      aria-label="HALO 앱 홈페이지"
     >
       <img
         src="/logotypo.svg"
@@ -577,7 +580,7 @@ function Header() {
 
   const isHome =
     location.pathname ===
-    "/";
+    "/halo";
 
   useEffect(() => {
     const handleScroll =
@@ -714,7 +717,7 @@ function Header() {
     (href) =>
       isHome
         ? href
-        : `/${href}`;
+        : `/halo${href}`;
 
   return (
     <>
@@ -758,7 +761,7 @@ function Header() {
               className={[
                 "text-sm font-semibold transition",
                 location.pathname !==
-                "/"
+                "/halo"
                   ? "text-halo-orange-500"
                   : "text-halo-brown-600 hover:text-halo-orange-500",
               ].join(
@@ -951,6 +954,13 @@ function SectionHeading({
 function HomePage() {
   const location =
     useLocation();
+
+  usePageMeta({
+    title: "HALO 앱 — 매일 한 장, 부모님과 이어가는 따뜻한 안녕",
+    description:
+      "사진과 질문으로 부모님의 삶과 취향을 알아가고, 매일 한 장의 가족 스토리북으로 기록하는 HALO 앱입니다.",
+    themeColor: "#ff7b10",
+  });
 
   useEffect(() => {
     if (
@@ -2593,7 +2603,7 @@ function DownloadPage() {
           </p>
 
           <Link
-            to="/"
+            to="/halo"
             className="mt-14 inline-flex items-center gap-3 text-sm font-semibold text-halo-brown-500 transition hover:text-halo-orange-600"
           >
             HALO 공식
@@ -2824,13 +2834,20 @@ function Footer() {
           </div>
 
           <nav className="grid grid-cols-2 gap-x-10 gap-y-4 text-sm text-white/60">
+            <Link
+              to="/"
+              className="transition hover:text-halo-orange-300"
+            >
+              HALO 회사
+            </Link>
+
             {navigationItems.map(
               (item) => (
                 <a
                   key={
                     item.href
                   }
-                  href={`/${item.href}`}
+                  href={`/halo${item.href}`}
                   className="transition hover:text-halo-orange-300"
                 >
                   {
@@ -2891,7 +2908,13 @@ function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-3 border-t border-white/10 pt-6 text-[9px] font-semibold tracking-[0.14em] text-white/30 md:flex-row md:justify-between">
+        <div className="mt-14 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/10 pt-6 text-[12px] leading-5 text-white/60">
+          <span>상호명 할로(HALO)</span>
+          <span>대표자 이남혁</span>
+          <span>사업자등록번호 624-21-02643</span>
+        </div>
+
+        <div className="mt-5 flex flex-col gap-3 text-[9px] font-semibold tracking-[0.14em] text-white/30 md:flex-row md:justify-between">
           <span>
             © {currentYear} TEAM
             HALO. ALL RIGHTS
@@ -2912,10 +2935,22 @@ function AppRoutes() {
   const location =
     useLocation();
 
+  if (
+    location.pathname === "/" ||
+    location.pathname === "/kiri" ||
+    location.pathname === "/webeditorial" ||
+    location.pathname === "/webeditorial/kiri" ||
+    location.pathname === "/webeditorial/privacy"
+  ) {
+    return (
+      <WebEditorialRoutes />
+    );
+  }
+
   return (
     <>
       {location.pathname ===
-        "/" && (
+        "/halo" && (
         <SplashScreen />
       )}
 
@@ -2923,7 +2958,7 @@ function AppRoutes() {
 
       <Routes>
         <Route
-          path="/"
+          path="/halo"
           element={
             <HomePage />
           }
