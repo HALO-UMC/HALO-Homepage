@@ -618,7 +618,7 @@
   min-height: 650px;
   margin: 0;
   overflow: hidden;
-  background: #f07932;
+  /* background: #f07932; */
 }
 
 .service-feature__visual--halo > img {
@@ -645,7 +645,7 @@
   position: relative;
   min-height: 720px;
   overflow: hidden;
-  background: #1a1a1a;
+  /* background: #1a1a1a; */
 }
 
 .service-feature__kiri-logo {
@@ -664,7 +664,7 @@
   width: min(46%, 360px);
   max-width: none;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 40px 40px 0 0;
+  border-radius: 40px 40px 40px 40px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
 }
 
@@ -688,7 +688,7 @@
 }
 
 .service-feature--kiri .kiri-link:hover {
-  border-color: #1a1a1a;
+  border-color: #fdfdfd;
   color: #1a1a1a;
   background: #9bea51;
 }
