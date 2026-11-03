@@ -1,16 +1,29 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import preregisterHandler from "../api/kiri-preregister.js";
-import statusHandler from "../api/kiri-preregister-status.js";
+import {
+  createPreregisterHandler,
+  getConfiguration,
+  default as defaultPreregisterHandler,
+} from "../api/kiri-preregister.js";
+import defaultStatusHandler, {
+  createStatusHandler,
+} from "../api/kiri-preregister-status.js";
+import { KIRI_PREREGISTRATION_POLICY } from "../api/kiri-policy.js";
+
+const TEST_POLICY = Object.freeze({
+  ...KIRI_PREREGISTRATION_POLICY,
+  policyVersion: "test-policy-v1",
+  retentionLabel: "테스트 종료 즉시 삭제",
+});
+const preregisterHandler = createPreregisterHandler({ policy: TEST_POLICY });
+const statusHandler = createStatusHandler({ policy: TEST_POLICY });
 
 const ENV_KEYS = [
   "SUPABASE_URL",
+  "SUPABASE_SECRET_KEY",
   "SUPABASE_SERVICE_ROLE_KEY",
   "KIRI_PREREGISTER_TABLE",
-  "KIRI_PRIVACY_POLICY_VERSION",
-  "KIRI_DATA_CONTROLLER_NAME",
-  "KIRI_PRIVACY_RETENTION_LABEL",
   "KIRI_ALLOWED_ORIGINS",
   "KIRI_ALLOWED_ORIGIN",
   "KIRI_RATE_LIMIT_SALT",
@@ -29,12 +42,8 @@ function clearEnvironment() {
 
 function setReadyEnvironment() {
   process.env.SUPABASE_URL = "https://project.example.supabase.co";
-  process.env.SUPABASE_SERVICE_ROLE_KEY = "server-secret-test-value";
+  process.env.SUPABASE_SECRET_KEY = "sb_secret_test-key";
   process.env.KIRI_PREREGISTER_TABLE = "kiri_preregistrations";
-  process.env.KIRI_PRIVACY_POLICY_VERSION = "test-policy-v1";
-  process.env.KIRI_DATA_CONTROLLER_NAME = "테스트 운영 주체";
-  process.env.KIRI_PRIVACY_RETENTION_LABEL = "테스트 종료 즉시 삭제";
-  process.env.KIRI_RATE_LIMIT_SALT = "test-rate-limit-salt";
 }
 
 function validBody(overrides = {}) {
@@ -108,6 +117,8 @@ test("필수 설정이 없으면 상태 API와 제출 API가 준비되지 않음
   assert.equal(status.status, 200);
   assert.equal(status.json.ready, false);
   assert.equal(status.json.reason, "configuration");
+  assert.equal(status.json.policy.dataControllerName, "할로(HALO)");
+  assert.equal(status.json.policy.retentionLabel, TEST_POLICY.retentionLabel);
 
   const submission = await call(
     preregisterHandler,
@@ -115,6 +126,33 @@ test("필수 설정이 없으면 상태 API와 제출 API가 준비되지 않음
   );
   assert.equal(submission.status, 503);
   assert.equal(submission.json.ok, false);
+});
+
+test("보유 기간이 비어 있어도 정책과 Supabase 연결이 있으면 접수할 수 있다", async () => {
+  setReadyEnvironment();
+  assert.equal(KIRI_PREREGISTRATION_POLICY.retentionLabel, null);
+  assert.ok(getConfiguration());
+
+  let storedRecord;
+  globalThis.fetch = async (_url, options) => {
+    if (options.method === "GET") {
+      return { ok: true, status: 200, json: async () => [] };
+    }
+
+    storedRecord = JSON.parse(options.body);
+    return { ok: true, status: 201, json: async () => [{ id: "row-no-retention" }] };
+  };
+
+  const status = await call(defaultStatusHandler, createRequest({ method: "GET" }));
+  assert.equal(status.json.ready, true);
+  assert.equal(status.json.policy.retentionLabel, null);
+
+  const submission = await call(
+    defaultPreregisterHandler,
+    createRequest({ ip: "198.51.100.21" }),
+  );
+  assert.equal(submission.status, 201);
+  assert.equal(storedRecord.privacy_retention_label, null);
 });
 
 test("잘못된 이메일과 필수 동의 누락을 각각 거절한다", async () => {
@@ -133,10 +171,12 @@ test("잘못된 이메일과 필수 동의 누락을 각각 거절한다", async
   assert.equal(missingConsent.json.field, "privacyAgreed");
 });
 
-test("정상 접수는 정규화 값과 동의 정보를 저장한 뒤에만 성공한다", async () => {
+test("새 Secret key는 apikey로만 전달하고 저장 성공 뒤에만 완료 처리한다", async () => {
   setReadyEnvironment();
   let storedRecord;
+  let requestHeaders;
   globalThis.fetch = async (_url, options) => {
+    requestHeaders = options.headers;
     storedRecord = JSON.parse(options.body);
     return {
       ok: true,
@@ -152,11 +192,37 @@ test("정상 접수는 정규화 값과 동의 정보를 저장한 뒤에만 성
 
   assert.equal(result.status, 201);
   assert.deepEqual(result.json, { ok: true, status: "created" });
+  assert.equal(requestHeaders.apikey, "sb_secret_test-key");
+  assert.equal(requestHeaders.Authorization, undefined);
   assert.equal(storedRecord.email_normalized, "test.user@example.com");
   assert.equal(storedRecord.privacy_consent_version, "test-policy-v1");
-  assert.equal(storedRecord.data_controller_name, "테스트 운영 주체");
+  assert.equal(storedRecord.data_controller_name, KIRI_PREREGISTRATION_POLICY.dataControllerName);
+  assert.equal(
+    storedRecord.data_controller_representative,
+    KIRI_PREREGISTRATION_POLICY.dataControllerRepresentative,
+  );
   assert.equal(storedRecord.privacy_retention_label, "테스트 종료 즉시 삭제");
   assert.match(storedRecord.privacy_agreed_at, /^\d{4}-\d{2}-\d{2}T/);
+});
+
+test("기존 service_role 설정도 이전과 같이 사용할 수 있다", async () => {
+  setReadyEnvironment();
+  delete process.env.SUPABASE_SECRET_KEY;
+  process.env.SUPABASE_SERVICE_ROLE_KEY = "legacy-service-role-test-key";
+  let requestHeaders;
+  globalThis.fetch = async (_url, options) => {
+    requestHeaders = options.headers;
+    return { ok: true, status: 201, json: async () => [{ id: "row-legacy" }] };
+  };
+
+  const result = await call(
+    preregisterHandler,
+    createRequest({ ip: "198.51.100.20" }),
+  );
+
+  assert.equal(result.status, 201);
+  assert.equal(requestHeaders.apikey, "legacy-service-role-test-key");
+  assert.equal(requestHeaders.Authorization, "Bearer legacy-service-role-test-key");
 });
 
 test("DB unique 충돌은 일반 저장 오류와 구분해 duplicate로 응답한다", async () => {
@@ -220,15 +286,23 @@ test("같은 인스턴스의 연속 요청은 기본 속도 제한으로 차단�
 
 test("상태 API는 저장소 접근을 확인한 경우에만 폼을 준비 상태로 연다", async () => {
   setReadyEnvironment();
-  globalThis.fetch = async () => ({
-    ok: true,
-    status: 200,
-    json: async () => [],
-  });
+  let requestHeaders;
+  globalThis.fetch = async (_url, options) => {
+    requestHeaders = options.headers;
+    return {
+      ok: true,
+      status: 200,
+      json: async () => [],
+    };
+  };
 
   const result = await call(statusHandler, createRequest({ method: "GET" }));
   assert.equal(result.status, 200);
   assert.equal(result.json.ready, true);
   assert.equal(result.json.policy.policyVersion, "test-policy-v1");
+  assert.equal(result.json.policy.dataControllerName, "할로(HALO)");
+  assert.equal(result.json.policy.collectionItems, TEST_POLICY.collectionItems);
   assert.equal(result.json.policy.retentionLabel, "테스트 종료 즉시 삭제");
+  assert.equal(requestHeaders.apikey, "sb_secret_test-key");
+  assert.equal(requestHeaders.Authorization, undefined);
 });

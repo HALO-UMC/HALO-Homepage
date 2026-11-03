@@ -36,9 +36,17 @@ export function CompanyWordmark({ light = false }) {
 }
 
 export function SectionLabel({ number, children, light = false }) {
+  const className = [
+    "section-label",
+    light ? "section-label--light" : "",
+    number ? "" : "section-label--plain",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className={`section-label${light ? " section-label--light" : ""}`}>
-      <span>{number}</span>
+    <div className={className}>
+      {number && <span>{number}</span>}
       <p>{children}</p>
     </div>
   );
@@ -62,11 +70,6 @@ export function EditorialFooter({ variant = "company" }) {
           ) : (
             <p className="editorial-footer__name">HALO</p>
           )}
-          <p className="editorial-footer__statement">
-            사람과 사람 사이,
-            <br />
-            가까워질 계기를 만듭니다.
-          </p>
         </div>
 
         <div className="editorial-footer__links">
@@ -74,7 +77,7 @@ export function EditorialFooter({ variant = "company" }) {
             <p className="editorial-footer__label">바로가기</p>
             <Link to="/">HALO 회사</Link>
             <Link to="/halo">HALO 앱</Link>
-            <Link to="/kiri">KIRI 앱</Link>
+            <Link to="/kiri">KIRI</Link>
           </div>
           <div>
             <p className="editorial-footer__label">문의</p>
@@ -93,7 +96,6 @@ export function EditorialFooter({ variant = "company" }) {
 
       <div className="editorial-container editorial-footer__bottom">
         <span>© {new Date().getFullYear()} HALO</span>
-        <span>관계를 위한 다음 계기를 설계합니다.</span>
       </div>
     </footer>
   );

@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 import {
   ArrowIcon,
@@ -9,44 +9,43 @@ import {
 import usePageMeta from "./usePageMeta.js";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const FORM_ENABLED = false;
 
 const experienceSteps = [
   {
     number: "01",
+    tabLabel: "질문",
     title: "질문으로 서로 알아가기",
     description:
       "가족에게 직접 묻기 어려웠던 취향을 한 번에 하나씩 나누며 서로를 알아갑니다.",
     image: "/images/kiri/kiri-question.png",
     alt: "가장 좋아하는 음식을 묻는 KIRI 질문 화면",
-    note: "서로를 알아가는 질문",
   },
   {
     number: "02",
+    tabLabel: "활동 발견",
     title: "우리에게 맞는 활동과 장소 발견",
     description:
       "가족의 취향과 상황을 바탕으로 함께해 볼 활동을 살펴보고 관심 있는 장소를 발견합니다.",
     image: "/images/kiri/kiri-places.png",
     alt: "가족 활동과 장소를 탐색하는 KIRI 플레이스 화면",
-    note: "함께할 장소 발견",
   },
   {
     number: "03",
+    tabLabel: "일정",
     title: "관심 활동을 약속으로 이어가기",
     description:
       "저장한 활동에 날짜와 함께할 가족을 더해, ‘다음에’라는 말을 구체적인 제안으로 바꿉니다.",
     image: "/images/kiri/kiri-schedule.png",
     alt: "가족과의 일정을 제안하는 KIRI 일정 등록 화면",
-    note: "가족과 일정 제안",
   },
   {
     number: "04",
+    tabLabel: "기록",
     title: "함께한 시간을 사진과 기록으로 보관",
     description:
       "가족과 보낸 날의 사진과 각자의 기록을 한곳에 모아 다시 꺼내 볼 수 있도록 준비하고 있습니다.",
     image: "/images/kiri/kiri-record.png",
     alt: "함께한 가족 활동의 사진과 기록을 모아보는 KIRI 기록 화면",
-    note: "함께한 시간 기록",
   },
 ];
 
@@ -77,11 +76,11 @@ function KiriHeader() {
 }
 
 function KiriPreregisterForm() {
-  const preregistration = {
-    phase: "ready",
-    ready: true,
+  const [preregistration, setPreregistration] = useState({
+    phase: "loading",
+    ready: false,
     policy: null,
-  };
+  });
   const [values, setValues] = useState({
     email: "",
     nickname: "",
@@ -93,14 +92,52 @@ function KiriPreregisterForm() {
   const [errors, setErrors] = useState({});
   const [submitState, setSubmitState] = useState({ status: "idle", message: "" });
   const isSubmittingRef = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/kiri-preregister-status", {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("사전예약 접수 상태를 확인하지 못했습니다.");
+        }
+
+        return response.json();
+      })
+      .then((result) => {
+        if (!cancelled) {
+          setPreregistration({
+            phase: "ready",
+            ready:
+              result.ready === true &&
+              Boolean(
+                result.policy?.policyVersion &&
+                  result.policy?.dataControllerName,
+              ),
+            policy: result.policy || null,
+          });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setPreregistration({ phase: "ready", ready: false, policy: null });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const retentionLabel =
     preregistration.policy?.retentionLabel ||
-    import.meta.env.VITE_KIRI_PRIVACY_RETENTION_LABEL ||
     "접수 시작 전 안내 예정";
   const dataController =
     preregistration.policy?.dataControllerName ||
-    import.meta.env.VITE_KIRI_DATA_CONTROLLER_NAME ||
-    "접수 시작 전 안내 예정";
+    "할로(HALO)";
 
   const updateValue = (event) => {
     const { name, type, checked, value } = event.target;
@@ -122,7 +159,7 @@ function KiriPreregisterForm() {
     }
 
     if (values.nickname.trim().length > 24) {
-      nextErrors.nickname = "닉네임은 24자 이내로 입력해주세요.";
+      nextErrors.nickname = "불러드릴 이름은 24자 이내로 입력해주세요.";
     }
 
     if (!values.privacyAgreed) {
@@ -136,7 +173,7 @@ function KiriPreregisterForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!FORM_ENABLED || isSubmittingRef.current || !validate()) {
+    if (!preregistration.ready || isSubmittingRef.current || !validate()) {
       return;
     }
 
@@ -183,31 +220,6 @@ function KiriPreregisterForm() {
     }
   };
 
-  if (preregistration.phase === "loading") {
-    return (
-      <div className="kiri-form-gate" role="status" aria-live="polite">
-        <span className="kiri-form-gate__pulse" aria-hidden="true" />
-        <p>사전예약 접수 가능 여부를 확인하고 있어요.</p>
-      </div>
-    );
-  }
-
-  if (!preregistration.ready) {
-    return (
-      <div className="kiri-form-gate" role="status" aria-live="polite">
-        <img src="/images/kiri/kiri-mascot.svg" alt="" width="56" height="56" />
-        <p className="kiri-form-gate__label">사전예약 접수 준비 중</p>
-        <h3>사전예약 접수를 준비하고 있어요.</h3>
-        <p>
-          접수가 시작되면 이곳에서 바로 신청하고 KIRI의 출시 소식을 받아볼 수 있어요.
-        </p>
-        <button type="button" disabled>
-          사전예약 접수 준비 중
-        </button>
-      </div>
-    );
-  }
-
   if (submitState.status === "success" || submitState.status === "duplicate") {
     return (
       <div className="kiri-form-complete" role="status" aria-live="polite">
@@ -226,8 +238,14 @@ function KiriPreregisterForm() {
       <div className="kiri-form__preparing" role="status">
         <span aria-hidden="true" />
         <div>
-          <strong>사전예약 접수 준비 중</strong>
-          <p>접수가 시작되면 이 페이지에서 신청할 수 있어요.</p>
+          <strong>{preregistration.ready ? "사전예약을 받고 있어요" : "사전예약 신청 양식"}</strong>
+          <p>
+            {preregistration.ready
+              ? "이메일을 등록하고 KIRI 출시 소식을 받아보세요."
+              : preregistration.phase === "loading"
+                ? "접수 상태를 확인하고 있어요. 입력 후 설정이 준비되면 신청할 수 있어요."
+                : "접수 설정을 마치면 신청 내용을 서버에 저장할 수 있어요."}
+          </p>
         </div>
       </div>
 
@@ -259,7 +277,7 @@ function KiriPreregisterForm() {
 
         <div className="kiri-field">
           <label htmlFor="kiri-nickname">
-            닉네임 <span className="is-optional">선택</span>
+            불러드릴 이름 <span className="is-optional">선택</span>
           </label>
           <input
             id="kiri-nickname"
@@ -352,9 +370,6 @@ function KiriPreregisterForm() {
               <dd>동의를 거부할 수 있으며, 필수 동의를 거부하면 사전예약 신청이 어렵습니다.</dd>
             </div>
           </dl>
-          <p>
-            개인정보 수집·이용에 관한 자세한 내용은 접수 시작 전에 확정해 안내드릴게요.
-          </p>
         </div>
         {errors.privacyAgreed && (
           <p id="kiri-privacy-error" className="kiri-field__error">
@@ -387,9 +402,9 @@ function KiriPreregisterForm() {
       <button
         className="kiri-submit"
         type="submit"
-        disabled={!FORM_ENABLED || submitState.status === "submitting"}
+        disabled={!preregistration.ready || submitState.status === "submitting"}
       >
-        {!FORM_ENABLED ? (
+        {!preregistration.ready ? (
           "접수 준비 중"
         ) : submitState.status === "submitting" ? (
           <>
@@ -398,24 +413,115 @@ function KiriPreregisterForm() {
           </>
         ) : (
           <>
-            사전예약하기
+            출시 알림 신청하기
             <ArrowIcon />
           </>
         )}
       </button>
 
       <p className="kiri-form__footnote" aria-live="polite">
-        {!FORM_ENABLED
-          ? "접수가 시작되기 전까지 입력 내용은 제출되지 않습니다."
-          : submitState.status === "submitting"
+        {submitState.status === "submitting"
           ? submitState.message
-          : "광고성 정보 수신 동의를 별도로 묶지 않습니다."}
+          : " "}
       </p>
     </form>
   );
 }
 
+function KiriExperienceShowcase() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const tabRefs = useRef([]);
+  const activeStep = experienceSteps[activeIndex];
+
+  const selectStep = (index, moveFocus = false) => {
+    setActiveIndex(index);
+
+    if (moveFocus) {
+      requestAnimationFrame(() => tabRefs.current[index]?.focus());
+    }
+  };
+
+  const handleTabKeyDown = (event, index) => {
+    let nextIndex;
+
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (index + 1) % experienceSteps.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (index - 1 + experienceSteps.length) % experienceSteps.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = experienceSteps.length - 1;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    selectStep(nextIndex, true);
+  };
+
+  return (
+    <div className="kiri-showcase">
+      <div className="kiri-showcase__tabs" role="tablist" aria-label="KIRI 서비스 경험 선택">
+        {experienceSteps.map((step, index) => {
+          const isActive = index === activeIndex;
+
+          return (
+            <button
+              key={step.number}
+              ref={(node) => {
+                tabRefs.current[index] = node;
+              }}
+              id={`kiri-experience-tab-${step.number}`}
+              type="button"
+              role="tab"
+              data-experience-index={index}
+              aria-selected={isActive}
+              aria-controls="kiri-experience-panel"
+              tabIndex={isActive ? 0 : -1}
+              onClick={() => selectStep(index)}
+              onKeyDown={(event) => handleTabKeyDown(event, index)}
+            >
+              {step.tabLabel}
+            </button>
+          );
+        })}
+      </div>
+
+      <div
+        key={activeStep.number}
+        id="kiri-experience-panel"
+        className="kiri-showcase__panel"
+        role="tabpanel"
+        aria-labelledby={`kiri-experience-tab-${activeStep.number}`}
+      >
+        <div className="kiri-showcase__copy">
+          <h3>{activeStep.title}</h3>
+          <p>{activeStep.description}</p>
+        </div>
+        <figure className="kiri-phone">
+          <img src={activeStep.image} alt={activeStep.alt} />
+        </figure>
+      </div>
+    </div>
+  );
+}
+
 export default function KiriPage() {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) {
+      return undefined;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [hash]);
+
   usePageMeta({
     title: "KIRI — 우리 가족만의 취향, 우리 가족만의 시간",
     description:
@@ -455,14 +561,12 @@ export default function KiriPage() {
                 사전예약 준비 보기
                 <ArrowIcon />
               </a>
-              <small>KIRI는 가족과 함께할 첫 시간을 준비하고 있습니다.</small>
             </div>
 
             <div className="kiri-hero__visual">
               <div className="kiri-hero__type" aria-hidden="true">KIRI</div>
               <figure className="kiri-phone kiri-phone--hero">
                 <img src="/images/kiri/kiri-home.png" alt="KIRI 홈 화면" />
-                <figcaption>KIRI 홈</figcaption>
               </figure>
               <img
                 className="kiri-hero__mascot"
@@ -477,7 +581,7 @@ export default function KiriPage() {
 
         <section id="kiri-problem" className="kiri-problem editorial-section">
           <div className="editorial-container">
-            <SectionLabel number="01" light>왜 KIRI인가요</SectionLabel>
+            <SectionLabel light>왜 KIRI인가요</SectionLabel>
             <div className="kiri-problem__lead">
               <h2>
                 함께하고 싶은 마음은 있는데,
@@ -508,40 +612,19 @@ export default function KiriPage() {
 
         <section id="kiri-experience" className="kiri-experience editorial-section">
           <div className="editorial-container">
-            <SectionLabel number="02" light>서비스 경험</SectionLabel>
+            <SectionLabel light>서비스 경험</SectionLabel>
             <div className="kiri-experience__heading">
               <h2>알아가는 질문이 함께한 하루의 기록이 되기까지</h2>
-              <p>
-                질문에서 발견한 취향이 함께할 장소와 일정, 함께한 날의 기록으로
-                자연스럽게 이어집니다.
-              </p>
             </div>
 
-            <div className="kiri-experience__list">
-              {experienceSteps.map((step, index) => (
-                <article
-                  key={step.number}
-                  className={`kiri-step${index % 2 === 1 ? " kiri-step--reverse" : ""}`}
-                >
-                  <div className="kiri-step__copy">
-                    <span>{step.number}</span>
-                    <h3>{step.title}</h3>
-                    <p>{step.description}</p>
-                  </div>
-                  <figure className="kiri-phone">
-                    <img src={step.image} alt={step.alt} loading="lazy" />
-                    <figcaption>{step.note}</figcaption>
-                  </figure>
-                </article>
-              ))}
-            </div>
+            <KiriExperienceShowcase />
           </div>
         </section>
 
         <section id="kiri-preregister" className="kiri-preregister editorial-section">
           <div className="editorial-container kiri-preregister__grid">
             <div className="kiri-preregister__intro">
-              <SectionLabel number="03" light>사전예약</SectionLabel>
+              <SectionLabel light>사전예약</SectionLabel>
               <h2>
                 KIRI의 첫 소식을
                 <br />

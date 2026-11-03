@@ -1,4 +1,8 @@
-import { getConfiguration } from "./kiri-preregister.js";
+import {
+  getConfiguration,
+  getSupabaseApiKeyHeaders,
+} from "./kiri-preregister.js";
+import { KIRI_PREREGISTRATION_POLICY } from "./kiri-policy.js";
 
 function sendStatus(response, payload) {
   response.statusCode = 200;
@@ -15,75 +19,82 @@ function publicPolicy(configuration) {
 
   return {
     dataControllerName: configuration.dataControllerName,
+    dataControllerRepresentative: configuration.dataControllerRepresentative,
     retentionLabel: configuration.retentionLabel,
     policyVersion: configuration.policyVersion,
+    collectionItems: configuration.collectionItems,
+    processingPurpose: configuration.processingPurpose,
+    consentRefusal: configuration.consentRefusal,
   };
 }
 
-export default async function handler(request, response) {
-  if (request.method !== "GET") {
-    response.setHeader("Allow", "GET");
-    response.statusCode = 405;
-    response.setHeader("Content-Type", "application/json; charset=utf-8");
-    response.setHeader("Cache-Control", "no-store");
-    return response.end(
-      JSON.stringify({
+export function createStatusHandler({ policy = KIRI_PREREGISTRATION_POLICY } = {}) {
+  return async function handler(request, response) {
+    if (request.method !== "GET") {
+      response.setHeader("Allow", "GET");
+      response.statusCode = 405;
+      response.setHeader("Content-Type", "application/json; charset=utf-8");
+      response.setHeader("Cache-Control", "no-store");
+      return response.end(
+        JSON.stringify({
+          ready: false,
+          message: "지원하지 않는 요청 방식입니다.",
+        }),
+      );
+    }
+
+    const configuration = getConfiguration(policy);
+    if (!configuration) {
+      return sendStatus(response, {
         ready: false,
-        message: "지원하지 않는 요청 방식입니다.",
-      }),
-    );
-  }
+        reason: "configuration",
+        policy: publicPolicy(policy),
+      });
+    }
 
-  const configuration = getConfiguration();
-  if (!configuration) {
+    let storageResponse;
+    try {
+      const query = new URL(
+        `${configuration.supabaseUrl}/rest/v1/${configuration.table}`,
+      );
+      query.searchParams.set("select", "id");
+      query.searchParams.set("limit", "0");
+
+      storageResponse = await fetch(query, {
+        method: "GET",
+        headers: {
+          ...getSupabaseApiKeyHeaders(configuration.apiKey),
+          Accept: "application/json",
+        },
+      });
+    } catch {
+      return sendStatus(response, {
+        ready: false,
+        reason: "storage",
+        policy: publicPolicy(configuration),
+      });
+    }
+
+    if (!storageResponse.ok) {
+      const storageResult = await storageResponse.json().catch(() => null);
+      console.error("KIRI preregistration readiness error", {
+        status: storageResponse.status,
+        code: storageResult?.code || "unknown",
+      });
+
+      return sendStatus(response, {
+        ready: false,
+        reason: "storage",
+        policy: publicPolicy(configuration),
+      });
+    }
+
     return sendStatus(response, {
-      ready: false,
-      reason: "configuration",
-      policy: null,
-    });
-  }
-
-  let storageResponse;
-  try {
-    const query = new URL(
-      `${configuration.supabaseUrl}/rest/v1/${configuration.table}`,
-    );
-    query.searchParams.set("select", "id");
-    query.searchParams.set("limit", "0");
-
-    storageResponse = await fetch(query, {
-      method: "GET",
-      headers: {
-        apikey: configuration.serviceRoleKey,
-        Authorization: `Bearer ${configuration.serviceRoleKey}`,
-        Accept: "application/json",
-      },
-    });
-  } catch {
-    return sendStatus(response, {
-      ready: false,
-      reason: "storage",
+      ready: true,
+      reason: null,
       policy: publicPolicy(configuration),
     });
-  }
-
-  if (!storageResponse.ok) {
-    const storageResult = await storageResponse.json().catch(() => null);
-    console.error("KIRI preregistration readiness error", {
-      status: storageResponse.status,
-      code: storageResult?.code || "unknown",
-    });
-
-    return sendStatus(response, {
-      ready: false,
-      reason: "storage",
-      policy: publicPolicy(configuration),
-    });
-  }
-
-  return sendStatus(response, {
-    ready: true,
-    reason: null,
-    policy: publicPolicy(configuration),
-  });
+  };
 }
+
+export default createStatusHandler();

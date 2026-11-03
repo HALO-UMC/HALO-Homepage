@@ -9,18 +9,16 @@ export default function PrivacyDraftPage() {
   usePageMeta({
     title: "KIRI 사전예약 개인정보 안내 — 정책 초안",
     description:
-      "KIRI 사전예약에 적용할 개인정보 수집·이용 안내 초안입니다. 공개 전에 운영 주체와 보유 기간을 확정해야 합니다.",
+      "KIRI 사전예약에 적용할 개인정보 수집·이용 안내입니다. 처리자와 정책 버전은 서버 공통 설정을 따릅니다.",
     themeColor: "#f3efe6",
   });
 
   const retentionLabel =
     preregistration.policy?.retentionLabel ||
-    import.meta.env.VITE_KIRI_PRIVACY_RETENTION_LABEL ||
-    "공개 전 확정 필요";
+    "별도 설정 없음";
   const dataController =
     preregistration.policy?.dataControllerName ||
-    import.meta.env.VITE_KIRI_DATA_CONTROLLER_NAME ||
-    "공개 전 확정 필요";
+    "할로(HALO)";
 
   return (
     <div className="editorial-shell privacy-draft-page">
@@ -41,13 +39,12 @@ export default function PrivacyDraftPage() {
           <p>
             이 문서는 기존 HALO 앱 개인정보 처리방침을 복사한 약관이 아닙니다. KIRI
             사전예약에 필요한 최소 수집 범위만 정리한 초안이며, 실제 접수를 열기 전에
-            운영 주체·보유 기간·정책 버전을 확정해야 합니다.
+            개인정보처리자와 정책 버전은 서버 공통 설정으로 관리합니다.
           </p>
         </div>
 
         <div className="privacy-draft__notice" role="note">
-          현재 상태: 정책 초안 · 서버는 정책 버전 환경변수가 없으면 접수를 성공 처리하지
-          않습니다.
+          현재 상태: 접수 가능 여부는 Supabase 연결 상태에 따라 결정됩니다.
         </div>
 
         <div className="privacy-draft__sections">
@@ -86,8 +83,7 @@ export default function PrivacyDraftPage() {
               <h2>보유 기간</h2>
               <p>{retentionLabel}</p>
               <p className="privacy-draft__pending">
-                공개 전 확정 필요: 출시 알림 이후의 파기 시점과 체험단 안내를 선택한 경우의
-                보유 기준을 운영·법무 검토 후 고지해야 합니다.
+                보유 기간 설정은 사전예약 활성화에 필요한 서버 환경변수가 아닙니다.
               </p>
             </div>
           </section>

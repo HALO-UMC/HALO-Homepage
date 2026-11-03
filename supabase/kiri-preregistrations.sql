@@ -1,6 +1,6 @@
 -- KIRI 사전예약 전용 테이블
 -- Supabase SQL Editor에서 실행한 뒤 Vercel 환경변수를 설정합니다.
--- 공개 전 운영 주체·보유 기간·정책 버전을 확정해야 합니다.
+-- 개인정보처리자와 정책 버전은 서버 공통 설정에서 관리합니다.
 
 create extension if not exists pgcrypto;
 
@@ -13,7 +13,8 @@ create table if not exists public.kiri_preregistrations (
   privacy_consent_version text not null,
   privacy_agreed_at timestamptz not null,
   data_controller_name text not null,
-  privacy_retention_label text not null,
+  data_controller_representative text not null,
+  privacy_retention_label text,
   created_at timestamptz not null default now(),
   constraint kiri_preregistrations_email_normalized_unique unique (email_normalized),
   constraint kiri_preregistrations_email_normalized_check
@@ -21,6 +22,15 @@ create table if not exists public.kiri_preregistrations (
   constraint kiri_preregistrations_nickname_length_check
     check (nickname is null or char_length(nickname) <= 24)
 );
+
+-- Existing installations may already have the table; add the new audit field without
+-- altering any existing application records.
+alter table public.kiri_preregistrations
+  add column if not exists data_controller_representative text;
+
+-- Retention is optional in the current preregistration policy. Keep existing values intact.
+alter table public.kiri_preregistrations
+  alter column privacy_retention_label drop not null;
 
 alter table public.kiri_preregistrations enable row level security;
 
@@ -38,3 +48,6 @@ comment on column public.kiri_preregistrations.privacy_consent_version is
 
 comment on column public.kiri_preregistrations.privacy_retention_label is
   '동의 화면에 고지된 보유 기간 문구.';
+
+comment on column public.kiri_preregistrations.data_controller_representative is
+  '동의 화면에 고지된 개인정보처리자 대표자.';
