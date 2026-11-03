@@ -457,9 +457,9 @@ export default function CompanyPage() {
             <div className="company-partnership__content">
               <div>
                 <h2>
-                  가족에게 새로운 경험을 건넬
+                  가족에게 새로운 경험을
                   <br />
-                  장소와 브랜드를 기다립니다.
+                  건넬 장소와 브랜드를 기다립니다.
                 </h2>
               </div>
               <div className="company-partnership__details">
