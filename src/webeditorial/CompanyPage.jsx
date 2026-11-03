@@ -14,7 +14,16 @@ const PLAY_STORE_URL =
 const SLIDE_INTERVAL = 5500;
 
 // 실제 활동 사진이 저장소에 추가되면 이 목록에 확인된 설명과 초점 위치를 함께 등록합니다.
-const activitySlides = [];
+// 실제 사진은 public/images/company-activities/에 넣고 파일별 alt 및 초점 좌표를 등록합니다.
+const activitySlides = [
+  { src: "/images/company-activities/halo_activity1.jpg", alt: "HALO 팀 회의와 협업", caption: "팀 회의와 협업", objectPosition: "50% 55%", mobileObjectPosition: "50% 52%" },
+  { src: "/images/company-activities/halo_activity2.jpg", alt: "HALO 팀의 데모데이 부스 활동", caption: "데모데이 부스 운영", objectPosition: "45% 50%", mobileObjectPosition: "48% 50%" },
+  { src: "/images/company-activities/halo_activity3.jpg", alt: "가족에게 전할 메시지를 준비한 HALO 현장 활동", caption: "가족에게 전할 안녕을 준비한 현장", objectPosition: "50% 50%", mobileObjectPosition: "50% 50%" },
+  { src: "/images/company-activities/halo_activity4.jpg", alt: "HALO 팀의 부산역 현장 활동", caption: "부산역 현장 활동", objectPosition: "50% 60%", mobileObjectPosition: "50% 58%" },
+  { src: "/images/company-activities/halo_activity5.jpg", alt: "HALO 서비스 시연과 발표", caption: "서비스 시연과 발표", objectPosition: "50% 50%", mobileObjectPosition: "50% 48%" },
+  { src: "/images/company-activities/halo_activity6.jpg", alt: "HALO 서비스 발표 현장", caption: "서비스 발표 현장", objectPosition: "50% 50%", mobileObjectPosition: "50% 48%" },
+  { src: "/images/company-activities/halo_activity7.jpg", alt: "HALO 서비스와 팀 활동을 소개하는 현장", caption: "서비스와 팀 활동 소개", objectPosition: "50% 50%", mobileObjectPosition: "50% 50%" },
+];
 
 const navigation = [
   { label: "회사", href: "#company" },
