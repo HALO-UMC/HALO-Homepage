@@ -19,7 +19,6 @@ const experienceSteps = [
       "가족에게 직접 묻기 어려웠던 취향을 한 번에 하나씩 나누며 서로를 알아갑니다.",
     image: "/images/kiri/kiri-question.png",
     alt: "가장 좋아하는 음식을 묻는 KIRI 질문 화면",
-    note: "서로를 알아가는 질문",
   },
   {
     number: "02",
@@ -28,7 +27,6 @@ const experienceSteps = [
       "가족의 취향과 상황을 바탕으로 함께해 볼 활동을 살펴보고 관심 있는 장소를 발견합니다.",
     image: "/images/kiri/kiri-places.png",
     alt: "가족 활동과 장소를 탐색하는 KIRI 플레이스 화면",
-    note: "함께할 장소 발견",
   },
   {
     number: "03",
@@ -37,7 +35,6 @@ const experienceSteps = [
       "저장한 활동에 날짜와 함께할 가족을 더해, ‘다음에’라는 말을 구체적인 제안으로 바꿉니다.",
     image: "/images/kiri/kiri-schedule.png",
     alt: "가족과의 일정을 제안하는 KIRI 일정 등록 화면",
-    note: "가족과 일정 제안",
   },
   {
     number: "04",
@@ -46,7 +43,6 @@ const experienceSteps = [
       "가족과 보낸 날의 사진과 각자의 기록을 한곳에 모아 다시 꺼내 볼 수 있도록 준비하고 있습니다.",
     image: "/images/kiri/kiri-record.png",
     alt: "함께한 가족 활동의 사진과 기록을 모아보는 KIRI 기록 화면",
-    note: "함께한 시간 기록",
   },
 ];
 
@@ -455,14 +451,12 @@ export default function KiriPage() {
                 사전예약 준비 보기
                 <ArrowIcon />
               </a>
-              <small>KIRI는 가족과 함께할 첫 시간을 준비하고 있습니다.</small>
             </div>
 
             <div className="kiri-hero__visual">
               <div className="kiri-hero__type" aria-hidden="true">KIRI</div>
               <figure className="kiri-phone kiri-phone--hero">
                 <img src="/images/kiri/kiri-home.png" alt="KIRI 홈 화면" />
-                <figcaption>KIRI 홈</figcaption>
               </figure>
               <img
                 className="kiri-hero__mascot"
@@ -477,7 +471,7 @@ export default function KiriPage() {
 
         <section id="kiri-problem" className="kiri-problem editorial-section">
           <div className="editorial-container">
-            <SectionLabel number="01" light>왜 KIRI인가요</SectionLabel>
+            <SectionLabel light>왜 KIRI인가요</SectionLabel>
             <div className="kiri-problem__lead">
               <h2>
                 함께하고 싶은 마음은 있는데,
@@ -508,21 +502,14 @@ export default function KiriPage() {
 
         <section id="kiri-experience" className="kiri-experience editorial-section">
           <div className="editorial-container">
-            <SectionLabel number="02" light>서비스 경험</SectionLabel>
+            <SectionLabel light>서비스 경험</SectionLabel>
             <div className="kiri-experience__heading">
               <h2>알아가는 질문이 함께한 하루의 기록이 되기까지</h2>
-              <p>
-                질문에서 발견한 취향이 함께할 장소와 일정, 함께한 날의 기록으로
-                자연스럽게 이어집니다.
-              </p>
             </div>
 
             <div className="kiri-experience__list">
-              {experienceSteps.map((step, index) => (
-                <article
-                  key={step.number}
-                  className={`kiri-step${index % 2 === 1 ? " kiri-step--reverse" : ""}`}
-                >
+              {experienceSteps.map((step) => (
+                <article key={step.number} className="kiri-step">
                   <div className="kiri-step__copy">
                     <span>{step.number}</span>
                     <h3>{step.title}</h3>
@@ -530,7 +517,6 @@ export default function KiriPage() {
                   </div>
                   <figure className="kiri-phone">
                     <img src={step.image} alt={step.alt} loading="lazy" />
-                    <figcaption>{step.note}</figcaption>
                   </figure>
                 </article>
               ))}
@@ -541,7 +527,7 @@ export default function KiriPage() {
         <section id="kiri-preregister" className="kiri-preregister editorial-section">
           <div className="editorial-container kiri-preregister__grid">
             <div className="kiri-preregister__intro">
-              <SectionLabel number="03" light>사전예약</SectionLabel>
+              <SectionLabel light>사전예약</SectionLabel>
               <h2>
                 KIRI의 첫 소식을
                 <br />
