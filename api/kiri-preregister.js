@@ -219,7 +219,7 @@ export function createPreregisterHandler({ policy = KIRI_PREREGISTRATION_POLICY 
       return sendJson(response, 400, {
         ok: false,
         field: "nickname",
-        message: "닉네임은 24자 이내로 입력해주세요.",
+        message: "불러드릴 이름은 24자 이내로 입력해주세요.",
       });
     }
 

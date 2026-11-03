@@ -159,7 +159,7 @@ function KiriPreregisterForm() {
     }
 
     if (values.nickname.trim().length > 24) {
-      nextErrors.nickname = "닉네임은 24자 이내로 입력해주세요.";
+      nextErrors.nickname = "불러드릴 이름은 24자 이내로 입력해주세요.";
     }
 
     if (!values.privacyAgreed) {
@@ -220,31 +220,6 @@ function KiriPreregisterForm() {
     }
   };
 
-  if (preregistration.phase === "loading") {
-    return (
-      <div className="kiri-form-gate" role="status" aria-live="polite">
-        <span className="kiri-form-gate__pulse" aria-hidden="true" />
-        <p>사전예약 접수 가능 여부를 확인하고 있어요.</p>
-      </div>
-    );
-  }
-
-  if (!preregistration.ready) {
-    return (
-      <div className="kiri-form-gate" role="status" aria-live="polite">
-        <img src="/images/kiri/kiri-mascot.svg" alt="" width="56" height="56" />
-        <p className="kiri-form-gate__label">사전예약 접수 준비 중</p>
-        <h3>사전예약 접수를 준비하고 있어요.</h3>
-        <p>
-          접수가 시작되면 이곳에서 바로 신청하고 KIRI의 출시 소식을 받아볼 수 있어요.
-        </p>
-        <button type="button" disabled>
-          사전예약 접수 준비 중
-        </button>
-      </div>
-    );
-  }
-
   if (submitState.status === "success" || submitState.status === "duplicate") {
     return (
       <div className="kiri-form-complete" role="status" aria-live="polite">
@@ -263,8 +238,14 @@ function KiriPreregisterForm() {
       <div className="kiri-form__preparing" role="status">
         <span aria-hidden="true" />
         <div>
-          <strong>사전예약을 받고 있어요</strong>
-          <p>이메일을 등록하고 KIRI 출시 소식을 받아보세요.</p>
+          <strong>{preregistration.ready ? "사전예약을 받고 있어요" : "사전예약 신청 양식"}</strong>
+          <p>
+            {preregistration.ready
+              ? "이메일을 등록하고 KIRI 출시 소식을 받아보세요."
+              : preregistration.phase === "loading"
+                ? "접수 상태를 확인하고 있어요. 입력 후 설정이 준비되면 신청할 수 있어요."
+                : "접수 설정을 마치면 신청 내용을 서버에 저장할 수 있어요."}
+          </p>
         </div>
       </div>
 
@@ -296,7 +277,7 @@ function KiriPreregisterForm() {
 
         <div className="kiri-field">
           <label htmlFor="kiri-nickname">
-            닉네임 <span className="is-optional">선택</span>
+            불러드릴 이름 <span className="is-optional">선택</span>
           </label>
           <input
             id="kiri-nickname"
@@ -423,7 +404,9 @@ function KiriPreregisterForm() {
         type="submit"
         disabled={!preregistration.ready || submitState.status === "submitting"}
       >
-        {submitState.status === "submitting" ? (
+        {!preregistration.ready ? (
+          "접수 준비 중"
+        ) : submitState.status === "submitting" ? (
           <>
             <span className="kiri-submit__spinner" aria-hidden="true" />
             저장 중
@@ -439,7 +422,7 @@ function KiriPreregisterForm() {
       <p className="kiri-form__footnote" aria-live="polite">
         {submitState.status === "submitting"
           ? submitState.message
-          : "광고성 정보 수신 동의를 별도로 묶지 않습니다."}
+          : " "}
       </p>
     </form>
   );

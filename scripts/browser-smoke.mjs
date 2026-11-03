@@ -209,7 +209,9 @@ client.on("Runtime.exceptionThrown", ({ exceptionDetails }) => {
   );
 });
 client.on("Network.requestWillBeSent", ({ request }) => {
-  if (request.url.includes("/api/kiri-preregister")) apiRequests.push(request.url);
+  if (request.url.includes("/api/kiri-preregister") && request.method === "POST") {
+    apiRequests.push(request.url);
+  }
 });
 
 await mkdir(outputDirectory, { recursive: true });
@@ -351,39 +353,26 @@ report.screenshots.push(await screenshot(client, "company-desktop.png"));
 report.pages.companyDesktop.serviceInteraction = await evaluate(
   client,
   `(async () => {
-    const haloLink = document.querySelector('.service-feature--halo .service-feature__visual-link');
-    const kiriLink = document.querySelector('.service-feature--kiri .service-feature__visual-link');
-    const haloImage = document.querySelector('.service-feature__visual--halo > img');
-    const kiriImage = document.querySelector('.service-feature__kiri-screen');
-    const haloInitialTransform = getComputedStyle(haloImage).transform;
+    const haloLink = document.querySelector('.service-feature--halo .service-feature__page-button');
+    const kiriLink = document.querySelector('.service-feature--kiri .service-feature__page-button');
     haloLink?.focus();
-    await new Promise((resolve) => setTimeout(resolve, 280));
-    const haloFocusedTransform = getComputedStyle(haloImage).transform;
     const haloFocused = document.activeElement === haloLink;
-    const kiriInitialTransform = getComputedStyle(kiriImage).transform;
     kiriLink?.focus();
-    await new Promise((resolve) => setTimeout(resolve, 280));
     return {
       haloFocused,
       kiriFocused: document.activeElement === kiriLink,
-      haloMoved: haloInitialTransform !== haloFocusedTransform,
-      kiriMoved: kiriInitialTransform !== getComputedStyle(kiriImage).transform,
-      reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches
+      haloHref: haloLink?.getAttribute('href'),
+      kiriHref: kiriLink?.getAttribute('href')
     };
   })()`,
   true,
 );
 assert(
   report.pages.companyDesktop.serviceInteraction.haloFocused &&
-    report.pages.companyDesktop.serviceInteraction.kiriFocused,
+    report.pages.companyDesktop.serviceInteraction.kiriFocused &&
+    report.pages.companyDesktop.serviceInteraction.haloHref === "/halo" &&
+    report.pages.companyDesktop.serviceInteraction.kiriHref === "/kiri",
   "기업 서비스 비주얼 링크에 키보드 포커스를 이동할 수 없습니다.",
-  failures,
-);
-assert(
-  (report.pages.companyDesktop.serviceInteraction.haloMoved &&
-    report.pages.companyDesktop.serviceInteraction.kiriMoved) ||
-    report.pages.companyDesktop.serviceInteraction.reducedMotion,
-  "기업 서비스 포커스 시 이미지 피드백이 적용되지 않습니다.",
   failures,
 );
 await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; const target = document.querySelector('#services'); if (target) window.scrollTo(0, target.offsetTop); })()`);
@@ -613,13 +602,53 @@ assert(
 );
 assert(report.pages.kiriDesktop.form.visible, "서버 설정 없이 KIRI 폼 UI가 표시되지 않습니다.", failures);
 assert(report.pages.kiriDesktop.form.email && report.pages.kiriDesktop.form.nickname, "KIRI 폼 입력란이 누락됐습니다.", failures);
+assert(
+  report.pages.kiriDesktop.form.labels.some((label) => label.startsWith("불러드릴 이름")),
+  "KIRI 불러드릴 이름 입력란이 누락됐습니다.",
+  failures,
+);
 assert(report.pages.kiriDesktop.form.deviceCount === 4, "KIRI 사용 기기 선택지가 4개가 아닙니다.", failures);
 assert(report.pages.kiriDesktop.form.trial && report.pages.kiriDesktop.form.privacy, "KIRI 선택·동의 UI가 누락됐습니다.", failures);
 assert(report.pages.kiriDesktop.form.disabled, "KIRI 제출 버튼이 비활성화되지 않았습니다.", failures);
 assert(report.pages.kiriDesktop.form.buttonText === "접수 준비 중", "KIRI 비활성 버튼 문구가 올바르지 않습니다.", failures);
-assert(report.pages.kiriDesktop.form.preparing.includes("접수가 시작되면 이 페이지에서 신청할 수 있어요"), "KIRI 준비 안내 문구가 누락됐습니다.", failures);
+assert(
+  report.pages.kiriDesktop.form.preparing.includes("입력 후 설정이 준비되면 신청할 수 있어요") ||
+    report.pages.kiriDesktop.form.preparing.includes("접수 설정을 마치면 신청 내용을 서버에 저장할 수 있어요"),
+  "KIRI 접수 설정 안내가 누락됐습니다.",
+  failures,
+);
 assert(report.pages.kiriDesktop.business.includes("624-21-02643"), "KIRI 푸터 사업자 정보가 누락됐습니다.", failures);
 report.screenshots.push(await screenshot(client, "kiri-desktop-hero.png"));
+report.pages.kiriDesktop.formInteraction = await evaluate(
+  client,
+  `(async () => {
+    const setInput = (selector, value) => {
+      const input = document.querySelector(selector);
+      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+      setter.call(input, value);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    setInput('#kiri-email', 'kiri-smoke@example.test');
+    setInput('#kiri-nickname', '브라우저 확인');
+    document.querySelector('input[name="device"][value="ios"]')?.click();
+    document.querySelector('input[name="familyTrial"]')?.click();
+    document.querySelector('input[name="privacyAgreed"]')?.click();
+    await new Promise((resolve) => setTimeout(resolve, 40));
+    return {
+      email: document.querySelector('#kiri-email')?.value,
+      nickname: document.querySelector('#kiri-nickname')?.value,
+      device: document.querySelector('input[name="device"]:checked')?.value,
+      familyTrial: document.querySelector('input[name="familyTrial"]')?.checked,
+      privacyAgreed: document.querySelector('input[name="privacyAgreed"]')?.checked
+    };
+  })()`,
+  true,
+);
+assert(report.pages.kiriDesktop.formInteraction.email === "kiri-smoke@example.test", "KIRI 이메일 입력이 반영되지 않습니다.", failures);
+assert(report.pages.kiriDesktop.formInteraction.nickname === "브라우저 확인", "KIRI 이름 입력이 반영되지 않습니다.", failures);
+assert(report.pages.kiriDesktop.formInteraction.device === "ios", "KIRI 기기 선택이 반영되지 않습니다.", failures);
+assert(report.pages.kiriDesktop.formInteraction.familyTrial, "KIRI 체험단 선택이 반영되지 않습니다.", failures);
+assert(report.pages.kiriDesktop.formInteraction.privacyAgreed, "KIRI 필수 동의 선택이 반영되지 않습니다.", failures);
 await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; const target = document.querySelector('#kiri-experience'); if (target) window.scrollTo(0, target.offsetTop); })()`);
 await waitForPaint(client);
 report.screenshots.push(await screenshot(client, "kiri-desktop-experience.png"));
