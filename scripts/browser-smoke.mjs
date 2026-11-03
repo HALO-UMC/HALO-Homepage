@@ -222,14 +222,46 @@ report.pages.companyDesktop = await evaluate(
   client,
   `(() => {
     const business = document.querySelector('.editorial-footer__business')?.textContent || '';
+    const hero = document.querySelector('.company-hero');
+    const services = document.querySelector('#services');
+    const slider = document.querySelector('.company-activity-slider');
+    const haloPageButton = document.querySelector('.service-feature--halo .service-feature__page-button');
+    const kiriPageButton = document.querySelector('.service-feature--kiri .service-feature__page-button');
+    const playStoreButton = document.querySelector('.service-feature__store-badge');
+    const releaseButton = document.querySelector('.service-feature__release-button');
     return {
       path: location.pathname,
       title: document.title,
       hero: Boolean(document.querySelector('#company-hero-title')),
+      heroHeading: document.querySelector('#company-hero-title')?.textContent.trim(),
+      heroDescription: document.querySelector('.company-hero__copy > p')?.textContent.trim(),
+      heroServiceHref: document.querySelector('.company-hero__cta')?.getAttribute('href'),
+      headerServiceHref: document.querySelector('.company-header__desktop a[href="#services"]')?.getAttribute('href'),
+      servicesImmediatelyAfterHero: hero?.nextElementSibling === services,
+      slider: {
+        count: Number(slider?.dataset.slideCount || 0),
+        controls: Boolean(slider?.querySelector('.company-activity-slider__controls')),
+        empty: Boolean(slider?.querySelector('.company-activity-slider__empty'))
+      },
       scrollWidth: document.documentElement.scrollWidth,
       innerWidth,
-      haloHref: document.querySelector('.service-feature--halo a')?.getAttribute('href'),
-      kiriHref: document.querySelector('.service-feature--kiri a')?.getAttribute('href'),
+      haloHref: haloPageButton?.getAttribute('href'),
+      kiriHref: kiriPageButton?.getAttribute('href'),
+      playStore: {
+        href: playStoreButton?.getAttribute('href'),
+        target: playStoreButton?.getAttribute('target'),
+        badgeSrc: playStoreButton?.querySelector('img')?.getAttribute('src')
+      },
+      releaseHref: releaseButton?.getAttribute('href'),
+      haloLogoSrc: document.querySelector('.service-feature__app-logo--halo')?.getAttribute('src'),
+      kiriLogoSrc: document.querySelector('.service-feature__app-logo--kiri')?.getAttribute('src'),
+      backgrounds: {
+        page: getComputedStyle(document.querySelector('.company-page')).backgroundColor,
+        header: getComputedStyle(document.querySelector('.company-header')).backgroundColor,
+        services: getComputedStyle(services).backgroundColor,
+        partnership: getComputedStyle(document.querySelector('.company-partnership')).backgroundColor,
+        footer: getComputedStyle(document.querySelector('.editorial-footer--company')).backgroundColor
+      },
       business,
       images: [...document.querySelectorAll('.company-services img')].map((image) => ({
         src: image.getAttribute('src'),
@@ -244,8 +276,62 @@ report.pages.companyDesktop = await evaluate(
 );
 assert(report.pages.companyDesktop.path === "/", "기본 경로에 기업 페이지가 표시되지 않습니다.", failures);
 assert(report.pages.companyDesktop.hero, "기업 첫 화면이 표시되지 않습니다.", failures);
+assert(
+  report.pages.companyDesktop.heroHeading === "작은 안녕으로, 가족의 내일을 잇습니다.",
+  "기업 히어로 핵심 문구가 요청한 내용과 다릅니다.",
+  failures,
+);
+assert(
+  report.pages.companyDesktop.heroDescription ===
+    "HALO는 서로에게 건네는 인사와 평안한 일상을 뜻하는 ‘안녕’에서 시작합니다.",
+  "기업 히어로 보조 문구가 요청한 내용과 다릅니다.",
+  failures,
+);
+assert(
+  report.pages.companyDesktop.servicesImmediatelyAfterHero,
+  "서비스 소개가 히어로 바로 다음에 배치되지 않았습니다.",
+  failures,
+);
+assert(
+  report.pages.companyDesktop.heroServiceHref === "#services" &&
+    report.pages.companyDesktop.headerServiceHref === "#services",
+  "히어로 또는 헤더의 서비스 앵커가 올바르지 않습니다.",
+  failures,
+);
+assert(
+  (report.pages.companyDesktop.slider.count >= 2 && report.pages.companyDesktop.slider.controls) ||
+    (report.pages.companyDesktop.slider.count === 0 && report.pages.companyDesktop.slider.empty),
+  "활동 사진 슬라이더가 사진 또는 명확한 준비 상태를 제공하지 않습니다.",
+  failures,
+);
 assert(report.pages.companyDesktop.haloHref === "/halo", "HALO 서비스 링크가 /halo가 아닙니다.", failures);
 assert(report.pages.companyDesktop.kiriHref === "/kiri", "KIRI 서비스 링크가 /kiri가 아닙니다.", failures);
+assert(
+  report.pages.companyDesktop.playStore.href ===
+    "https://play.google.com/store/apps/details?id=com.umc.halo" &&
+    report.pages.companyDesktop.playStore.target === "_blank" &&
+    report.pages.companyDesktop.playStore.badgeSrc === "/images/badges/google-play-ko.png",
+  "HALO Google Play 배지 링크가 올바르지 않습니다.",
+  failures,
+);
+assert(
+  report.pages.companyDesktop.releaseHref === "/kiri#kiri-preregister",
+  "KIRI 사전 출시 알림 링크가 준비 영역을 가리키지 않습니다.",
+  failures,
+);
+assert(
+  report.pages.companyDesktop.haloLogoSrc === "/logotypo.svg" &&
+    report.pages.companyDesktop.kiriLogoSrc === "/images/kiri/kiri-logo.svg",
+  "서비스별 실제 앱 로고가 올바르게 표시되지 않습니다.",
+  failures,
+);
+assert(
+  Object.values(report.pages.companyDesktop.backgrounds).every(
+    (color) => color === "rgb(250, 250, 250)",
+  ),
+  "기업 페이지의 헤더·본문·푸터 배경이 #FAFAFA로 통일되지 않았습니다.",
+  failures,
+);
 assert(
   report.pages.companyDesktop.scrollWidth <= report.pages.companyDesktop.innerWidth,
   "기업 데스크톱 화면에 가로 넘침이 있습니다.",
@@ -261,11 +347,12 @@ assert(
   "기업 푸터 사업자 정보가 누락됐습니다.",
   failures,
 );
+report.screenshots.push(await screenshot(client, "company-desktop.png"));
 report.pages.companyDesktop.serviceInteraction = await evaluate(
   client,
   `(async () => {
-    const haloLink = document.querySelector('.service-feature--halo a');
-    const kiriLink = document.querySelector('.service-feature--kiri a');
+    const haloLink = document.querySelector('.service-feature--halo .service-feature__visual-link');
+    const kiriLink = document.querySelector('.service-feature--kiri .service-feature__visual-link');
     const haloImage = document.querySelector('.service-feature__visual--halo > img');
     const kiriImage = document.querySelector('.service-feature__kiri-screen');
     const haloInitialTransform = getComputedStyle(haloImage).transform;
@@ -289,7 +376,7 @@ report.pages.companyDesktop.serviceInteraction = await evaluate(
 assert(
   report.pages.companyDesktop.serviceInteraction.haloFocused &&
     report.pages.companyDesktop.serviceInteraction.kiriFocused,
-  "기업 서비스 전체 링크에 키보드 포커스를 이동할 수 없습니다.",
+  "기업 서비스 비주얼 링크에 키보드 포커스를 이동할 수 없습니다.",
   failures,
 );
 assert(
@@ -299,7 +386,6 @@ assert(
   "기업 서비스 포커스 시 이미지 피드백이 적용되지 않습니다.",
   failures,
 );
-report.screenshots.push(await screenshot(client, "company-desktop.png"));
 await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; const target = document.querySelector('#services'); if (target) window.scrollTo(0, target.offsetTop); })()`);
 await waitForPaint(client);
 report.screenshots.push(await screenshot(client, "company-services-desktop.png"));
@@ -308,6 +394,8 @@ await waitForPaint(client);
 report.screenshots.push(await screenshot(client, "company-kiri-service-desktop.png"));
 
 await navigate(client, "/", 390, 844);
+await waitForImages(client);
+report.screenshots.push(await screenshot(client, "company-mobile.png"));
 await evaluate(client, `document.querySelector('.company-header__menu-button')?.click()`);
 await waitForPaint(client);
 report.pages.companyMobile = await evaluate(
@@ -335,10 +423,74 @@ assert(
 await waitForImages(client);
 await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; const target = document.querySelector('#services'); if (target) window.scrollTo(0, target.offsetTop); })()`);
 await waitForPaint(client);
+report.pages.companyMobile.services = await evaluate(
+  client,
+  `(() => ({
+    haloLogoWidth: document.querySelector('.service-feature__app-logo--halo')?.getBoundingClientRect().width,
+    kiriLogoWidth: document.querySelector('.service-feature__app-logo--kiri')?.getBoundingClientRect().width,
+    actionHeights: [...document.querySelectorAll('.service-feature__page-button, .service-feature__release-button, .service-feature__store-badge')].map((element) => element.getBoundingClientRect().height),
+    heroHeight: document.querySelector('.company-activity-slider__viewport')?.getBoundingClientRect().height,
+    heroWidth: document.querySelector('.company-activity-slider__viewport')?.getBoundingClientRect().width
+  }))()`,
+);
+assert(
+  report.pages.companyMobile.services.haloLogoWidth > 150 &&
+    report.pages.companyMobile.services.kiriLogoWidth > 130,
+  "기업 모바일 서비스 로고가 지나치게 작습니다.",
+  failures,
+);
+assert(
+  report.pages.companyMobile.services.actionHeights.every((height) => height >= 44),
+  "기업 모바일 서비스 버튼의 터치 영역이 44px보다 작습니다.",
+  failures,
+);
+assert(
+  report.pages.companyMobile.services.heroHeight <= 520 &&
+    report.pages.companyMobile.services.heroWidth <= 360,
+  "기업 모바일 히어로 배너 크기가 과도합니다.",
+  failures,
+);
 report.screenshots.push(await screenshot(client, "company-services-mobile.png"));
 await evaluate(client, `(() => { const target = document.querySelector('.service-feature--kiri'); if (target) window.scrollTo(0, target.offsetTop); })()`);
 await waitForPaint(client);
 report.screenshots.push(await screenshot(client, "company-kiri-service-mobile.png"));
+
+await navigate(client, "/", 1280, 800);
+await evaluate(client, `document.documentElement.style.scrollBehavior = 'auto'`);
+await evaluate(client, `document.querySelector('.service-feature__release-button')?.click()`);
+await waitForPath(client, "/kiri");
+await evaluate(
+  client,
+  `new Promise((resolve) => {
+    const started = performance.now();
+    const check = () => {
+      const target = document.querySelector('#kiri-preregister');
+      if (location.hash === '#kiri-preregister' && target && target.getBoundingClientRect().top >= 0 && target.getBoundingClientRect().top < 120) {
+        return resolve(true);
+      }
+      if (performance.now() - started > 3000) return resolve(false);
+      requestAnimationFrame(check);
+    };
+    check();
+  })`,
+  true,
+);
+report.navigation.kiriReleaseAnchor = await evaluate(
+  client,
+  `(() => ({
+    path: location.pathname,
+    hash: location.hash,
+    targetTop: document.querySelector('#kiri-preregister')?.getBoundingClientRect().top
+  }))()`,
+);
+assert(
+  report.navigation.kiriReleaseAnchor.path === "/kiri" &&
+    report.navigation.kiriReleaseAnchor.hash === "#kiri-preregister" &&
+    report.navigation.kiriReleaseAnchor.targetTop >= 0 &&
+    report.navigation.kiriReleaseAnchor.targetTop < 120,
+  "회사 홈페이지의 KIRI 사전 출시 버튼이 준비 영역으로 이동하지 않습니다.",
+  failures,
+);
 
 await navigate(client, "/webeditorial", 1280, 800);
 report.navigation.legacyCompany = await waitForPath(client, "/");
