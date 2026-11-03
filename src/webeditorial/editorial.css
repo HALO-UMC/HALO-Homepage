@@ -578,7 +578,7 @@
 
 /* Shared footer */
 .editorial-footer {
-  padding: 88px 0 26px;
+  padding: 64px 0 22px;
   color: #f7f7f6;
   background: #171717;
 }
@@ -590,18 +590,11 @@
 }
 
 .editorial-footer__name {
-  margin: 0 0 40px;
-  font-size: clamp(72px, 10vw, 150px);
+  margin: 0;
+  font-size: clamp(70px, 8vw, 112px);
   font-weight: 900;
-  line-height: 0.72;
+  line-height: 0.8;
   letter-spacing: -0.09em;
-}
-
-.editorial-footer__statement {
-  margin: 38px 0 0;
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 15px;
-  line-height: 1.65;
 }
 
 .editorial-footer__links {
@@ -643,8 +636,8 @@
   display: flex;
   justify-content: space-between;
   border-top: 1px solid rgba(255, 255, 255, 0.16);
-  margin-top: 82px;
-  padding-top: 20px;
+  margin-top: 14px;
+  padding-top: 16px;
   color: rgba(255, 255, 255, 0.38);
   font-size: 9px;
   font-weight: 600;
@@ -656,19 +649,19 @@
   flex-wrap: wrap;
   gap: 8px 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.16);
-  margin-top: 72px;
-  padding-top: 20px;
+  margin-top: 48px;
+  padding-top: 16px;
   color: rgba(255, 255, 255, 0.66);
   font-size: 12px;
   line-height: 1.6;
 }
 
 .editorial-footer__business + .editorial-footer__bottom {
-  margin-top: 18px;
+  margin-top: 14px;
 }
 
 .editorial-footer__kiri-logo {
-  width: min(300px, 72%);
+  width: min(240px, 64%);
   height: auto;
 }
 
@@ -1828,11 +1821,11 @@
 
   .editorial-footer__grid {
     grid-template-columns: 1fr;
-    gap: 60px;
+    gap: 38px;
   }
 
   .editorial-footer__name {
-    font-size: clamp(78px, 29vw, 128px);
+    font-size: clamp(68px, 24vw, 96px);
   }
 
   .editorial-footer__bottom {
@@ -1943,10 +1936,6 @@
 
   .service-feature__kiri-screen {
     width: 63%;
-  }
-
-  .editorial-footer__links {
-    grid-template-columns: 1fr;
   }
 
   .kiri-header__brand img {
