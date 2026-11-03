@@ -64,11 +64,7 @@
 }
 
 .section-label {
-  display: grid;
-  grid-template-columns: 70px 1fr;
-  align-items: center;
-  border-top: 1px solid var(--line);
-  padding-top: 13px;
+  display: block;
   color: var(--ink);
   font-size: 13px;
   font-weight: 650;
@@ -84,12 +80,7 @@
   margin: 0;
 }
 
-.section-label--plain {
-  grid-template-columns: 1fr;
-}
-
 .section-label--light {
-  border-color: rgba(255, 255, 255, 0.22);
   color: #f7f7f6;
 }
 
@@ -153,7 +144,6 @@
   top: 0;
   left: 0;
   width: 100%;
-  border-bottom: 1px solid var(--line);
 }
 
 .company-header__inner {
@@ -257,7 +247,6 @@
 
 .company-mobile-menu a {
   display: block;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
   padding: 19px 0;
   font-size: clamp(29px, 8vw, 42px);
   font-weight: 600;
@@ -357,29 +346,25 @@
 .company-about__notes {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: clamp(36px, 6vw, 72px);
   margin-top: clamp(48px, 6vw, 72px);
-  border-top: 1px solid var(--line);
 }
 
 .company-about__notes article {
-  border-right: 1px solid var(--line);
-  padding: 24px clamp(24px, 3vw, 40px) 30px 0;
+  padding: 0;
 }
 
 .company-about__notes article + article {
-  padding-left: clamp(22px, 3vw, 42px);
+  padding-left: 0;
 }
 
 .company-about__notes article:last-child {
-  border-right: 0;
-  background: var(--blue);
-  color: #fff;
-  padding-right: clamp(22px, 3vw, 42px);
+  padding-right: 0;
 }
 
 .company-about__notes h3 {
   max-width: 520px;
-  margin: 42px 0 16px;
+  margin: 0 0 16px;
   font-size: clamp(22px, 2.2vw, 30px);
   font-weight: 600;
   line-height: 1.35;
@@ -406,8 +391,11 @@
 
 .service-feature {
   display: grid;
-  border-top: 1px solid var(--ink);
   padding-block: clamp(42px, 5vw, 64px);
+}
+
+.service-feature + .service-feature {
+  margin-top: clamp(20px, 3vw, 36px);
 }
 
 .service-feature--halo {
@@ -418,7 +406,6 @@
 .service-feature--kiri {
   grid-template-columns: minmax(0, 7fr) minmax(300px, 5fr);
   gap: clamp(48px, 6vw, 76px);
-  border-bottom: 1px solid var(--ink);
 }
 
 .service-feature__copy {
@@ -602,8 +589,6 @@
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   align-content: start;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
-  padding-top: 18px;
 }
 
 .editorial-footer__links > div {
@@ -635,9 +620,7 @@
 .editorial-footer__bottom {
   display: flex;
   justify-content: space-between;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
   margin-top: 14px;
-  padding-top: 16px;
   color: rgba(255, 255, 255, 0.38);
   font-size: 9px;
   font-weight: 600;
@@ -648,9 +631,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
   margin-top: 48px;
-  padding-top: 16px;
   color: rgba(255, 255, 255, 0.66);
   font-size: 12px;
   line-height: 1.6;
@@ -666,7 +647,6 @@
 }
 
 .editorial-footer--kiri {
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
   background: #111;
 }
 
@@ -693,7 +673,6 @@
   top: 0;
   left: 0;
   width: 100%;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .kiri-header__inner {
@@ -758,14 +737,6 @@
   position: relative;
   padding-top: 76px;
   overflow: hidden;
-}
-
-.kiri-hero::before {
-  position: absolute;
-  inset: 76px auto 0 52%;
-  width: 1px;
-  background: rgba(255, 255, 255, 0.11);
-  content: "";
 }
 
 .kiri-hero__grid {
@@ -875,22 +846,6 @@
   width: 68px;
   height: 68px;
   filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.35));
-  animation: kiri-mascot-float 5s ease-in-out infinite;
-}
-
-@keyframes kiri-mascot-float {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-3deg);
-  }
-
-  50% {
-    transform: translateY(-12px) rotate(3deg);
-  }
-}
-
-.kiri-problem {
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .kiri-problem__lead {
@@ -925,21 +880,16 @@
 .kiri-problem__moments {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: clamp(28px, 5vw, 56px);
   margin-top: clamp(48px, 6vw, 72px);
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .kiri-problem__moments article {
-  border-right: 1px solid rgba(255, 255, 255, 0.22);
-  padding: 20px clamp(22px, 3vw, 34px) 26px 0;
+  padding: 0;
 }
 
 .kiri-problem__moments article + article {
-  padding-left: clamp(22px, 3vw, 40px);
-}
-
-.kiri-problem__moments article:last-child {
-  border-right: 0;
+  padding-left: 0;
 }
 
 .kiri-problem__moments span {
@@ -977,7 +927,6 @@
   grid-template-columns: minmax(0, 1fr) minmax(200px, 280px);
   gap: clamp(20px, 2.5vw, 30px);
   align-items: start;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
   padding-block: clamp(34px, 4vw, 48px);
 }
 
@@ -1036,8 +985,6 @@
 
 .kiri-preregister__aside {
   margin-top: 42px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  padding-top: 14px;
 }
 
 .kiri-preregister__aside span {
@@ -1056,7 +1003,6 @@
 .kiri-form,
 .kiri-form-complete,
 .kiri-form-gate {
-  border: 1px solid rgba(255, 255, 255, 0.17);
   border-radius: 28px;
   padding: clamp(24px, 3vw, 38px);
   background: #202020;
@@ -1067,10 +1013,7 @@
   align-items: flex-start;
   gap: 13px;
   margin-bottom: 30px;
-  border: 1px solid rgba(155, 234, 81, 0.3);
-  border-radius: 14px;
-  padding: 16px;
-  background: rgba(155, 234, 81, 0.06);
+  padding: 0;
 }
 
 .kiri-form__preparing > span {
@@ -1080,7 +1023,6 @@
   margin-top: 5px;
   border-radius: 50%;
   background: var(--kiri-green);
-  box-shadow: 0 0 0 5px rgba(155, 234, 81, 0.1);
 }
 
 .kiri-form__preparing strong {
@@ -1310,8 +1252,7 @@
 
 .kiri-consent {
   margin-top: 22px;
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
-  padding-top: 4px;
+  padding-top: 0;
 }
 
 .kiri-consent__details {
@@ -1346,7 +1287,6 @@
 
 .kiri-consent__details > p {
   margin: 14px 0 0;
-  border-top: 1px solid #303030;
   padding-top: 12px;
   color: #ffb16f;
   font-size: 9px;
@@ -1484,7 +1424,6 @@
 }
 
 .kiri-company-link {
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
   padding-block: 38px;
 }
 
@@ -1762,18 +1701,16 @@
   .kiri-problem__moments article + article {
     min-height: 0;
     border-right: 0;
-    border-bottom: 1px solid var(--line);
-    padding: 22px 0 38px;
+    padding: 0;
   }
 
   .kiri-problem__moments article,
   .kiri-problem__moments article + article {
-    border-bottom-color: rgba(255, 255, 255, 0.18);
-    padding-block: 20px 30px;
+    padding-block: 0;
   }
 
   .company-about__notes h3 {
-    margin-top: 30px;
+    margin-top: 0;
   }
 
   .kiri-problem__moments p {
@@ -1782,7 +1719,7 @@
 
   .company-about__notes article:last-child {
     margin-inline: 0;
-    padding-inline: 20px;
+    padding-inline: 0;
   }
 
   .service-feature--halo,
@@ -1843,10 +1780,6 @@
 
   .kiri-hero {
     padding-top: 74px;
-  }
-
-  .kiri-hero::before {
-    display: none;
   }
 
   .kiri-hero__grid {
