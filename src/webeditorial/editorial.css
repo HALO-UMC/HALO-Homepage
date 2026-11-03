@@ -579,9 +579,11 @@
 
 .company-services__grid {
   display: grid;
+  width: min(100%, 1080px);
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(36px, 6vw, 76px);
+  gap: clamp(56px, 8vw, 112px);
   align-items: start;
+  margin-inline: auto;
 }
 
 .service-feature {
@@ -594,13 +596,19 @@
 
 .service-feature__copy {
   display: flex;
-  width: min(100%, 760px);
+  width: 100%;
+  max-width: 484px;
   flex-direction: column;
   align-items: flex-start;
 }
 
 .service-feature--kiri .service-feature__copy {
   align-items: flex-start;
+}
+
+.service-feature__app-logo {
+  height: 88px;
+  margin-bottom: 24px;
 }
 
 .service-feature__app-logo {
@@ -613,15 +621,16 @@
 }
 
 .service-feature__app-logo--halo {
-  width: min(250px, 62%);
+  width: min(250px, 100%);
 }
 
 .service-feature__app-logo--kiri {
-  width: min(220px, 58%);
+  width: min(220px, 100%);
 }
 
 .service-feature__copy h3 {
   max-width: 530px;
+  min-height: 2.16em;
   margin: 0;
   font-size: clamp(30px, 3.6vw, 50px);
   font-weight: 630;
@@ -632,6 +641,7 @@
 
 .service-feature__copy > p {
   max-width: 500px;
+  min-height: 5.4em;
   margin: 16px 0 22px;
   color: var(--muted);
   font-size: 15px;
@@ -876,6 +886,7 @@
 
 .company-partnership .section-label {
   color: var(--ink);
+  font-size: 18px;
 }
 
 .company-partnership__content {
@@ -883,6 +894,10 @@
   grid-template-columns: minmax(0, 8fr) minmax(300px, 4fr);
   gap: 8vw;
   margin-top: clamp(50px, 6vw, 76px);
+}
+
+.company-partnership h2 {
+  font-size: clamp(44px, 5.4vw, 76px);
 }
 
 .company-partnership__details {
@@ -2179,6 +2194,28 @@
   .company-services__grid {
     grid-template-columns: 1fr;
     gap: 52px;
+  }
+
+  .service-feature__copy {
+    max-width: none;
+  }
+
+  .service-feature__copy h3,
+  .service-feature__copy > p {
+    min-height: 0;
+  }
+
+  .service-feature__app-logo {
+    height: 76px;
+    margin-bottom: 18px;
+  }
+
+  .company-partnership .section-label {
+    font-size: 17px;
+  }
+
+  .company-partnership h2 {
+    font-size: clamp(42px, 11vw, 58px);
   }
 
   .kiri-preregister__grid {
