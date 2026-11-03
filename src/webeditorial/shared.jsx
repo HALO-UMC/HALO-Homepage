@@ -36,9 +36,17 @@ export function CompanyWordmark({ light = false }) {
 }
 
 export function SectionLabel({ number, children, light = false }) {
+  const className = [
+    "section-label",
+    light ? "section-label--light" : "",
+    number ? "" : "section-label--plain",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className={`section-label${light ? " section-label--light" : ""}`}>
-      <span>{number}</span>
+    <div className={className}>
+      {number && <span>{number}</span>}
       <p>{children}</p>
     </div>
   );
