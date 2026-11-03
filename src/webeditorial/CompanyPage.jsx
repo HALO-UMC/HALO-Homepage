@@ -25,11 +25,6 @@ const activitySlides = [
   { src: "/images/company-activities/halo_activity7.jpg", alt: "HALO 서비스와 팀 활동을 소개하는 현장", caption: "서비스와 팀 활동 소개", objectPosition: "50% 50%", mobileObjectPosition: "50% 50%" },
 ];
 
-const haloStoreSlides = Array.from({ length: 6 }, (_, index) => ({
-  src: `/images/halo-store/halo_store${index + 1}.webp`,
-  alt: `HALO 앱 소개 화면 ${index + 1}`,
-}));
-
 const navigation = [
   { label: "회사", href: "#company" },
   { label: "서비스", href: "#services" },
@@ -345,7 +340,7 @@ function ServiceActions({ service }) {
   if (service === "halo") {
     return (
       <div className="service-feature__actions">
-        <Link className="service-feature__page-button" to="/halo">
+        <Link className="service-feature__page-button service-feature__page-button--halo" to="/halo">
           HALO 보러가기
           <ArrowIcon />
         </Link>
@@ -432,34 +427,9 @@ export default function CompanyPage() {
                 <ServiceActions service="halo" />
               </div>
 
-              <div className="service-feature__visual service-feature__visual--halo">
-                  <CompanyActivitySlider
-                    slides={haloStoreSlides}
-                    label="HALO 앱 소개 화면"
-                    kind="store"
-                  />
-              </div>
             </article>
 
             <article className="service-feature service-feature--kiri">
-              <Link className="service-feature__visual-link" to="/kiri" aria-label="KIRI 소개 보기">
-                <div className="service-feature__visual service-feature__visual--kiri">
-                  <img
-                    className="service-feature__kiri-screen"
-                    src="/images/kiri/kiri-home.png"
-                    alt="KIRI 홈 화면"
-                    loading="lazy"
-                  />
-                  <img
-                    className="service-feature__kiri-mascot"
-                    src="/images/kiri/kiri-mascot.svg"
-                    alt=""
-                    width="56"
-                    height="56"
-                  />
-                </div>
-              </Link>
-
               <div className="service-feature__copy">
                 <img
                   className="service-feature__app-logo service-feature__app-logo--kiri"

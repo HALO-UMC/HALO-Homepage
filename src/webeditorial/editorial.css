@@ -302,6 +302,7 @@
   position: relative;
   height: clamp(480px, 47vw, 610px);
   overflow: hidden;
+  border-radius: 24px;
   background: #242424;
   touch-action: pan-y;
 }
@@ -578,7 +579,7 @@
 
 .service-feature {
   display: grid;
-  grid-template-columns: minmax(300px, 5fr) minmax(0, 7fr);
+  grid-template-columns: 1fr;
   gap: clamp(32px, 4vw, 56px);
   align-items: center;
   padding-block: clamp(34px, 4vw, 52px);
@@ -589,12 +590,17 @@
 }
 
 .service-feature--kiri {
-  grid-template-columns: minmax(0, 7fr) minmax(300px, 5fr);
+  justify-items: end;
 }
 
 .service-feature__copy {
   display: flex;
+  width: min(100%, 760px);
   flex-direction: column;
+  align-items: flex-start;
+}
+
+.service-feature--kiri .service-feature__copy {
   align-items: flex-start;
 }
 
@@ -652,16 +658,22 @@
   padding: 0 18px 0 20px;
   font-size: 14px;
   font-weight: 650;
+  border-radius: 14px;
   transition: color 180ms ease, background-color 180ms ease, transform 180ms ease;
 }
 
 .service-feature__page-button {
   color: #fff;
-  background: #202020;
+  background: #ff7b10;
 }
 
-.service-feature__page-button:hover,
-.service-feature__release-button:hover {
+.service-feature__page-button--halo:hover {
+  background: #e96a00;
+  transform: translateY(-2px);
+}
+
+.service-feature__page-button--kiri:hover {
+  background: #87d93f;
   transform: translateY(-2px);
 }
 
@@ -673,6 +685,11 @@
 .service-feature__page-button--kiri {
   color: #171717;
   background: #9bea51;
+}
+
+.service-feature__page-button--halo {
+  color: #fff;
+  background: #ff7b10;
 }
 
 .service-feature__release-button {
@@ -762,6 +779,33 @@
 .company-activity-slider--store .company-activity-slider__position button.is-active {
   width: 30px;
   background: #fff;
+}
+
+.company-page .company-header__desktop a,
+.company-page .company-mobile-menu a,
+.company-page .editorial-footer a,
+.company-page .company-hero__cta,
+.company-page .editorial-button,
+.company-page .service-feature__page-button,
+.company-page .service-feature__release-button,
+.company-page .service-feature__store-badge {
+  transition: color 180ms ease, background-color 180ms ease, transform 180ms ease,
+    opacity 180ms ease, box-shadow 180ms ease;
+}
+
+.company-page .company-header__desktop a:focus-visible,
+.company-page .company-mobile-menu a:focus-visible,
+.company-page .editorial-footer a:focus-visible,
+.company-page .company-hero__cta:focus-visible,
+.company-page .editorial-button:focus-visible,
+.company-page .service-feature__actions a:focus-visible {
+  outline: 3px solid #ff7b10;
+  outline-offset: 4px;
+}
+
+.company-page .editorial-footer a:hover {
+  color: var(--ink);
+  opacity: 1;
 }
 
 .service-feature__visual--halo > img {
