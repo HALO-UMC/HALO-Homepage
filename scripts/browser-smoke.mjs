@@ -261,6 +261,44 @@ assert(
   "기업 푸터 사업자 정보가 누락됐습니다.",
   failures,
 );
+report.pages.companyDesktop.serviceInteraction = await evaluate(
+  client,
+  `(async () => {
+    const haloLink = document.querySelector('.service-feature--halo a');
+    const kiriLink = document.querySelector('.service-feature--kiri a');
+    const haloImage = document.querySelector('.service-feature__visual--halo > img');
+    const kiriImage = document.querySelector('.service-feature__kiri-screen');
+    const haloInitialTransform = getComputedStyle(haloImage).transform;
+    haloLink?.focus();
+    await new Promise((resolve) => setTimeout(resolve, 280));
+    const haloFocusedTransform = getComputedStyle(haloImage).transform;
+    const haloFocused = document.activeElement === haloLink;
+    const kiriInitialTransform = getComputedStyle(kiriImage).transform;
+    kiriLink?.focus();
+    await new Promise((resolve) => setTimeout(resolve, 280));
+    return {
+      haloFocused,
+      kiriFocused: document.activeElement === kiriLink,
+      haloMoved: haloInitialTransform !== haloFocusedTransform,
+      kiriMoved: kiriInitialTransform !== getComputedStyle(kiriImage).transform,
+      reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches
+    };
+  })()`,
+  true,
+);
+assert(
+  report.pages.companyDesktop.serviceInteraction.haloFocused &&
+    report.pages.companyDesktop.serviceInteraction.kiriFocused,
+  "기업 서비스 전체 링크에 키보드 포커스를 이동할 수 없습니다.",
+  failures,
+);
+assert(
+  (report.pages.companyDesktop.serviceInteraction.haloMoved &&
+    report.pages.companyDesktop.serviceInteraction.kiriMoved) ||
+    report.pages.companyDesktop.serviceInteraction.reducedMotion,
+  "기업 서비스 포커스 시 이미지 피드백이 적용되지 않습니다.",
+  failures,
+);
 report.screenshots.push(await screenshot(client, "company-desktop.png"));
 await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; const target = document.querySelector('#services'); if (target) window.scrollTo(0, target.offsetTop); })()`);
 await waitForPaint(client);

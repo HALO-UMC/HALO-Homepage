@@ -164,62 +164,66 @@ export default function CompanyPage() {
             </div>
 
             <article className="service-feature service-feature--halo">
-              <div className="service-feature__copy">
-                <p className="service-feature__status">출시 서비스</p>
-                <h3>HALO — 매일 한 장, 부모님과 이어가는 따뜻한 안녕</h3>
-                <p>
-                  사진과 질문을 통해 부모님의 삶과 취향을 알아가고, 매일의 대화를 한
-                  권의 가족 스토리북으로 기록하는 서비스입니다.
-                </p>
-                <Link className="editorial-button service-cta--halo" to="/halo">
-                  HALO 알아보기
-                  <ArrowIcon />
-                </Link>
-              </div>
-              <figure className="service-feature__visual service-feature__visual--halo">
-                <img
-                  src="/images/hero/hero-main.svg"
-                  alt="HALO 앱의 가족 스토리북 화면"
-                  loading="lazy"
-                />
-              </figure>
+              <Link className="service-feature__link" to="/halo">
+                <div className="service-feature__copy">
+                  <p className="service-feature__status">출시 서비스</p>
+                  <h3>HALO — 매일 한 장, 부모님과 이어가는 따뜻한 안녕</h3>
+                  <p>
+                    사진과 질문을 통해 부모님의 삶과 취향을 알아가고, 매일의 대화를 한
+                    권의 가족 스토리북으로 기록하는 서비스입니다.
+                  </p>
+                  <span className="editorial-button service-cta--halo">
+                    HALO 알아보기
+                    <ArrowIcon />
+                  </span>
+                </div>
+                <figure className="service-feature__visual service-feature__visual--halo">
+                  <img
+                    src="/images/hero/hero-main.svg"
+                    alt="HALO 앱의 가족 스토리북 화면"
+                    loading="lazy"
+                  />
+                </figure>
+              </Link>
             </article>
 
             <article className="service-feature service-feature--kiri">
-              <div className="service-feature__visual service-feature__visual--kiri">
-                <img
-                  className="service-feature__kiri-logo"
-                  src="/images/kiri/kiri-logo.svg"
-                  alt="KIRI"
-                  width="276"
-                  height="100"
-                />
-                <img
-                  className="service-feature__kiri-screen"
-                  src="/images/kiri/kiri-home.png"
-                  alt="KIRI 홈 화면"
-                  loading="lazy"
-                />
-                <img
-                  className="service-feature__kiri-mascot"
-                  src="/images/kiri/kiri-mascot.svg"
-                  alt="KIRI 캐릭터"
-                  width="56"
-                  height="56"
-                />
-              </div>
-              <div className="service-feature__copy">
-                <p className="service-feature__status">출시 준비 중</p>
-                <h3>KIRI — 우리 가족만의 취향, 우리 가족만의 시간</h3>
-                <p>
-                  질문으로 서로를 알아가고, 가족의 취향과 상황에 맞는 활동을 발견해
-                  약속과 기록으로 이어가는 서비스입니다.
-                </p>
-                <Link className="kiri-link" to="/kiri">
-                  KIRI 알아보기
-                  <ArrowIcon />
-                </Link>
-              </div>
+              <Link className="service-feature__link" to="/kiri">
+                <div className="service-feature__visual service-feature__visual--kiri">
+                  <img
+                    className="service-feature__kiri-logo"
+                    src="/images/kiri/kiri-logo.svg"
+                    alt="KIRI"
+                    width="276"
+                    height="100"
+                  />
+                  <img
+                    className="service-feature__kiri-screen"
+                    src="/images/kiri/kiri-home.png"
+                    alt="KIRI 홈 화면"
+                    loading="lazy"
+                  />
+                  <img
+                    className="service-feature__kiri-mascot"
+                    src="/images/kiri/kiri-mascot.svg"
+                    alt="KIRI 캐릭터"
+                    width="56"
+                    height="56"
+                  />
+                </div>
+                <div className="service-feature__copy">
+                  <p className="service-feature__status">출시 준비 중</p>
+                  <h3>KIRI — 우리 가족만의 취향, 우리 가족만의 시간</h3>
+                  <p>
+                    질문으로 서로를 알아가고, 가족의 취향과 상황에 맞는 활동을 발견해
+                    약속과 기록으로 이어가는 서비스입니다.
+                  </p>
+                  <span className="kiri-link">
+                    KIRI 알아보기
+                    <ArrowIcon />
+                  </span>
+                </div>
+              </Link>
             </article>
           </div>
         </section>

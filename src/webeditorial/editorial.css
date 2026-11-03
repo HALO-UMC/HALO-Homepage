@@ -112,6 +112,13 @@
   box-shadow: 0 17px 38px rgba(23, 23, 23, 0.2);
 }
 
+.editorial-button:active,
+.kiri-primary-button:active,
+.kiri-link:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 8px 20px rgba(23, 23, 23, 0.14);
+}
+
 .editorial-button {
   color: var(--paper);
   background: linear-gradient(135deg, #171717 0%, #303030 100%);
@@ -165,24 +172,12 @@
   color: #34322f;
   font-size: 13px;
   font-weight: 600;
+  transition: color 180ms ease, transform 180ms ease;
 }
 
-.company-header__desktop a::after {
-  position: absolute;
-  right: 0;
-  bottom: 4px;
-  left: 0;
-  height: 1px;
-  background: var(--ink);
-  content: "";
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 180ms ease;
-}
-
-.company-header__desktop a:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
+.company-header__desktop a:hover {
+  color: var(--blue);
+  transform: translateY(-1px);
 }
 
 .company-header__menu-button {
@@ -196,6 +191,16 @@
   border-radius: 50%;
   color: var(--ink);
   background: transparent;
+  transition: color 180ms ease, background-color 180ms ease, transform 180ms ease;
+}
+
+.company-header__menu-button:hover {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.company-header__menu-button:active {
+  transform: scale(0.96);
 }
 
 .company-header__menu-button span {
@@ -250,6 +255,17 @@
   padding: 19px 0;
   font-size: clamp(29px, 8vw, 42px);
   font-weight: 600;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.company-mobile-menu a:hover,
+.company-mobile-menu a:focus-visible {
+  color: var(--kiri-green);
+  transform: translateX(4px);
+}
+
+.company-mobile-menu a:active {
+  transform: translateX(2px) scale(0.99);
 }
 
 .company-mobile-menu a span {
@@ -390,7 +406,6 @@
 }
 
 .service-feature {
-  display: grid;
   padding-block: clamp(42px, 5vw, 64px);
 }
 
@@ -398,12 +413,17 @@
   margin-top: clamp(20px, 3vw, 36px);
 }
 
-.service-feature--halo {
+.service-feature__link {
+  display: grid;
+  color: inherit;
+}
+
+.service-feature--halo .service-feature__link {
   grid-template-columns: minmax(300px, 5fr) minmax(0, 7fr);
   gap: clamp(48px, 6vw, 76px);
 }
 
-.service-feature--kiri {
+.service-feature--kiri .service-feature__link {
   grid-template-columns: minmax(0, 7fr) minmax(300px, 5fr);
   gap: clamp(48px, 6vw, 76px);
 }
@@ -419,6 +439,7 @@
   color: var(--muted);
   font-size: 10px;
   font-weight: 700;
+  transition: color 200ms ease;
 }
 
 .service-feature__copy h3 {
@@ -465,6 +486,7 @@
   width: min(78%, 440px);
   max-width: none;
   transform: translate(-50%, -50%);
+  transition: transform 240ms ease;
 }
 
 .service-feature__visual--kiri {
@@ -481,6 +503,7 @@
   left: 34px;
   width: min(36%, 200px);
   height: auto;
+  transition: transform 240ms ease;
 }
 
 .service-feature__kiri-screen {
@@ -492,6 +515,7 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 40px 40px 40px 40px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  transition: transform 240ms ease;
 }
 
 .service-feature__kiri-mascot {
@@ -500,6 +524,7 @@
   top: 70px;
   width: 60px;
   height: 60px;
+  transition: transform 240ms ease;
 }
 
 .service-feature--kiri .service-feature__copy {
@@ -517,6 +542,52 @@
   border-color: #fdfdfd;
   color: #1a1a1a;
   background: #9bea51;
+}
+
+.service-feature__link:hover .service-feature__visual--halo > img,
+.service-feature:focus-within .service-feature__visual--halo > img {
+  transform: translate(-50%, -52%) scale(1.035);
+}
+
+.service-feature__link:hover .service-feature__kiri-logo,
+.service-feature:focus-within .service-feature__kiri-logo {
+  transform: translateX(4px);
+}
+
+.service-feature__link:hover .service-feature__kiri-screen,
+.service-feature:focus-within .service-feature__kiri-screen {
+  transform: translateY(-10px);
+}
+
+.service-feature__link:hover .service-feature__kiri-mascot,
+.service-feature:focus-within .service-feature__kiri-mascot {
+  transform: translate(-3px, -5px);
+}
+
+.service-feature__link:hover .editorial-button,
+.service-feature:focus-within .editorial-button,
+.service-feature__link:hover .kiri-link,
+.service-feature:focus-within .kiri-link {
+  transform: translateY(-2px);
+  box-shadow: 0 17px 38px rgba(23, 23, 23, 0.2);
+}
+
+.service-feature__link:hover .service-feature__status,
+.service-feature:focus-within .service-feature__status {
+  color: var(--blue);
+}
+
+.service-feature--kiri .service-feature__link:hover .service-feature__status,
+.service-feature--kiri:focus-within .service-feature__status {
+  color: #4f9222;
+}
+
+.service-feature__link:active .service-feature__visual--halo > img {
+  transform: translate(-50%, -50%) scale(1.015);
+}
+
+.service-feature__link:active .service-feature__kiri-screen {
+  transform: translateY(-4px);
 }
 
 /* Partnership */
@@ -1589,11 +1660,14 @@
   }
 
   .company-about__notes h3 {
-    margin-top: 36px;
+    margin-top: 0;
   }
 
-  .service-feature--halo,
-  .service-feature--kiri,
+  .service-feature--halo .service-feature__link,
+  .service-feature--kiri .service-feature__link {
+    gap: 52px;
+  }
+
   .kiri-preregister__grid {
     gap: 52px;
   }
@@ -1722,8 +1796,12 @@
     padding-inline: 0;
   }
 
-  .service-feature--halo,
-  .service-feature--kiri,
+  .service-feature--halo .service-feature__link,
+  .service-feature--kiri .service-feature__link {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
   .kiri-preregister__grid {
     grid-template-columns: 1fr;
     gap: 32px;
@@ -1912,7 +1990,38 @@
   .editorial-button,
   .kiri-primary-button,
   .kiri-link,
-  .kiri-submit {
+  .kiri-submit,
+  .company-header__desktop a,
+  .company-header__menu-button,
+  .company-mobile-menu a,
+  .service-feature__visual--halo > img,
+  .service-feature__kiri-logo,
+  .service-feature__kiri-screen,
+  .service-feature__kiri-mascot {
     transition: none;
+  }
+
+  .company-header__desktop a:hover,
+  .company-mobile-menu a:hover,
+  .company-mobile-menu a:focus-visible,
+  .editorial-button:hover,
+  .kiri-primary-button:hover,
+  .kiri-link:hover,
+  .service-feature__link:hover .editorial-button,
+  .service-feature:focus-within .editorial-button,
+  .service-feature__link:hover .kiri-link,
+  .service-feature:focus-within .kiri-link,
+  .service-feature__link:hover .service-feature__kiri-logo,
+  .service-feature:focus-within .service-feature__kiri-logo,
+  .service-feature__link:hover .service-feature__kiri-screen,
+  .service-feature:focus-within .service-feature__kiri-screen,
+  .service-feature__link:hover .service-feature__kiri-mascot,
+  .service-feature:focus-within .service-feature__kiri-mascot {
+    transform: none;
+  }
+
+  .service-feature__link:hover .service-feature__visual--halo > img,
+  .service-feature:focus-within .service-feature__visual--halo > img {
+    transform: translate(-50%, -50%);
   }
 }
