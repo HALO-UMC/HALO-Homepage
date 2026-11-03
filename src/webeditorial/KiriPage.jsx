@@ -14,6 +14,7 @@ const FORM_ENABLED = false;
 const experienceSteps = [
   {
     number: "01",
+    tabLabel: "질문",
     title: "질문으로 서로 알아가기",
     description:
       "가족에게 직접 묻기 어려웠던 취향을 한 번에 하나씩 나누며 서로를 알아갑니다.",
@@ -22,6 +23,7 @@ const experienceSteps = [
   },
   {
     number: "02",
+    tabLabel: "활동 발견",
     title: "우리에게 맞는 활동과 장소 발견",
     description:
       "가족의 취향과 상황을 바탕으로 함께해 볼 활동을 살펴보고 관심 있는 장소를 발견합니다.",
@@ -30,6 +32,7 @@ const experienceSteps = [
   },
   {
     number: "03",
+    tabLabel: "일정",
     title: "관심 활동을 약속으로 이어가기",
     description:
       "저장한 활동에 날짜와 함께할 가족을 더해, ‘다음에’라는 말을 구체적인 제안으로 바꿉니다.",
@@ -38,6 +41,7 @@ const experienceSteps = [
   },
   {
     number: "04",
+    tabLabel: "기록",
     title: "함께한 시간을 사진과 기록으로 보관",
     description:
       "가족과 보낸 날의 사진과 각자의 기록을 한곳에 모아 다시 꺼내 볼 수 있도록 준비하고 있습니다.",
@@ -411,6 +415,85 @@ function KiriPreregisterForm() {
   );
 }
 
+function KiriExperienceShowcase() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const tabRefs = useRef([]);
+  const activeStep = experienceSteps[activeIndex];
+
+  const selectStep = (index, moveFocus = false) => {
+    setActiveIndex(index);
+
+    if (moveFocus) {
+      requestAnimationFrame(() => tabRefs.current[index]?.focus());
+    }
+  };
+
+  const handleTabKeyDown = (event, index) => {
+    let nextIndex;
+
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (index + 1) % experienceSteps.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (index - 1 + experienceSteps.length) % experienceSteps.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = experienceSteps.length - 1;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    selectStep(nextIndex, true);
+  };
+
+  return (
+    <div className="kiri-showcase">
+      <div className="kiri-showcase__tabs" role="tablist" aria-label="KIRI 서비스 경험 선택">
+        {experienceSteps.map((step, index) => {
+          const isActive = index === activeIndex;
+
+          return (
+            <button
+              key={step.number}
+              ref={(node) => {
+                tabRefs.current[index] = node;
+              }}
+              id={`kiri-experience-tab-${step.number}`}
+              type="button"
+              role="tab"
+              data-experience-index={index}
+              aria-selected={isActive}
+              aria-controls="kiri-experience-panel"
+              tabIndex={isActive ? 0 : -1}
+              onClick={() => selectStep(index)}
+              onKeyDown={(event) => handleTabKeyDown(event, index)}
+            >
+              {step.tabLabel}
+            </button>
+          );
+        })}
+      </div>
+
+      <div
+        key={activeStep.number}
+        id="kiri-experience-panel"
+        className="kiri-showcase__panel"
+        role="tabpanel"
+        aria-labelledby={`kiri-experience-tab-${activeStep.number}`}
+      >
+        <div className="kiri-showcase__copy">
+          <h3>{activeStep.title}</h3>
+          <p>{activeStep.description}</p>
+        </div>
+        <figure className="kiri-phone">
+          <img src={activeStep.image} alt={activeStep.alt} />
+        </figure>
+      </div>
+    </div>
+  );
+}
+
 export default function KiriPage() {
   usePageMeta({
     title: "KIRI — 우리 가족만의 취향, 우리 가족만의 시간",
@@ -507,20 +590,7 @@ export default function KiriPage() {
               <h2>알아가는 질문이 함께한 하루의 기록이 되기까지</h2>
             </div>
 
-            <div className="kiri-experience__list">
-              {experienceSteps.map((step) => (
-                <article key={step.number} className="kiri-step">
-                  <div className="kiri-step__copy">
-                    <span>{step.number}</span>
-                    <h3>{step.title}</h3>
-                    <p>{step.description}</p>
-                  </div>
-                  <figure className="kiri-phone">
-                    <img src={step.image} alt={step.alt} loading="lazy" />
-                  </figure>
-                </article>
-              ))}
-            </div>
+            <KiriExperienceShowcase />
           </div>
         </section>
 

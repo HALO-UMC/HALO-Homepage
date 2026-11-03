@@ -782,10 +782,16 @@
   color: rgba(255, 255, 255, 0.72);
   font-size: 12px;
   font-weight: 550;
+  transition: color 180ms ease, background-color 180ms ease, transform 180ms ease;
 }
 
 .kiri-header nav a:hover {
   color: #fff;
+  transform: translateY(-1px);
+}
+
+.kiri-header nav a:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .kiri-header nav .kiri-header__cta {
@@ -802,6 +808,16 @@
   gap: 8px;
   color: rgba(255, 255, 255, 0.67);
   font-size: 11px;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.kiri-header__company:hover {
+  color: var(--kiri-green);
+  transform: translate(2px, -1px);
+}
+
+.kiri-header__company:active {
+  transform: translate(1px, 0) scale(0.98);
 }
 
 .kiri-hero {
@@ -986,48 +1002,93 @@
   margin-top: clamp(48px, 6vw, 72px);
 }
 
-.kiri-experience__list {
+.kiri-showcase {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 clamp(36px, 5vw, 64px);
+  grid-template-columns: minmax(210px, 0.52fr) minmax(0, 1.48fr);
+  gap: clamp(38px, 6vw, 76px);
+  align-items: start;
   margin-top: clamp(48px, 6vw, 72px);
 }
 
-.kiri-step {
+.kiri-showcase__tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kiri-showcase__tabs button {
+  min-height: 56px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 18px;
+  color: #a7a7a7;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 650;
+  text-align: left;
+  transition: color 180ms ease, background-color 180ms ease, transform 180ms ease;
+}
+
+.kiri-showcase__tabs button:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.kiri-showcase__tabs button[aria-selected="true"] {
+  color: #171717;
+  background: var(--kiri-green);
+}
+
+.kiri-showcase__tabs button:focus-visible {
+  outline: 3px solid var(--kiri-green);
+  outline-offset: 3px;
+}
+
+.kiri-showcase__tabs button:active {
+  transform: scale(0.985);
+}
+
+.kiri-showcase__panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(200px, 280px);
-  gap: clamp(20px, 2.5vw, 30px);
-  align-items: start;
-  padding-block: clamp(34px, 4vw, 48px);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
+  gap: clamp(36px, 5vw, 64px);
+  align-items: center;
+  animation: kiri-showcase-change 220ms ease-out;
 }
 
-.kiri-step__copy > span {
-  display: block;
-  margin-bottom: clamp(28px, 4vw, 44px);
-  color: var(--kiri-green);
-  font-family: Georgia, serif;
-  font-size: 13px;
+@keyframes kiri-showcase-change {
+  from {
+    opacity: 0.55;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.kiri-step__copy h3 {
+.kiri-showcase__copy h3 {
   margin: 0;
-  font-size: clamp(24px, 2.4vw, 34px);
+  font-size: clamp(32px, 3.4vw, 48px);
   font-weight: 580;
   line-height: 1.12;
   letter-spacing: -0.055em;
   word-break: keep-all;
 }
 
-.kiri-step__copy p {
+.kiri-showcase__copy p {
   max-width: 500px;
-  margin: 16px 0 0;
+  margin: 22px 0 0;
   color: var(--kiri-muted);
   font-size: 15px;
   line-height: 1.8;
   word-break: keep-all;
 }
 
-.kiri-step .kiri-phone {
+.kiri-showcase__panel .kiri-phone {
+  width: min(100%, 300px);
   justify-self: end;
 }
 
@@ -1518,6 +1579,16 @@
   color: var(--kiri-green);
   font-size: 12px;
   font-weight: 650;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.kiri-company-link a:hover {
+  color: #c1f592;
+  transform: translateX(3px);
+}
+
+.kiri-company-link a:active {
+  transform: translateX(1px) scale(0.99);
 }
 
 /* Privacy draft */
@@ -1637,12 +1708,6 @@
   color: var(--blue);
   font-size: 13px;
   font-weight: 650;
-}
-
-@media (max-width: 1120px) {
-  .kiri-experience__list {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 1024px) {
@@ -1878,16 +1943,22 @@
     right: 1%;
   }
 
-  .kiri-step {
+  .kiri-showcase {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .kiri-showcase__tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kiri-showcase__panel {
     grid-template-columns: 1fr;
     gap: 30px;
   }
 
-  .kiri-step__copy > span {
-    margin-bottom: 24px;
-  }
-
-  .kiri-step .kiri-phone {
+  .kiri-showcase__panel .kiri-phone {
     width: min(88%, 300px);
     justify-self: center;
   }
@@ -1994,16 +2065,27 @@
   .company-header__desktop a,
   .company-header__menu-button,
   .company-mobile-menu a,
+  .kiri-header nav a,
+  .kiri-header__company,
+  .kiri-company-link a,
   .service-feature__visual--halo > img,
   .service-feature__kiri-logo,
   .service-feature__kiri-screen,
-  .service-feature__kiri-mascot {
+  .service-feature__kiri-mascot,
+  .kiri-showcase__tabs button {
     transition: none;
+  }
+
+  .kiri-showcase__panel {
+    animation: none;
   }
 
   .company-header__desktop a:hover,
   .company-mobile-menu a:hover,
   .company-mobile-menu a:focus-visible,
+  .kiri-header nav a:hover,
+  .kiri-header__company:hover,
+  .kiri-company-link a:hover,
   .editorial-button:hover,
   .kiri-primary-button:hover,
   .kiri-link:hover,
@@ -2023,5 +2105,9 @@
   .service-feature__link:hover .service-feature__visual--halo > img,
   .service-feature:focus-within .service-feature__visual--halo > img {
     transform: translate(-50%, -50%);
+  }
+
+  .kiri-showcase__tabs button:active {
+    transform: none;
   }
 }
