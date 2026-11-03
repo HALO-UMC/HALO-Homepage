@@ -25,6 +25,11 @@ const activitySlides = [
   { src: "/images/company-activities/halo_activity7.jpg", alt: "HALO 서비스와 팀 활동을 소개하는 현장", caption: "서비스와 팀 활동 소개", objectPosition: "50% 50%", mobileObjectPosition: "50% 50%" },
 ];
 
+const haloStoreSlides = Array.from({ length: 6 }, (_, index) => ({
+  src: `/images/halo-store/halo_store${index + 1}.webp`,
+  alt: `HALO 앱 소개 화면 ${index + 1}`,
+}));
+
 const navigation = [
   { label: "회사", href: "#company" },
   { label: "서비스", href: "#services" },
@@ -127,7 +132,7 @@ function PlayPauseIcon({ isPlaying }) {
   );
 }
 
-function CompanyActivitySlider({ slides }) {
+function CompanyActivitySlider({ slides, label = "HALO 팀 활동 사진", kind = "activity" }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
@@ -180,8 +185,7 @@ function CompanyActivitySlider({ slides }) {
     if (
       !hasMultipleSlides ||
       !isPlaying ||
-      isHovered ||
-      isFocusWithin ||
+      (kind === "activity" && (isHovered || isFocusWithin)) ||
       !isPageVisible ||
       prefersReducedMotion
     ) {
@@ -195,6 +199,7 @@ function CompanyActivitySlider({ slides }) {
     return () => window.clearInterval(timer);
   }, [
     hasMultipleSlides,
+    kind,
     isFocusWithin,
     isHovered,
     isPageVisible,
@@ -233,9 +238,9 @@ function CompanyActivitySlider({ slides }) {
 
   return (
     <div
-      className="company-activity-slider"
+      className={`company-activity-slider company-activity-slider--${kind}`}
       aria-roledescription="carousel"
-      aria-label="HALO 팀 활동 사진"
+      aria-label={label}
       data-slide-count={slides.length}
       data-playing={hasMultipleSlides && isPlaying && !prefersReducedMotion}
       onMouseEnter={() => setIsHovered(true)}
@@ -264,7 +269,7 @@ function CompanyActivitySlider({ slides }) {
                 loading={index === 0 ? "eager" : "lazy"}
                 fetchPriority={index === 0 ? "high" : "auto"}
               />
-              {slide.caption && <figcaption>{slide.caption}</figcaption>}
+              {kind !== "store" && slide.caption && <figcaption>{slide.caption}</figcaption>}
             </figure>
           ))
         ) : (
@@ -273,32 +278,35 @@ function CompanyActivitySlider({ slides }) {
           </div>
         )}
 
-        <div className="company-activity-slider__shade" aria-hidden="true" />
+        {kind === "activity" && (
+          <>
+            <div className="company-activity-slider__shade" aria-hidden="true" />
+            <div className="company-hero__copy">
+              <h1 id="company-hero-title">작은 안녕으로, 가족의 내일을 잇습니다.</h1>
+              <p>
+                HALO는 서로에게 건네는 인사와 평안한 일상을 뜻하는 ‘안녕’에서 시작합니다.
+              </p>
+              <a className="company-hero__cta" href="#services">
+                서비스 만나보기
+                <ArrowIcon />
+              </a>
+            </div>
+          </>
+        )}
 
-        <div className="company-hero__copy">
-          <h1 id="company-hero-title">작은 안녕으로, 가족의 내일을 잇습니다.</h1>
-          <p>
-            HALO는 서로에게 건네는 인사와 평안한 일상을 뜻하는 ‘안녕’에서 시작합니다.
-          </p>
-          <a className="company-hero__cta" href="#services">
-            서비스 만나보기
-            <ArrowIcon />
-          </a>
-        </div>
-
-        {hasMultipleSlides && (
+        {hasMultipleSlides && kind === "activity" && (
           <div className="company-activity-slider__controls">
             <div className="company-activity-slider__buttons">
               <button
                 type="button"
-                aria-label="이전 활동 사진"
+                aria-label="이전 사진"
                 onClick={() => showSlide(activeIndex - 1)}
               >
                 <SliderArrow direction="previous" />
               </button>
               <button
                 type="button"
-                aria-label="다음 활동 사진"
+                aria-label="다음 사진"
                 onClick={() => showSlide(activeIndex + 1)}
               >
                 <SliderArrow direction="next" />
@@ -314,13 +322,13 @@ function CompanyActivitySlider({ slides }) {
               </button>
             </div>
 
-            <div className="company-activity-slider__position" aria-label="활동 사진 선택">
+            <div className="company-activity-slider__position" aria-label="사진 선택">
               {slides.map((slide, index) => (
                 <button
                   key={slide.src}
                   type="button"
                   className={index === activeIndex ? "is-active" : ""}
-                  aria-label={`${index + 1}번째 활동 사진 보기`}
+                  aria-label={`${index + 1}번째 사진 보기`}
                   aria-current={index === activeIndex ? "true" : undefined}
                   onClick={() => showSlide(index)}
                 />
@@ -424,15 +432,13 @@ export default function CompanyPage() {
                 <ServiceActions service="halo" />
               </div>
 
-              <Link className="service-feature__visual-link" to="/halo" aria-label="HALO 소개 보기">
-                <figure className="service-feature__visual service-feature__visual--halo">
-                  <img
-                    src="/images/hero/hero-main.svg"
-                    alt="HALO 가족 스토리북 화면"
-                    loading="lazy"
+              <div className="service-feature__visual service-feature__visual--halo">
+                  <CompanyActivitySlider
+                    slides={haloStoreSlides}
+                    label="HALO 앱 소개 화면"
+                    kind="store"
                   />
-                </figure>
-              </Link>
+              </div>
             </article>
 
             <article className="service-feature service-feature--kiri">
