@@ -13,6 +13,7 @@ create table if not exists public.kiri_preregistrations (
   privacy_consent_version text not null,
   privacy_agreed_at timestamptz not null,
   data_controller_name text not null,
+  data_controller_representative text not null,
   privacy_retention_label text not null,
   created_at timestamptz not null default now(),
   constraint kiri_preregistrations_email_normalized_unique unique (email_normalized),
@@ -21,6 +22,11 @@ create table if not exists public.kiri_preregistrations (
   constraint kiri_preregistrations_nickname_length_check
     check (nickname is null or char_length(nickname) <= 24)
 );
+
+-- Existing installations may already have the table; add the new audit field without
+-- altering any existing application records.
+alter table public.kiri_preregistrations
+  add column if not exists data_controller_representative text;
 
 alter table public.kiri_preregistrations enable row level security;
 
@@ -38,3 +44,6 @@ comment on column public.kiri_preregistrations.privacy_consent_version is
 
 comment on column public.kiri_preregistrations.privacy_retention_label is
   '동의 화면에 고지된 보유 기간 문구.';
+
+comment on column public.kiri_preregistrations.data_controller_representative is
+  '동의 화면에 고지된 개인정보처리자 대표자.';
