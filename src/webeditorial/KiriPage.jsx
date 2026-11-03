@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 import {
   ArrowIcon,
@@ -495,6 +495,20 @@ function KiriExperienceShowcase() {
 }
 
 export default function KiriPage() {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) {
+      return undefined;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [hash]);
+
   usePageMeta({
     title: "KIRI — 우리 가족만의 취향, 우리 가족만의 시간",
     description:
