@@ -1,4 +1,7 @@
-import { getConfiguration } from "./kiri-preregister.js";
+import {
+  getConfiguration,
+  getSupabaseApiKeyHeaders,
+} from "./kiri-preregister.js";
 
 function sendStatus(response, payload) {
   response.statusCode = 200;
@@ -54,8 +57,7 @@ export default async function handler(request, response) {
     storageResponse = await fetch(query, {
       method: "GET",
       headers: {
-        apikey: configuration.serviceRoleKey,
-        Authorization: `Bearer ${configuration.serviceRoleKey}`,
+        ...getSupabaseApiKeyHeaders(configuration.apiKey),
         Accept: "application/json",
       },
     });

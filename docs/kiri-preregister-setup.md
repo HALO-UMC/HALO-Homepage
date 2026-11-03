@@ -4,8 +4,9 @@
 준비되지 않은 경우 입력 필드를 렌더링하지 않고 `사전예약 접수 준비 중` 상태만 표시합니다.
 준비된 경우에만 `POST /api/kiri-preregister`로 제출합니다.
 
-API는 Supabase `service_role` 키를 서버에서만 사용합니다. 접수 목록 조회 API는 제공하지
-않으며, 브라우저에는 준비 여부와 공개 가능한 정책 문구만 반환합니다.
+API는 Supabase Secret key를 서버에서만 사용합니다. 새 `sb_secret_...` 키는 JWT가 아니므로
+`apikey` 헤더로만 전송합니다. 접수 목록 조회 API는 제공하지 않으며, 브라우저에는 준비 여부와
+공개 가능한 정책 문구만 반환합니다.
 
 ## 환경변수 구분
 
@@ -14,7 +15,8 @@ API는 Supabase `service_role` 키를 서버에서만 사용합니다. 접수 �
 | `VITE_KIRI_DATA_CONTROLLER_NAME` | 프론트 공개 | 아니요 | 권장 | 빌드 시 화면에 포함되는 운영 주체 fallback 문구. 서버 상태 응답이 우선합니다. |
 | `VITE_KIRI_PRIVACY_RETENTION_LABEL` | 프론트 공개 | 아니요 | 권장 | 빌드 시 화면에 포함되는 보유 기간 fallback 문구. 서버 상태 응답이 우선합니다. |
 | `SUPABASE_URL` | 서버 전용 설정 | 아니요 | 예 | Supabase Project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | 서버 전용 | **예** | 예 | Supabase service role 키. `VITE_` 접두사를 절대 붙이지 않습니다. |
+| `SUPABASE_SECRET_KEY` | 서버 전용 | **예** | 새 키 사용 시 | Supabase 새 Secret key (`sb_secret_...`). `VITE_` 접두사를 절대 붙이지 않습니다. |
+| `SUPABASE_SERVICE_ROLE_KEY` | 서버 전용 | **예** | 이전 키 사용 시 | 기존 JWT service_role 키 호환용. 새 Secret key를 쓰면 설정하지 않습니다. |
 | `KIRI_PREREGISTER_TABLE` | 서버 전용 설정 | 아니요 | 아니요 | 기본값 `kiri_preregistrations` |
 | `KIRI_PRIVACY_POLICY_VERSION` | 서버 전용 설정·공개 가능 | 아니요 | 예 | 사용자가 동의한 정책 버전. DB에 저장됩니다. |
 | `KIRI_DATA_CONTROLLER_NAME` | 서버 전용 설정·공개 가능 | 아니요 | 예 | 확정된 개인정보처리자 정식 명칭. 상태 API와 DB에 반영됩니다. |
@@ -49,7 +51,7 @@ Project Settings → Environment Variables에 직접 입력합니다.
 ### 1. Supabase에서 할 일
 
 1. 사용할 Supabase 프로젝트를 선택하거나 생성합니다.
-2. Project Settings → API에서 Project URL과 `service_role` 키의 위치를 확인합니다.
+2. Project Settings → API Keys에서 Project URL과 새 Secret key (`sb_secret_...`)를 확인합니다.
 3. 키는 복사 후 로컬 `.env.local` 또는 Vercel 환경변수 화면에 직접 입력합니다.
 
 ### 2. SQL 적용 방법
@@ -64,7 +66,9 @@ Project Settings → Environment Variables에 직접 입력합니다.
 1. 운영 주체, 보유 기간, 정책 버전을 먼저 확정합니다.
 2. 로컬에서는 `.env.example`을 참고해 추적되지 않는 `.env.local`에 값을 입력합니다.
 3. Vercel에서는 Project Settings → Environment Variables에 같은 값을 직접 입력합니다.
-4. `SUPABASE_SERVICE_ROLE_KEY`, `KIRI_RATE_LIMIT_SALT`에는 `VITE_` 접두사를 붙이지 않습니다.
+4. `SUPABASE_SECRET_KEY`, `KIRI_RATE_LIMIT_SALT`에는 `VITE_` 접두사를 붙이지 않습니다.
+5. 새 Secret key는 서버 환경변수 `SUPABASE_SECRET_KEY`에만 저장합니다. API가 `sb_secret_` 키를
+   `Authorization: Bearer`에 보내지 않고 `apikey` 헤더에만 전달합니다.
 
 ### 4. 설정 변경 후 재배포
 

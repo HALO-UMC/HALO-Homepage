@@ -121,7 +121,8 @@ export function hasAllowedOrigin(request) {
 export function getConfiguration() {
   const configuration = {
     supabaseUrl: process.env.SUPABASE_URL?.replace(/\/$/, ""),
-    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    apiKey:
+      process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY,
     policyVersion: process.env.KIRI_PRIVACY_POLICY_VERSION,
     dataControllerName: process.env.KIRI_DATA_CONTROLLER_NAME,
     retentionLabel: process.env.KIRI_PRIVACY_RETENTION_LABEL,
@@ -131,7 +132,7 @@ export function getConfiguration() {
 
   if (
     !configuration.supabaseUrl ||
-    !configuration.serviceRoleKey ||
+    !configuration.apiKey ||
     !configuration.policyVersion ||
     !configuration.dataControllerName ||
     !configuration.retentionLabel ||
@@ -142,6 +143,17 @@ export function getConfiguration() {
   }
 
   return configuration;
+}
+
+export function getSupabaseApiKeyHeaders(apiKey) {
+  const headers = { apikey: apiKey };
+
+  // New sb_secret keys are not JWTs and must not be sent as Bearer tokens.
+  if (!apiKey.startsWith("sb_secret_")) {
+    headers.Authorization = `Bearer ${apiKey}`;
+  }
+
+  return headers;
 }
 
 export default async function handler(request, response) {
@@ -254,8 +266,7 @@ export default async function handler(request, response) {
       {
         method: "POST",
         headers: {
-          apikey: configuration.serviceRoleKey,
-          Authorization: `Bearer ${configuration.serviceRoleKey}`,
+          ...getSupabaseApiKeyHeaders(configuration.apiKey),
           "Content-Type": "application/json",
           Accept: "application/json",
           Prefer: "return=representation",
