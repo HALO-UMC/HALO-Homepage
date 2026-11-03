@@ -9,7 +9,6 @@ import {
 import usePageMeta from "./usePageMeta.js";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const FORM_ENABLED = false;
 
 const experienceSteps = [
   {
@@ -77,11 +76,11 @@ function KiriHeader() {
 }
 
 function KiriPreregisterForm() {
-  const preregistration = {
-    phase: "ready",
-    ready: true,
+  const [preregistration, setPreregistration] = useState({
+    phase: "loading",
+    ready: false,
     policy: null,
-  };
+  });
   const [values, setValues] = useState({
     email: "",
     nickname: "",
@@ -93,6 +92,47 @@ function KiriPreregisterForm() {
   const [errors, setErrors] = useState({});
   const [submitState, setSubmitState] = useState({ status: "idle", message: "" });
   const isSubmittingRef = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/kiri-preregister-status", {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("사전예약 접수 상태를 확인하지 못했습니다.");
+        }
+
+        return response.json();
+      })
+      .then((result) => {
+        if (!cancelled) {
+          setPreregistration({
+            phase: "ready",
+            ready:
+              result.ready === true &&
+              Boolean(
+                result.policy?.policyVersion &&
+                  result.policy?.dataControllerName &&
+                  result.policy?.retentionLabel,
+              ),
+            policy: result.policy || null,
+          });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setPreregistration({ phase: "ready", ready: false, policy: null });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const retentionLabel =
     preregistration.policy?.retentionLabel ||
     import.meta.env.VITE_KIRI_PRIVACY_RETENTION_LABEL ||
@@ -136,7 +176,7 @@ function KiriPreregisterForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!FORM_ENABLED || isSubmittingRef.current || !validate()) {
+    if (!preregistration.ready || isSubmittingRef.current || !validate()) {
       return;
     }
 
@@ -226,8 +266,8 @@ function KiriPreregisterForm() {
       <div className="kiri-form__preparing" role="status">
         <span aria-hidden="true" />
         <div>
-          <strong>사전예약 접수 준비 중</strong>
-          <p>접수가 시작되면 이 페이지에서 신청할 수 있어요.</p>
+          <strong>사전예약을 받고 있어요</strong>
+          <p>이메일을 등록하고 KIRI 출시 소식을 받아보세요.</p>
         </div>
       </div>
 
@@ -352,9 +392,6 @@ function KiriPreregisterForm() {
               <dd>동의를 거부할 수 있으며, 필수 동의를 거부하면 사전예약 신청이 어렵습니다.</dd>
             </div>
           </dl>
-          <p>
-            개인정보 수집·이용에 관한 자세한 내용은 접수 시작 전에 확정해 안내드릴게요.
-          </p>
         </div>
         {errors.privacyAgreed && (
           <p id="kiri-privacy-error" className="kiri-field__error">
@@ -387,27 +424,23 @@ function KiriPreregisterForm() {
       <button
         className="kiri-submit"
         type="submit"
-        disabled={!FORM_ENABLED || submitState.status === "submitting"}
+        disabled={!preregistration.ready || submitState.status === "submitting"}
       >
-        {!FORM_ENABLED ? (
-          "접수 준비 중"
-        ) : submitState.status === "submitting" ? (
+        {submitState.status === "submitting" ? (
           <>
             <span className="kiri-submit__spinner" aria-hidden="true" />
             저장 중
           </>
         ) : (
           <>
-            사전예약하기
+            출시 알림 신청하기
             <ArrowIcon />
           </>
         )}
       </button>
 
       <p className="kiri-form__footnote" aria-live="polite">
-        {!FORM_ENABLED
-          ? "접수가 시작되기 전까지 입력 내용은 제출되지 않습니다."
-          : submitState.status === "submitting"
+        {submitState.status === "submitting"
           ? submitState.message
           : "광고성 정보 수신 동의를 별도로 묶지 않습니다."}
       </p>
