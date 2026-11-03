@@ -8,7 +8,6 @@
   --coral: #e05f43;
   --kiri-green: #9bea51;
   min-width: 320px;
-  min-height: 100vh;
   overflow: clip;
   color: var(--ink);
   background: var(--paper);
@@ -31,12 +30,12 @@
 }
 
 .editorial-container {
-  width: min(calc(100% - 64px), 1440px);
+  width: min(calc(100% - 96px), 1240px);
   margin-inline: auto;
 }
 
 .editorial-section {
-  padding-block: clamp(104px, 11vw, 176px);
+  padding-block: clamp(80px, 8vw, 120px);
 }
 
 .company-wordmark {
@@ -1902,6 +1901,10 @@
 }
 
 @media (max-width: 1024px) {
+  .editorial-container {
+    width: min(calc(100% - 64px), 1240px);
+  }
+
   .company-hero__grid {
     grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
     gap: 40px;
@@ -1942,11 +1945,11 @@
 
 @media (max-width: 780px) {
   .editorial-container {
-    width: min(calc(100% - 36px), 1440px);
+    width: min(calc(100% - 40px), 1240px);
   }
 
   .editorial-section {
-    padding-block: 88px;
+    padding-block: 72px;
   }
 
   .company-header__inner,
@@ -2230,7 +2233,7 @@
 
 @media (max-width: 460px) {
   .editorial-container {
-    width: min(calc(100% - 28px), 1440px);
+    width: min(calc(100% - 32px), 1240px);
   }
 
   .company-wordmark > span {
