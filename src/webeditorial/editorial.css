@@ -1420,6 +1420,7 @@
 
 .kiri-preregister__intro > p {
   margin-top: 24px;
+  font-size: 18px;
 }
 
 .kiri-preregister__aside {
@@ -1428,14 +1429,14 @@
 
 .kiri-preregister__aside span {
   color: var(--kiri-green);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 650;
 }
 
 .kiri-preregister__aside p {
   margin: 12px 0 0;
   color: #8b8b8b;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.7;
 }
 
@@ -1513,7 +1514,7 @@
 .kiri-form-gate__label {
   margin: 0 0 16px;
   color: var(--kiri-green);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -1531,8 +1532,8 @@
   max-width: 520px;
   margin: 24px 0 0;
   color: #8e8e8e;
-  font-size: 12px;
-  line-height: 1.75;
+  font-size: 16px;
+  line-height: 1.7;
   word-break: keep-all;
 }
 
@@ -1545,8 +1546,26 @@
   color: #858585;
   background: #2c2c2b;
   cursor: not-allowed;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 650;
+}
+
+#kiri-preregister .kiri-form__preparing strong {
+  font-size: 15px;
+}
+
+#kiri-preregister .kiri-form__preparing p {
+  font-size: 14px;
+}
+
+#kiri-preregister .kiri-field label,
+#kiri-preregister .kiri-fieldset legend {
+  font-size: 15px;
+}
+
+#kiri-preregister .kiri-field input[type="email"],
+#kiri-preregister .kiri-field input[type="text"] {
+  font-size: 16px;
 }
 
 .kiri-form__row {
