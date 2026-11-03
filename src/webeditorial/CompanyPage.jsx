@@ -410,6 +410,7 @@ export default function CompanyPage() {
               <h2>가족의 연결을 만드는 두 서비스</h2>
             </div>
 
+            <div className="company-services__grid">
             <article className="service-feature service-feature--halo">
               <div className="service-feature__copy">
                 <img
@@ -446,6 +447,7 @@ export default function CompanyPage() {
                 <ServiceActions service="kiri" />
               </div>
             </article>
+            </div>
           </div>
         </section>
 
