@@ -134,7 +134,6 @@ export function getConfiguration(policy = KIRI_PREREGISTRATION_POLICY) {
     !configuration.policyVersion ||
     !configuration.dataControllerName ||
     !configuration.dataControllerRepresentative ||
-    !configuration.retentionLabel ||
     !configuration.collectionItems ||
     !configuration.processingPurpose ||
     !configuration.consentRefusal ||

@@ -128,20 +128,31 @@ test("필수 설정이 없으면 상태 API와 제출 API가 준비되지 않음
   assert.equal(submission.json.ok, false);
 });
 
-test("보유 기간이 서버 정책에 확정되지 않으면 상태와 제출 API가 접수를 막는다", async () => {
+test("보유 기간이 비어 있어도 정책과 Supabase 연결이 있으면 접수할 수 있다", async () => {
   setReadyEnvironment();
   assert.equal(KIRI_PREREGISTRATION_POLICY.retentionLabel, null);
-  assert.equal(getConfiguration(), null);
+  assert.ok(getConfiguration());
+
+  let storedRecord;
+  globalThis.fetch = async (_url, options) => {
+    if (options.method === "GET") {
+      return { ok: true, status: 200, json: async () => [] };
+    }
+
+    storedRecord = JSON.parse(options.body);
+    return { ok: true, status: 201, json: async () => [{ id: "row-no-retention" }] };
+  };
 
   const status = await call(defaultStatusHandler, createRequest({ method: "GET" }));
-  assert.equal(status.json.ready, false);
+  assert.equal(status.json.ready, true);
   assert.equal(status.json.policy.retentionLabel, null);
 
   const submission = await call(
     defaultPreregisterHandler,
     createRequest({ ip: "198.51.100.21" }),
   );
-  assert.equal(submission.status, 503);
+  assert.equal(submission.status, 201);
+  assert.equal(storedRecord.privacy_retention_label, null);
 });
 
 test("잘못된 이메일과 필수 동의 누락을 각각 거절한다", async () => {

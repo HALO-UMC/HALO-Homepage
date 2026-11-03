@@ -115,12 +115,7 @@ function KiriPreregisterForm() {
               result.ready === true &&
               Boolean(
                 result.policy?.policyVersion &&
-                  result.policy?.dataControllerName &&
-                  result.policy?.dataControllerRepresentative &&
-                  result.policy?.retentionLabel &&
-                  result.policy?.collectionItems &&
-                  result.policy?.processingPurpose &&
-                  result.policy?.consentRefusal,
+                  result.policy?.dataControllerName,
               ),
             policy: result.policy || null,
           });
@@ -136,6 +131,13 @@ function KiriPreregisterForm() {
       cancelled = true;
     };
   }, []);
+
+  const retentionLabel =
+    preregistration.policy?.retentionLabel ||
+    "접수 시작 전 안내 예정";
+  const dataController =
+    preregistration.policy?.dataControllerName ||
+    "할로(HALO)";
 
   const updateValue = (event) => {
     const { name, type, checked, value } = event.target;
@@ -368,31 +370,23 @@ function KiriPreregisterForm() {
           <dl>
             <div>
               <dt>운영 주체</dt>
-              <dd>{preregistration.policy.dataControllerName}</dd>
-            </div>
-            <div>
-              <dt>대표자</dt>
-              <dd>{preregistration.policy.dataControllerRepresentative}</dd>
+              <dd>{dataController}</dd>
             </div>
             <div>
               <dt>수집 항목</dt>
-              <dd>{preregistration.policy.collectionItems}</dd>
+              <dd>이메일(필수), 닉네임·사용 기기·가족 체험단 참여 의향(선택)</dd>
             </div>
             <div>
               <dt>이용 목적</dt>
-              <dd>{preregistration.policy.processingPurpose}</dd>
+              <dd>KIRI 출시 소식 안내 및 선택한 경우 가족 체험단 모집 안내</dd>
             </div>
             <div>
               <dt>보유 기간</dt>
-              <dd>{preregistration.policy.retentionLabel}</dd>
+              <dd>{retentionLabel}</dd>
             </div>
             <div>
               <dt>동의 거부</dt>
-              <dd>{preregistration.policy.consentRefusal}</dd>
-            </div>
-            <div>
-              <dt>안내 버전</dt>
-              <dd>{preregistration.policy.policyVersion}</dd>
+              <dd>동의를 거부할 수 있으며, 필수 동의를 거부하면 사전예약 신청이 어렵습니다.</dd>
             </div>
           </dl>
         </div>

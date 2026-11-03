@@ -14,10 +14,10 @@
 | `KIRI_ALLOWED_ORIGINS` | 아니요 | 허용 Origin 목록. 비우면 요청과 같은 Origin만 허용합니다. |
 | `KIRI_PREREGISTER_TABLE` | 아니요 | 테이블 이름. 기본값 `kiri_preregistrations` |
 
-개인정보처리자, 보유 기간, 수집·이용 문구와 정책 버전은 `api/kiri-policy.js`의 공통 서버
-정책에서 관리합니다. 보유 기간이 확정되어 정책에 반영되기 전까지 상태 API는 접수를 열지
-않습니다. 동의 문구는 이 정책 응답을 화면에 표시하고, 저장 행에는 같은 정책 버전·처리자·
-보유 기간을 함께 기록합니다. 동의 내용이 변경되면 코드의 `policyVersion`도 올립니다.
+개인정보처리자, 수집·이용 문구와 정책 버전은 `api/kiri-policy.js`의 공통 서버 정책에서
+관리합니다. 보유 기간 설정은 접수 활성화의 필수 조건이 아니며, 기록 칼럼은 비워 둘 수
+있습니다. 동의 문구는 공통 정책 응답을 화면에 표시하고, 신청 행에는 같은 정책 버전과
+처리자 정보를 저장합니다. 동의 내용이 변경되면 코드의 `policyVersion`도 올립니다.
 
 ## 적용 순서
 
@@ -29,8 +29,7 @@
    Table Editor에서 테이블, unique 제약, RLS 활성화를 확인합니다.
 3. Vercel Project Settings → Environment Variables에서 `SUPABASE_URL`과
    `SUPABASE_SECRET_KEY`를 Production/Preview 등 사용할 환경에 직접 입력합니다. Secret key는
-   채팅이나 소스 저장소에 넣지 않습니다. 보유 기간이 확정되면 `api/kiri-policy.js`의
-   공통 정책 값으로 반영한 뒤 새 빌드를 배포해야 합니다.
+   채팅이나 소스 저장소에 넣지 않습니다. 코드 정책 변경이 필요한 경우 새 빌드가 필요합니다.
 4. 접수 상태 API가 `ready: true`인지 확인한 다음, 운영 신청과 구분되는 테스트 이메일로 한 번
    접수합니다. HTTP 201과 Supabase의 신규 행을 확인하고, 같은 이메일로 다시 요청해
    `duplicate` 응답과 행 미추가를 확인합니다. 운영 배포는 별도 요청 없이 진행하지 않습니다.
