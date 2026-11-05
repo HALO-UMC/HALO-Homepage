@@ -8,10 +8,12 @@
     "build": "vite build",
     "lint": "oxlint",
     "test:browser": "node scripts/browser-smoke.mjs",
+    "test:analytics": "node --test tests/analytics.test.mjs",
     "test:kiri": "node --test tests/kiri-preregister.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hackler/react-sdk": "^12.2.1",
     "@tailwindcss/vite": "^4.3.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

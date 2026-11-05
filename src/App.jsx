@@ -30,6 +30,7 @@ import {
 
 import WebEditorialRoutes from "./webeditorial/WebEditorialRoutes.jsx";
 import usePageMeta from "./webeditorial/usePageMeta.js";
+import AnalyticsRouteTracker from "./analytics/AnalyticsRouteTracker.jsx";
 
 const FALLBACK_IMAGE =
   "https://picsum.photos/seed/halo-image-fallback/1200/900";
@@ -3028,6 +3029,7 @@ function AppRoutes() {
 function App() {
   return (
     <BrowserRouter>
+      <AnalyticsRouteTracker />
       <AppRoutes />
     </BrowserRouter>
   );
