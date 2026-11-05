@@ -14,8 +14,8 @@ const pages = [
       "서로에게 건네는 안녕에서, 함께하는 하루까지. 가족의 이야기를 담는 HALO와 함께할 시간을 만드는 KIRI를 만듭니다.",
     socialDescription:
       "서로에게 건네는 안녕에서, 함께하는 하루까지. 가족의 이야기를 담고 함께할 시간을 만듭니다.",
-    canonicalUrl: "https://halo-official.co.kr/",
-    imageUrl: "https://halo-official.co.kr/OG-IMAGE.jpg",
+    canonicalUrl: "https://www.halo-official.co.kr/",
+    imageUrl: "https://www.halo-official.co.kr/OG-IMAGE.jpg",
     imageType: "image/jpeg",
     imageWidth: "600",
     imageHeight: "600",
@@ -28,8 +28,8 @@ const pages = [
       "사진과 질문으로 부모님의 삶과 취향을 알아가고, 매일 한 장의 가족 스토리북으로 기록하는 HALO 앱입니다.",
     socialDescription:
       "사진과 질문으로 부모님의 삶과 취향을 알아가고, 매일 한 장의 가족 스토리북으로 기록하는 HALO 앱입니다.",
-    canonicalUrl: "https://halo-official.co.kr/halo",
-    imageUrl: "https://halo-official.co.kr/og-image.svg",
+    canonicalUrl: "https://www.halo-official.co.kr/halo",
+    imageUrl: "https://www.halo-official.co.kr/og-image.svg",
     imageType: "image/svg+xml",
     imageWidth: "1920",
     imageHeight: "1080",
@@ -42,8 +42,8 @@ const pages = [
       "부모님과 서로의 취향을 알아가고, 함께할 일을 찾아 약속하고, 그날의 추억을 남겨보세요.",
     socialDescription:
       "부모님과 서로의 취향을 알아가고, 함께할 일을 찾아 약속하고, 그날의 추억을 남겨보세요.",
-    canonicalUrl: "https://halo-official.co.kr/kiri",
-    imageUrl: "https://halo-official.co.kr/OG-IMAGE.jpg",
+    canonicalUrl: "https://www.halo-official.co.kr/kiri",
+    imageUrl: "https://www.halo-official.co.kr/OG-IMAGE.jpg",
     imageType: "image/jpeg",
     imageWidth: "600",
     imageHeight: "600",

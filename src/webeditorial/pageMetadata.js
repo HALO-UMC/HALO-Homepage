@@ -1,4 +1,4 @@
-const PRODUCTION_ORIGIN = "https://halo-official.co.kr";
+const PRODUCTION_ORIGIN = "https://www.halo-official.co.kr";
 
 export const PAGE_METADATA = Object.freeze({
   company: Object.freeze({
