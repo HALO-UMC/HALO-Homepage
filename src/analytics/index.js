@@ -30,14 +30,17 @@ function canCollectAnalytics() {
     return true;
   }
 
-  return Boolean(viteEnvironment.DEV && LOCAL_HOSTS.has(window.location.hostname));
+  return Boolean(
+    LOCAL_HOSTS.has(window.location.hostname) &&
+      (viteEnvironment.DEV || window.__HALO_ANALYTICS_TEST__ === true),
+  );
 }
 
 function isLocalAnalyticsTest() {
   return Boolean(
     typeof window !== "undefined" &&
-      viteEnvironment.DEV &&
-      LOCAL_HOSTS.has(window.location.hostname),
+      LOCAL_HOSTS.has(window.location.hostname) &&
+      (viteEnvironment.DEV || window.__HALO_ANALYTICS_TEST__ === true),
   );
 }
 
@@ -163,6 +166,7 @@ export function trackPageView(pathname) {
   lastPageLocation = pageLocation;
 
   recordBrowserTestEvent({
+    provider: "common",
     name: "page_view",
     properties: { page_name: pageName },
   });
@@ -180,6 +184,11 @@ export function trackPageView(pathname) {
         page_referrer: pageReferrer,
         debug_mode: isLocalAnalyticsTest(),
       });
+      recordBrowserTestEvent({
+        provider: "ga4",
+        name: "page_view",
+        properties: { page_name: pageName },
+      });
     } catch {
       // Analytics failures must never block routing.
     }
@@ -189,6 +198,11 @@ export function trackPageView(pathname) {
     try {
       client.setCurrentPage({
         pageName,
+        properties: { page_name: pageName },
+      });
+      recordBrowserTestEvent({
+        provider: "hackle",
+        name: "page_view",
         properties: { page_name: pageName },
       });
     } catch {
@@ -206,7 +220,7 @@ export function trackAnalyticsEvent(eventName, properties) {
   }
 
   initializeAnalytics();
-  recordBrowserTestEvent(event);
+  recordBrowserTestEvent({ provider: "common", ...event });
 
   if (gaMeasurementId && typeof window.gtag === "function") {
     try {
@@ -214,6 +228,7 @@ export function trackAnalyticsEvent(eventName, properties) {
         ...event.properties,
         debug_mode: isLocalAnalyticsTest(),
       });
+      recordBrowserTestEvent({ provider: "ga4", ...event });
     } catch {
       // Analytics failures must never block the original interaction.
     }
@@ -225,6 +240,7 @@ export function trackAnalyticsEvent(eventName, properties) {
         key: event.name,
         properties: event.properties,
       });
+      recordBrowserTestEvent({ provider: "hackle", ...event });
     } catch {
       // Analytics failures must never block the original interaction.
     }

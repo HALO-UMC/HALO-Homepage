@@ -31,6 +31,14 @@ import {
 import WebEditorialRoutes from "./webeditorial/WebEditorialRoutes.jsx";
 import usePageMeta from "./webeditorial/usePageMeta.js";
 import AnalyticsRouteTracker from "./analytics/AnalyticsRouteTracker.jsx";
+import {
+  ANALYTICS_EVENT_NAMES,
+  CTA_LOCATIONS,
+  PAGE_NAMES,
+  SERVICES,
+  STORES,
+} from "./analytics/config.js";
+import { trackAnalyticsEvent } from "./analytics/index.js";
 
 const FALLBACK_IMAGE =
   "https://picsum.photos/seed/halo-image-fallback/1200/900";
@@ -158,34 +166,15 @@ const downloadSteps = [
 ];
 
 function trackPlayStoreClick(position) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  if (typeof window.gtag === "function") {
-    window.gtag(
-      "event",
-      "playstore_click",
-      {
-        event_category: "download",
-        event_label: position,
-      },
-    );
-
-    return;
-  }
-
-  if (
-    Array.isArray(
-      window.dataLayer,
-    )
-  ) {
-    window.dataLayer.push({
-      event:
-        "playstore_click",
-      position,
-    });
-  }
+  trackAnalyticsEvent(
+    ANALYTICS_EVENT_NAMES.CLICK_APP_STORE,
+    {
+      page_name: PAGE_NAMES.HALO,
+      service: SERVICES.HALO,
+      cta_location: position,
+      store: STORES.GOOGLE_PLAY,
+    },
+  );
 }
 
 function ArrowIcon({
@@ -1066,7 +1055,7 @@ function HeroSection() {
               rel="noreferrer"
               onClick={() =>
                 trackPlayStoreClick(
-                  "hero",
+                  CTA_LOCATIONS.HERO,
                 )
               }
               aria-label="Google Play에서 HALO 다운로드하기"
@@ -2222,7 +2211,7 @@ function FinalSection() {
             rel="noreferrer"
             onClick={() =>
               trackPlayStoreClick(
-                "final",
+                CTA_LOCATIONS.FINAL,
               )
             }
             aria-label="Google Play에서 HALO 다운로드하기"
@@ -2260,7 +2249,7 @@ function DownloadPlayButton() {
       rel="noreferrer"
       onClick={() =>
         trackPlayStoreClick(
-          "download_page",
+          CTA_LOCATIONS.DOWNLOAD_PAGE,
         )
       }
       aria-label="Google Play에서 HALO 다운로드하기"

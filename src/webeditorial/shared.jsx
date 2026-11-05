@@ -1,4 +1,11 @@
 import { Link } from "react-router-dom";
+import {
+  ANALYTICS_EVENT_NAMES,
+  CTA_LOCATIONS,
+  PAGE_NAMES,
+  SERVICES,
+} from "../analytics/config.js";
+import { trackAnalyticsEvent } from "../analytics/index.js";
 
 export function ArrowIcon({ direction = "right" }) {
   return (
@@ -76,8 +83,36 @@ export function EditorialFooter({ variant = "company" }) {
           <div>
             <p className="editorial-footer__label">바로가기</p>
             <Link to="/">HALO 회사</Link>
-            <Link to="/halo">HALO 앱</Link>
-            <Link to="/kiri">KIRI</Link>
+            <Link
+              to="/halo"
+              onClick={
+                isKiri
+                  ? undefined
+                  : () =>
+                      trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_SERVICE, {
+                        page_name: PAGE_NAMES.COMPANY,
+                        service: SERVICES.HALO,
+                        cta_location: CTA_LOCATIONS.FOOTER,
+                      })
+              }
+            >
+              HALO 앱
+            </Link>
+            <Link
+              to="/kiri"
+              onClick={
+                isKiri
+                  ? undefined
+                  : () =>
+                      trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_SERVICE, {
+                        page_name: PAGE_NAMES.COMPANY,
+                        service: SERVICES.KIRI,
+                        cta_location: CTA_LOCATIONS.FOOTER,
+                      })
+              }
+            >
+              KIRI
+            </Link>
           </div>
           <div>
             <p className="editorial-footer__label">문의</p>

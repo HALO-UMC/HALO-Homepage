@@ -8,6 +8,14 @@ import {
   SectionLabel,
 } from "./shared.jsx";
 import usePageMeta from "./usePageMeta.js";
+import {
+  ANALYTICS_EVENT_NAMES,
+  CTA_LOCATIONS,
+  PAGE_NAMES,
+  SERVICES,
+  STORES,
+} from "../analytics/config.js";
+import { trackAnalyticsEvent } from "../analytics/index.js";
 
 const PLAY_STORE_URL =
   "https://play.google.com/store/apps/details?id=com.umc.halo";
@@ -91,7 +99,17 @@ function CompanyHeader() {
               {item.label}
             </a>
           ))}
-          <Link to="/kiri#kiri-preregister" onClick={() => setIsOpen(false)}>
+          <Link
+            to="/kiri#kiri-preregister"
+            onClick={() => {
+              setIsOpen(false);
+              trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_PREREGISTER, {
+                page_name: PAGE_NAMES.COMPANY,
+                service: SERVICES.KIRI,
+                cta_location: CTA_LOCATIONS.HEADER,
+              });
+            }}
+          >
             KIRI 사전 출시 알림
           </Link>
         </nav>
@@ -340,7 +358,17 @@ function ServiceActions({ service }) {
   if (service === "halo") {
     return (
       <div className="service-feature__actions">
-        <Link className="service-feature__page-button service-feature__page-button--halo" to="/halo">
+        <Link
+          className="service-feature__page-button service-feature__page-button--halo"
+          to="/halo"
+          onClick={() =>
+            trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_SERVICE, {
+              page_name: PAGE_NAMES.COMPANY,
+              service: SERVICES.HALO,
+              cta_location: CTA_LOCATIONS.SERVICE_SECTION,
+            })
+          }
+        >
           HALO 보러가기
           <ArrowIcon />
         </Link>
@@ -350,6 +378,14 @@ function ServiceActions({ service }) {
           target="_blank"
           rel="noreferrer"
           aria-label="Google Play에서 HALO 다운로드하기 (새 탭)"
+          onClick={() =>
+            trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_APP_STORE, {
+              page_name: PAGE_NAMES.COMPANY,
+              service: SERVICES.HALO,
+              cta_location: CTA_LOCATIONS.SERVICE_SECTION,
+              store: STORES.GOOGLE_PLAY,
+            })
+          }
         >
           <img
             src="/images/badges/google-play-ko.png"
@@ -364,7 +400,17 @@ function ServiceActions({ service }) {
 
   return (
     <div className="service-feature__actions">
-      <Link className="service-feature__page-button service-feature__page-button--kiri" to="/kiri">
+      <Link
+        className="service-feature__page-button service-feature__page-button--kiri"
+        to="/kiri"
+        onClick={() =>
+          trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_SERVICE, {
+            page_name: PAGE_NAMES.COMPANY,
+            service: SERVICES.KIRI,
+            cta_location: CTA_LOCATIONS.SERVICE_SECTION,
+          })
+        }
+      >
         KIRI 보러가기
         <ArrowIcon />
       </Link>
@@ -372,6 +418,13 @@ function ServiceActions({ service }) {
         className="service-feature__release-button"
         to="/kiri#kiri-preregister"
         aria-label="KIRI 사전 출시 알림 준비 영역 보기"
+        onClick={() =>
+          trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_PREREGISTER, {
+            page_name: PAGE_NAMES.COMPANY,
+            service: SERVICES.KIRI,
+            cta_location: CTA_LOCATIONS.SERVICE_SECTION,
+          })
+        }
       >
         사전 출시 알림 · 준비 중
         <ArrowIcon />

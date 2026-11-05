@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "test:browser": "node scripts/browser-smoke.mjs",
     "test:analytics": "node --test tests/analytics.test.mjs",
+    "test:analytics:browser": "node scripts/analytics-smoke.mjs",
     "test:kiri": "node --test tests/kiri-preregister.test.mjs",
     "preview": "vite preview"
   },

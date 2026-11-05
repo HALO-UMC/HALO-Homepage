@@ -7,6 +7,13 @@ import {
   SectionLabel,
 } from "./shared.jsx";
 import usePageMeta from "./usePageMeta.js";
+import {
+  ANALYTICS_EVENT_NAMES,
+  CTA_LOCATIONS,
+  PAGE_NAMES,
+  SERVICES,
+} from "../analytics/config.js";
+import { trackAnalyticsEvent } from "../analytics/index.js";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -61,7 +68,17 @@ function KiriHeader() {
         <nav aria-label="KIRI 페이지 주요 메뉴">
           <a href="#kiri-problem">왜 KIRI인가요</a>
           <a href="#kiri-experience">서비스 경험</a>
-          <a className="kiri-header__cta" href="#kiri-preregister">
+          <a
+            className="kiri-header__cta"
+            href="#kiri-preregister"
+            onClick={() =>
+              trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_PREREGISTER, {
+                page_name: PAGE_NAMES.KIRI,
+                service: SERVICES.KIRI,
+                cta_location: CTA_LOCATIONS.HEADER,
+              })
+            }
+          >
             사전예약
           </a>
         </nav>
@@ -92,6 +109,8 @@ function KiriPreregisterForm() {
   const [errors, setErrors] = useState({});
   const [submitState, setSubmitState] = useState({ status: "idle", message: "" });
   const isSubmittingRef = useRef(false);
+  const hasStartedRef = useRef(false);
+  const hasCompletedRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -141,6 +160,16 @@ function KiriPreregisterForm() {
 
   const updateValue = (event) => {
     const { name, type, checked, value } = event.target;
+
+    if (name !== "company" && !hasStartedRef.current) {
+      hasStartedRef.current = true;
+      trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.START_PREREGISTER, {
+        page_name: PAGE_NAMES.KIRI,
+        service: SERVICES.KIRI,
+        cta_location: CTA_LOCATIONS.PREREGISTER_FORM,
+      });
+    }
+
     setValues((current) => ({
       ...current,
       [name]: type === "checkbox" ? checked : value,
@@ -198,6 +227,19 @@ function KiriPreregisterForm() {
 
       if (!response.ok || !result.ok) {
         throw new Error(result.message || "신청 내용을 저장하지 못했습니다. 잠시 후 다시 시도해주세요.");
+      }
+
+      if (
+        response.status === 201 &&
+        result.status === "created" &&
+        !hasCompletedRef.current
+      ) {
+        hasCompletedRef.current = true;
+        trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.COMPLETE_PREREGISTER, {
+          page_name: PAGE_NAMES.KIRI,
+          service: SERVICES.KIRI,
+          cta_location: CTA_LOCATIONS.PREREGISTER_FORM,
+        });
       }
 
       setSubmitState({
@@ -557,7 +599,17 @@ export default function KiriPage() {
                 서로의 취향을 알아가는 질문부터 함께할 활동의 발견, 약속과 기록까지.
                 KIRI는 가족이 함께할 다음 시간을 구체적으로 만들어갑니다.
               </p>
-              <a className="kiri-primary-button" href="#kiri-preregister">
+              <a
+                className="kiri-primary-button"
+                href="#kiri-preregister"
+                onClick={() =>
+                  trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_PREREGISTER, {
+                    page_name: PAGE_NAMES.KIRI,
+                    service: SERVICES.KIRI,
+                    cta_location: CTA_LOCATIONS.HERO,
+                  })
+                }
+              >
                 사전예약 준비 보기
                 <ArrowIcon />
               </a>
