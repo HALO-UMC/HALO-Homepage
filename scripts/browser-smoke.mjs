@@ -277,6 +277,11 @@ report.pages.companyDesktop = await evaluate(
   })()`,
 );
 assert(report.pages.companyDesktop.path === "/", "기본 경로에 기업 페이지가 표시되지 않습니다.", failures);
+assert(
+  report.pages.companyDesktop.title === "HALO, 가족의 일상을 잇다",
+  "회사 페이지 브라우저 제목이 올바르지 않습니다.",
+  failures,
+);
 assert(report.pages.companyDesktop.hero, "기업 첫 화면이 표시되지 않습니다.", failures);
 assert(
   report.pages.companyDesktop.heroHeading === "작은 안녕으로, 가족의 내일을 잇습니다.",
@@ -469,12 +474,14 @@ report.navigation.kiriReleaseAnchor = await evaluate(
   `(() => ({
     path: location.pathname,
     hash: location.hash,
+    title: document.title,
     targetTop: document.querySelector('#kiri-preregister')?.getBoundingClientRect().top
   }))()`,
 );
 assert(
   report.navigation.kiriReleaseAnchor.path === "/kiri" &&
     report.navigation.kiriReleaseAnchor.hash === "#kiri-preregister" &&
+    report.navigation.kiriReleaseAnchor.title === "가족끼리, 취향부터 추억까지, KIRI" &&
     report.navigation.kiriReleaseAnchor.targetTop >= 0 &&
     report.navigation.kiriReleaseAnchor.targetTop < 120,
   "회사 홈페이지의 KIRI 사전 출시 버튼이 준비 영역으로 이동하지 않습니다.",
@@ -489,6 +496,22 @@ assert(report.navigation.legacyCompany, "/webeditorial이 /로 리다이렉트�
 assert(report.navigation.legacyKiri, "/webeditorial/kiri가 /kiri로 리다이렉트되지 않습니다.", failures);
 
 await evaluate(client, `sessionStorage.setItem('halo_splash_seen', 'true')`);
+await navigate(client, "/", 1280, 800);
+await evaluate(
+  client,
+  `document.querySelector('.service-feature--halo .service-feature__page-button')?.click()`,
+);
+await waitForPath(client, "/halo");
+report.navigation.haloService = await evaluate(
+  client,
+  `({ path: location.pathname, title: document.title })`,
+);
+assert(
+  report.navigation.haloService.path === "/halo" &&
+    report.navigation.haloService.title === "HALO, 가족의 일상을 잇다",
+  "회사 페이지에서 HALO로 이동할 때 브라우저 제목이 갱신되지 않습니다.",
+  failures,
+);
 await navigate(client, "/halo", 1440, 1000);
 await waitForImages(client);
 report.pages.halo = await evaluate(
@@ -497,6 +520,7 @@ report.pages.halo = await evaluate(
     const footer = document.querySelector('footer');
     return {
       path: location.pathname,
+      title: document.title,
       hasHome: Boolean(document.querySelector('#top')),
       hasEditorialShell: Boolean(document.querySelector('.editorial-shell')),
       logoHref: document.querySelector('header a[aria-label="HALO 앱 홈페이지"]')?.getAttribute('href'),
@@ -511,6 +535,11 @@ report.pages.halo = await evaluate(
   })()`,
 );
 assert(report.pages.halo.path === "/halo" && report.pages.halo.hasHome, "기존 HALO 앱 홈이 /halo에 표시되지 않습니다.", failures);
+assert(
+  report.pages.halo.title === "HALO, 가족의 일상을 잇다",
+  "HALO 앱 페이지 브라우저 제목이 올바르지 않습니다.",
+  failures,
+);
 assert(!report.pages.halo.hasEditorialShell, "HALO 앱 페이지에 기업 레이아웃 CSS 구조가 섞였습니다.", failures);
 assert(report.pages.halo.logoHref === "/halo", "HALO 앱 로고가 /halo로 연결되지 않습니다.", failures);
 assert(
@@ -583,6 +612,11 @@ report.pages.kiriDesktop = await evaluate(
   }))()`,
 );
 assert(report.pages.kiriDesktop.path === "/kiri", "KIRI 페이지가 /kiri에 표시되지 않습니다.", failures);
+assert(
+  report.pages.kiriDesktop.title === "가족끼리, 취향부터 추억까지, KIRI",
+  "KIRI 페이지 브라우저 제목이 올바르지 않습니다.",
+  failures,
+);
 assert(report.pages.kiriDesktop.logoHref === "/kiri", "KIRI 로고 링크가 /kiri가 아닙니다.", failures);
 assert(report.pages.kiriDesktop.companyHref === "/", "KIRI에서 회사 홈 링크가 올바르지 않습니다.", failures);
 assert(report.pages.kiriDesktop.scrollWidth <= report.pages.kiriDesktop.innerWidth, "KIRI 데스크톱 화면에 가로 넘침이 있습니다.", failures);

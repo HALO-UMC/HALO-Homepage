@@ -11,6 +11,7 @@
     "test:analytics": "node --test tests/analytics.test.mjs",
     "test:analytics:browser": "node scripts/analytics-smoke.mjs",
     "test:kiri": "node --test tests/kiri-preregister.test.mjs",
+    "test:metadata": "npm run build && node --test tests/metadata.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
