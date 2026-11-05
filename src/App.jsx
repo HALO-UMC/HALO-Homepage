@@ -30,6 +30,7 @@ import {
 
 import WebEditorialRoutes from "./webeditorial/WebEditorialRoutes.jsx";
 import usePageMeta from "./webeditorial/usePageMeta.js";
+import { PAGE_METADATA } from "./webeditorial/pageMetadata.js";
 import AnalyticsRouteTracker from "./analytics/AnalyticsRouteTracker.jsx";
 import {
   ANALYTICS_EVENT_NAMES,
@@ -945,12 +946,7 @@ function HomePage() {
   const location =
     useLocation();
 
-  usePageMeta({
-    title: "HALO 앱 — 매일 한 장, 부모님과 이어가는 따뜻한 안녕",
-    description:
-      "사진과 질문으로 부모님의 삶과 취향을 알아가고, 매일 한 장의 가족 스토리북으로 기록하는 HALO 앱입니다.",
-    themeColor: "#ff7b10",
-  });
+  usePageMeta(PAGE_METADATA.halo);
 
   useEffect(() => {
     if (

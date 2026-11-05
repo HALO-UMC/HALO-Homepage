@@ -7,6 +7,7 @@ import {
   SectionLabel,
 } from "./shared.jsx";
 import usePageMeta from "./usePageMeta.js";
+import { PAGE_METADATA } from "./pageMetadata.js";
 import {
   ANALYTICS_EVENT_NAMES,
   CTA_LOCATIONS,
@@ -564,12 +565,7 @@ export default function KiriPage() {
     return () => window.cancelAnimationFrame(frame);
   }, [hash]);
 
-  usePageMeta({
-    title: "KIRI — 우리 가족만의 취향, 우리 가족만의 시간",
-    description:
-      "질문으로 가족의 취향을 알아가고, 함께할 활동을 발견해 약속과 기록으로 이어가는 KIRI의 출시 소식을 신청하세요.",
-    themeColor: "#1a1a1a",
-  });
+  usePageMeta(PAGE_METADATA.kiri);
 
   return (
     <div className="editorial-shell kiri-page">

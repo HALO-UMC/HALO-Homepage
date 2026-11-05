@@ -8,6 +8,7 @@ import {
   SectionLabel,
 } from "./shared.jsx";
 import usePageMeta from "./usePageMeta.js";
+import { PAGE_METADATA } from "./pageMetadata.js";
 import {
   ANALYTICS_EVENT_NAMES,
   CTA_LOCATIONS,
@@ -434,12 +435,7 @@ function ServiceActions({ service }) {
 }
 
 export default function CompanyPage() {
-  usePageMeta({
-    title: "HALO — 작은 안녕으로, 가족의 내일을 잇습니다",
-    description:
-      "HALO는 서로에게 건네는 인사와 평안한 일상을 뜻하는 안녕에서 시작해 가족의 소통과 연결을 위한 서비스를 만듭니다.",
-    themeColor: "#fafafa",
-  });
+  usePageMeta(PAGE_METADATA.company);
 
   return (
     <div className="editorial-shell company-page">
