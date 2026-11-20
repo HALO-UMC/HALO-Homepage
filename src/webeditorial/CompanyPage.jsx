@@ -9,6 +9,7 @@ import {
 } from "./shared.jsx";
 import usePageMeta from "./usePageMeta.js";
 import { PAGE_METADATA } from "./pageMetadata.js";
+import { KIRI_STORE_URLS } from "./kiriConfig.js";
 import {
   ANALYTICS_EVENT_NAMES,
   CTA_LOCATIONS,
@@ -100,19 +101,28 @@ function CompanyHeader() {
               {item.label}
             </a>
           ))}
-          <Link
-            to="/kiri#kiri-preregister"
+          <a
+            className="company-mobile-menu__app-store"
+            href={KIRI_STORE_URLS.appStore}
+            target="_blank"
+            rel="noreferrer"
             onClick={() => {
               setIsOpen(false);
-              trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_PREREGISTER, {
+              trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_APP_STORE, {
                 page_name: PAGE_NAMES.COMPANY,
                 service: SERVICES.KIRI,
                 cta_location: CTA_LOCATIONS.HEADER,
+                store: STORES.APP_STORE,
               });
             }}
           >
-            KIRI 사전 출시 알림
-          </Link>
+            <img
+              src="/images/badges/app-store-ko.svg"
+              alt="App Store에서 다운로드"
+              width="130"
+              height="40"
+            />
+          </a>
         </nav>
       </div>
     </header>
@@ -415,21 +425,28 @@ function ServiceActions({ service }) {
         KIRI 보러가기
         <ArrowIcon />
       </Link>
-      <Link
-        className="service-feature__release-button"
-        to="/kiri#kiri-preregister"
-        aria-label="KIRI 사전 출시 알림 준비 영역 보기"
+      <a
+        className="service-feature__store-badge service-feature__store-badge--app-store"
+        href={KIRI_STORE_URLS.appStore}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="KIRI App Store에서 다운로드"
         onClick={() =>
-          trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_PREREGISTER, {
+          trackAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_APP_STORE, {
             page_name: PAGE_NAMES.COMPANY,
             service: SERVICES.KIRI,
             cta_location: CTA_LOCATIONS.SERVICE_SECTION,
+            store: STORES.APP_STORE,
           })
         }
       >
-        사전 출시 알림 · 준비 중
-        <ArrowIcon />
-      </Link>
+        <img
+          src="/images/badges/app-store-ko.svg"
+          alt="App Store에서 다운로드"
+          width="130"
+          height="40"
+        />
+      </a>
     </div>
   );
 }

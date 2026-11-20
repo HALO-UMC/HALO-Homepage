@@ -37,16 +37,17 @@ const pages = [
   {
     route: "/kiri",
     fileName: "kiri.html",
-    title: "가족끼리, 취향부터 추억까지, KIRI",
+    title: "끼리(KIRI)",
     description:
-      "부모님과 서로의 취향을 알아가고, 함께할 일을 찾아 약속하고, 그날의 추억을 남겨보세요.",
+      "이번 주에 뭐 하지? 우리 가족이 함께할 활동을 찾고, 약속부터 그날의 기록까지 끼리에 남겨보세요.",
     socialDescription:
-      "부모님과 서로의 취향을 알아가고, 함께할 일을 찾아 약속하고, 그날의 추억을 남겨보세요.",
+      "가족과 함께할 활동을 찾고, 약속부터 그날의 기록까지 끼리에 남겨보세요.",
     canonicalUrl: "https://www.halo-official.co.kr/kiri",
-    imageUrl: "https://www.halo-official.co.kr/OG-IMAGE.jpg",
-    imageType: "image/jpeg",
-    imageWidth: "600",
-    imageHeight: "600",
+    imageUrl:
+      "https://www.halo-official.co.kr/images/kiri/KakaoTalk_20261116_010517345.png",
+    imageType: "image/png",
+    imageWidth: "1620",
+    imageHeight: "2880",
   },
 ];
 
@@ -174,8 +175,19 @@ test("production HTML entry points contain route-specific metadata", async (t) =
 test("share images are emitted with their declared type and dimensions", async () => {
   const jpg = await readFile(path.join(DIST_DIRECTORY, "OG-IMAGE.jpg"));
   const svg = await readFile(path.join(DIST_DIRECTORY, "og-image.svg"), "utf8");
+  const kiriPng = await readFile(
+    path.join(
+      DIST_DIRECTORY,
+      "images/kiri/KakaoTalk_20261116_010517345.png",
+    ),
+  );
 
   assert.deepEqual(jpegDimensions(jpg), { width: 600, height: 600 });
+  assert.equal(kiriPng.subarray(1, 4).toString("ascii"), "PNG");
+  assert.deepEqual(
+    { width: kiriPng.readUInt32BE(16), height: kiriPng.readUInt32BE(20) },
+    { width: 1620, height: 2880 },
+  );
   assert.match(
     svg.slice(0, 512),
     /<svg\s+width="1920"\s+height="1080"[^>]*>/,

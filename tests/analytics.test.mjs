@@ -52,6 +52,24 @@ test("공통 이벤트는 정해진 이름과 속성 값만 허용한다", () =>
     },
   );
 
+  assert.deepEqual(
+    buildAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_APP_STORE, {
+      page_name: PAGE_NAMES.KIRI,
+      service: SERVICES.KIRI,
+      cta_location: CTA_LOCATIONS.HEADER,
+      store: STORES.APP_STORE,
+    }),
+    {
+      name: "click_app_store",
+      properties: {
+        page_name: "kiri",
+        service: "kiri",
+        cta_location: "header",
+        store: "app_store",
+      },
+    },
+  );
+
   assert.equal(
     buildAnalyticsEvent(ANALYTICS_EVENT_NAMES.CLICK_SERVICE, {
       page_name: PAGE_NAMES.COMPANY,

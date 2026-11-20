@@ -1,9 +1,6 @@
 export const ANALYTICS_EVENT_NAMES = Object.freeze({
   CLICK_SERVICE: "click_service",
   CLICK_APP_STORE: "click_app_store",
-  CLICK_PREREGISTER: "click_preregister",
-  START_PREREGISTER: "start_preregister",
-  COMPLETE_PREREGISTER: "complete_preregister",
 });
 
 export const PAGE_NAMES = Object.freeze({
@@ -31,7 +28,6 @@ export const CTA_LOCATIONS = Object.freeze({
   DOWNLOAD_PAGE: "download_page",
   FLOATING: "floating",
   FOOTER: "footer",
-  PREREGISTER_FORM: "preregister_form",
 });
 
 const PAGE_BY_PATH = Object.freeze({
@@ -69,9 +65,10 @@ const EVENT_RULES = Object.freeze({
   },
   [ANALYTICS_EVENT_NAMES.CLICK_APP_STORE]: {
     required: ["page_name", "service", "cta_location", "store"],
-    pages: new Set([PAGE_NAMES.COMPANY, PAGE_NAMES.HALO]),
-    services: new Set([SERVICES.HALO]),
+    pages: new Set([PAGE_NAMES.COMPANY, PAGE_NAMES.HALO, PAGE_NAMES.KIRI]),
+    services: new Set([SERVICES.HALO, SERVICES.KIRI]),
     ctaLocations: new Set([
+      CTA_LOCATIONS.HEADER,
       CTA_LOCATIONS.HERO,
       CTA_LOCATIONS.SERVICE_SECTION,
       CTA_LOCATIONS.DOWNLOAD_SECTION,
@@ -79,28 +76,6 @@ const EVENT_RULES = Object.freeze({
       CTA_LOCATIONS.DOWNLOAD_PAGE,
       CTA_LOCATIONS.FLOATING,
     ]),
-  },
-  [ANALYTICS_EVENT_NAMES.CLICK_PREREGISTER]: {
-    required: ["page_name", "service", "cta_location"],
-    pages: new Set([PAGE_NAMES.COMPANY, PAGE_NAMES.KIRI]),
-    services: new Set([SERVICES.KIRI]),
-    ctaLocations: new Set([
-      CTA_LOCATIONS.HEADER,
-      CTA_LOCATIONS.HERO,
-      CTA_LOCATIONS.SERVICE_SECTION,
-    ]),
-  },
-  [ANALYTICS_EVENT_NAMES.START_PREREGISTER]: {
-    required: ["page_name", "service", "cta_location"],
-    pages: new Set([PAGE_NAMES.KIRI]),
-    services: new Set([SERVICES.KIRI]),
-    ctaLocations: new Set([CTA_LOCATIONS.PREREGISTER_FORM]),
-  },
-  [ANALYTICS_EVENT_NAMES.COMPLETE_PREREGISTER]: {
-    required: ["page_name", "service", "cta_location"],
-    pages: new Set([PAGE_NAMES.KIRI]),
-    services: new Set([SERVICES.KIRI]),
-    ctaLocations: new Set([CTA_LOCATIONS.PREREGISTER_FORM]),
   },
 });
 
