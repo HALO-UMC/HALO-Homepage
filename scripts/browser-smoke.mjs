@@ -123,6 +123,7 @@ async function waitForImages(client) {
     }))`,
     true,
   );
+  await waitForPaint(client);
 }
 
 async function setViewport(client, width, height) {
@@ -196,27 +197,19 @@ function assert(condition, message, failures) {
 const tab = await createTab();
 const client = new CdpClient(tab.webSocketDebuggerUrl);
 const runtimeErrors = [];
-const apiRequests = [];
 await client.connect();
 await Promise.all([
   client.send("Page.enable"),
   client.send("Runtime.enable"),
-  client.send("Network.enable"),
 ]);
 client.on("Runtime.exceptionThrown", ({ exceptionDetails }) => {
   runtimeErrors.push(
     exceptionDetails.exception?.description || exceptionDetails.text || "Unknown runtime error",
   );
 });
-client.on("Network.requestWillBeSent", ({ request }) => {
-  if (request.url.includes("/api/kiri-preregister") && request.method === "POST") {
-    apiRequests.push(request.url);
-  }
-});
-
 await mkdir(outputDirectory, { recursive: true });
 const failures = [];
-const report = { screenshots: [], pages: {}, navigation: {}, form: {}, apiRequests };
+const report = { screenshots: [], pages: {}, navigation: {} };
 
 await navigate(client, "/", 1440, 1000);
 await waitForImages(client);
@@ -230,7 +223,7 @@ report.pages.companyDesktop = await evaluate(
     const haloPageButton = document.querySelector('.service-feature--halo .service-feature__page-button');
     const kiriPageButton = document.querySelector('.service-feature--kiri .service-feature__page-button');
     const playStoreButton = document.querySelector('.service-feature__store-badge');
-    const releaseButton = document.querySelector('.service-feature__release-button');
+    const appStoreButton = document.querySelector('.service-feature--kiri .service-feature__store-badge--app-store');
     return {
       path: location.pathname,
       title: document.title,
@@ -254,7 +247,11 @@ report.pages.companyDesktop = await evaluate(
         target: playStoreButton?.getAttribute('target'),
         badgeSrc: playStoreButton?.querySelector('img')?.getAttribute('src')
       },
-      releaseHref: releaseButton?.getAttribute('href'),
+      appStore: {
+        href: appStoreButton?.getAttribute('href'),
+        target: appStoreButton?.getAttribute('target'),
+        badgeSrc: appStoreButton?.querySelector('img')?.getAttribute('src')
+      },
       haloLogoSrc: document.querySelector('.service-feature__app-logo--halo')?.getAttribute('src'),
       kiriLogoSrc: document.querySelector('.service-feature__app-logo--kiri')?.getAttribute('src'),
       backgrounds: {
@@ -322,8 +319,12 @@ assert(
   failures,
 );
 assert(
-  report.pages.companyDesktop.releaseHref === "/kiri#kiri-preregister",
-  "KIRI 사전 출시 알림 링크가 준비 영역을 가리키지 않습니다.",
+  report.pages.companyDesktop.appStore.href ===
+    "https://apps.apple.com/kr/app/%EB%81%BC%EB%A6%AC-kiri/id6835049058" &&
+    report.pages.companyDesktop.appStore.target === "_blank" &&
+    report.pages.companyDesktop.appStore.badgeSrc ===
+      "/images/badges/app-store-ko.svg",
+  "회사 홈페이지의 KIRI App Store 공식 배지 링크가 올바르지 않습니다.",
   failures,
 );
 assert(
@@ -399,12 +400,18 @@ report.pages.companyMobile = await evaluate(
     innerWidth,
     expanded: document.querySelector('.company-header__menu-button')?.getAttribute('aria-expanded'),
     menuOpen: document.querySelector('.company-mobile-menu')?.classList.contains('is-open'),
-    htmlLocked: document.documentElement.classList.contains('editorial-menu-open')
+    htmlLocked: document.documentElement.classList.contains('editorial-menu-open'),
+    appStoreBadgeSrc: document.querySelector('.company-mobile-menu__app-store img')?.getAttribute('src')
   })`,
 );
 assert(report.pages.companyMobile.scrollWidth <= 390, "기업 모바일 화면에 가로 넘침이 있습니다.", failures);
 assert(report.pages.companyMobile.expanded === "true", "기업 모바일 메뉴가 열리지 않습니다.", failures);
 assert(report.pages.companyMobile.htmlLocked, "모바일 메뉴에서 배경 스크롤이 잠기지 않습니다.", failures);
+assert(
+  report.pages.companyMobile.appStoreBadgeSrc === "/images/badges/app-store-ko.svg",
+  "기업 모바일 메뉴의 KIRI App Store 공식 배지가 누락됐습니다.",
+  failures,
+);
 report.screenshots.push(await screenshot(client, "company-mobile-menu.png"));
 await client.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape" });
 await client.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape" });
@@ -449,45 +456,18 @@ await evaluate(client, `(() => { const target = document.querySelector('.service
 await waitForPaint(client);
 report.screenshots.push(await screenshot(client, "company-kiri-service-mobile.png"));
 
-await navigate(client, "/", 1280, 800);
-await evaluate(client, `document.documentElement.style.scrollBehavior = 'auto'`);
-await evaluate(client, `document.querySelector('.service-feature__release-button')?.click()`);
-await waitForPath(client, "/kiri");
-await evaluate(
+await navigate(client, "/kiri", 1280, 800);
+report.navigation.kiriLaunchPage = await evaluate(
   client,
-  `new Promise((resolve) => {
-    const started = performance.now();
-    const check = () => {
-      const target = document.querySelector('#kiri-preregister');
-      if (location.hash === '#kiri-preregister' && target && target.getBoundingClientRect().top >= 0 && target.getBoundingClientRect().top < 120) {
-        return resolve(true);
-      }
-      if (performance.now() - started > 3000) return resolve(false);
-      requestAnimationFrame(check);
-    };
-    check();
-  })`,
-  true,
-);
-report.navigation.kiriReleaseAnchor = await evaluate(
-  client,
-  `(() => ({
-    path: location.pathname,
-    hash: location.hash,
-    title: document.title,
-    targetTop: document.querySelector('#kiri-preregister')?.getBoundingClientRect().top
-  }))()`,
+  `({ path: location.pathname, title: document.title, hash: location.hash })`,
 );
 assert(
-  report.navigation.kiriReleaseAnchor.path === "/kiri" &&
-    report.navigation.kiriReleaseAnchor.hash === "#kiri-preregister" &&
-    report.navigation.kiriReleaseAnchor.title === "가족끼리, 취향부터 추억까지, KIRI" &&
-    report.navigation.kiriReleaseAnchor.targetTop >= 0 &&
-    report.navigation.kiriReleaseAnchor.targetTop < 120,
-  "회사 홈페이지의 KIRI 사전 출시 버튼이 준비 영역으로 이동하지 않습니다.",
+  report.navigation.kiriLaunchPage.path === "/kiri" &&
+    report.navigation.kiriLaunchPage.hash === "" &&
+    report.navigation.kiriLaunchPage.title === "끼리(KIRI)",
+  "회사 페이지의 KIRI 출시 링크 대상 페이지가 올바르지 않습니다.",
   failures,
 );
-
 await navigate(client, "/webeditorial", 1280, 800);
 report.navigation.legacyCompany = await waitForPath(client, "/");
 await navigate(client, "/webeditorial/kiri", 1280, 800);
@@ -569,216 +549,324 @@ await navigate(client, "/kiri", 1440, 1000);
 await waitForImages(client);
 report.pages.kiriDesktop = await evaluate(
   client,
-  `(() => ({
-    path: location.pathname,
-    title: document.title,
-    scrollWidth: document.documentElement.scrollWidth,
-    innerWidth,
-    companyHref: document.querySelector('.kiri-header__company')?.getAttribute('href'),
-    logoHref: document.querySelector('.kiri-header__brand')?.getAttribute('href'),
-    showcase: {
-      tabCount: document.querySelectorAll('.kiri-showcase__tabs [role="tab"]').length,
-      selectedLabel: document.querySelector('.kiri-showcase__tabs [aria-selected="true"]')?.textContent.trim(),
-      panelTitle: document.querySelector('.kiri-showcase__copy h3')?.textContent.trim(),
-      imageSrc: document.querySelector('.kiri-showcase__panel img')?.getAttribute('src')
-    },
-    images: [...document.querySelectorAll('img[src^="/images/kiri/"]')].map((image) => {
-      const naturalRatio = image.naturalWidth / image.naturalHeight;
-      const renderedRatio = image.offsetWidth / image.offsetHeight;
-      const rect = image.getBoundingClientRect();
-      return {
-        src: image.getAttribute('src'),
-        complete: image.complete,
-        naturalWidth: image.naturalWidth,
-        naturalHeight: image.naturalHeight,
-        renderedWidth: rect.width,
-        renderedHeight: rect.height,
-        ratioDifference: Number.isFinite(renderedRatio) ? Math.abs(naturalRatio - renderedRatio) : 999
-      };
-    }),
-    form: {
-      visible: Boolean(document.querySelector('.kiri-form')),
-      email: Boolean(document.querySelector('#kiri-email')),
-      nickname: Boolean(document.querySelector('#kiri-nickname')),
-      deviceCount: document.querySelectorAll('input[name="device"]').length,
-      trial: Boolean(document.querySelector('input[name="familyTrial"]')),
-      privacy: Boolean(document.querySelector('input[name="privacyAgreed"]')),
-      disabled: document.querySelector('.kiri-submit')?.disabled,
-      buttonText: document.querySelector('.kiri-submit')?.textContent.trim(),
-      preparing: document.querySelector('.kiri-form__preparing')?.textContent || '',
-      labels: [...document.querySelectorAll('.kiri-form label')].map((label) => label.textContent.trim())
-    },
-    business: document.querySelector('.editorial-footer__business')?.textContent || ''
-  }))()`,
+  `(() => {
+    const heroImage = document.querySelector('.kiri-hero__visual img');
+    const carousel = document.querySelector('.kiri-showcase__carousel');
+    const cards = [...carousel.querySelectorAll('.kiri-showcase__card')];
+    const carouselRect = carousel.getBoundingClientRect();
+    const storeLinks = [...document.querySelectorAll('.kiri-store-badge--apple')];
+    return {
+      path: location.pathname,
+      title: document.title,
+      scrollWidth: document.documentElement.scrollWidth,
+      innerWidth,
+      backgroundColor: getComputedStyle(document.querySelector('.kiri-page')).backgroundColor,
+      logoHref: document.querySelector('.kiri-header__brand')?.getAttribute('href'),
+      faviconHref: document.querySelector('link[rel="icon"]')?.getAttribute('href'),
+      heroHeading: document.querySelector('#kiri-hero-title')?.textContent.trim(),
+      heroDescription: document.querySelector('.kiri-hero__description')?.textContent.trim(),
+      heroImage: {
+        src: heroImage?.getAttribute('src'),
+        complete: heroImage?.complete,
+        naturalWidth: heroImage?.naturalWidth,
+        naturalHeight: heroImage?.naturalHeight,
+        renderedRatio: heroImage ? heroImage.offsetWidth / heroImage.offsetHeight : 0,
+        rect: heroImage ? {
+          top: heroImage.getBoundingClientRect().top,
+          right: heroImage.getBoundingClientRect().right,
+          bottom: heroImage.getBoundingClientRect().bottom,
+          left: heroImage.getBoundingClientRect().left,
+          width: heroImage.getBoundingClientRect().width
+        } : null
+      },
+      storeLinks: storeLinks.map((link) => ({
+        href: link.getAttribute('href'),
+        target: link.getAttribute('target'),
+        badgeSrc: link.querySelector('img')?.getAttribute('src')
+      })),
+      googlePlayButtons: [...document.querySelectorAll('.kiri-store-badge--google')].map((button) => ({
+        disabled: button.disabled,
+        href: button.getAttribute('href'),
+        text: button.textContent.trim(),
+        badgeSrc: button.querySelector('img')?.getAttribute('src')
+      })),
+      showcase: {
+        tabCount: document.querySelectorAll('.kiri-showcase__tabs [role="tab"]').length,
+        selectedLabel: document.querySelector('.kiri-showcase__tabs [aria-selected="true"]')?.textContent.trim(),
+        activeDescription: document.querySelector('.kiri-showcase__active-copy')?.textContent.trim(),
+        cardCount: cards.length,
+        cardWidths: cards.map((card) => card.getBoundingClientRect().width),
+        visibleCardCount: cards.filter((card) => {
+          const rect = card.getBoundingClientRect();
+          return rect.left < carouselRect.right && rect.right > carouselRect.left;
+        }).length,
+        carouselDisplay: getComputedStyle(carousel).display,
+        carouselOverflow: getComputedStyle(carousel).overflowX
+      },
+      hasPreregisterUi: Boolean(document.querySelector('#kiri-preregister, .kiri-form')),
+      imageSources: [...document.querySelectorAll('img[src*="KakaoTalk_20261116_010517345"]')]
+        .map((image) => image.getAttribute('src')),
+      business: document.querySelector('.editorial-footer__business')?.textContent || ''
+    };
+  })()`,
 );
 assert(report.pages.kiriDesktop.path === "/kiri", "KIRI 페이지가 /kiri에 표시되지 않습니다.", failures);
 assert(
-  report.pages.kiriDesktop.title === "가족끼리, 취향부터 추억까지, KIRI",
-  "KIRI 페이지 브라우저 제목이 올바르지 않습니다.",
+  report.pages.kiriDesktop.title === "끼리(KIRI)",
+  "KIRI 출시 페이지 제목이 올바르지 않습니다.",
   failures,
 );
 assert(report.pages.kiriDesktop.logoHref === "/kiri", "KIRI 로고 링크가 /kiri가 아닙니다.", failures);
-assert(report.pages.kiriDesktop.companyHref === "/", "KIRI에서 회사 홈 링크가 올바르지 않습니다.", failures);
-assert(report.pages.kiriDesktop.scrollWidth <= report.pages.kiriDesktop.innerWidth, "KIRI 데스크톱 화면에 가로 넘침이 있습니다.", failures);
-assert(report.pages.kiriDesktop.showcase.tabCount === 4, "KIRI 쇼케이스 탭이 4개가 아닙니다.", failures);
 assert(
-  report.pages.kiriDesktop.showcase.selectedLabel === "질문" &&
-    report.pages.kiriDesktop.showcase.imageSrc === "/images/kiri/kiri-question.png",
-  "KIRI 쇼케이스의 초기 질문 화면이 올바르지 않습니다.",
+  report.pages.kiriDesktop.faviconHref === "/images/kiri/kiri-logo.png",
+  "KIRI 전용 PNG 파비콘이 연결되지 않았습니다.",
   failures,
 );
 assert(
-  report.pages.kiriDesktop.images.every(
-    (image) => image.complete && image.naturalWidth > 0 && image.naturalHeight > 0 && image.ratioDifference < 0.04,
-  ),
-  "KIRI 실제 자산 중 로드 또는 비율이 올바르지 않은 이미지가 있습니다.",
+  report.pages.kiriDesktop.backgroundColor === "rgb(26, 26, 26)",
+  "KIRI 페이지 배경이 #1A1A1A가 아닙니다.",
   failures,
 );
-assert(report.pages.kiriDesktop.form.visible, "서버 설정 없이 KIRI 폼 UI가 표시되지 않습니다.", failures);
-assert(report.pages.kiriDesktop.form.email && report.pages.kiriDesktop.form.nickname, "KIRI 폼 입력란이 누락됐습니다.", failures);
 assert(
-  report.pages.kiriDesktop.form.labels.some((label) => label.startsWith("불러드릴 이름")),
-  "KIRI 불러드릴 이름 입력란이 누락됐습니다.",
+  report.pages.kiriDesktop.heroHeading ===
+    "가족과 함께할 활동을 찾고, 추억을 남겨요." &&
+    report.pages.kiriDesktop.heroDescription.includes("약속부터 그날의 기록까지"),
+  "KIRI 첫 화면 카피가 올바르지 않습니다.",
   failures,
 );
-assert(report.pages.kiriDesktop.form.deviceCount === 4, "KIRI 사용 기기 선택지가 4개가 아닙니다.", failures);
-assert(report.pages.kiriDesktop.form.trial && report.pages.kiriDesktop.form.privacy, "KIRI 선택·동의 UI가 누락됐습니다.", failures);
-assert(report.pages.kiriDesktop.form.disabled, "KIRI 제출 버튼이 비활성화되지 않았습니다.", failures);
-assert(report.pages.kiriDesktop.form.buttonText === "접수 준비 중", "KIRI 비활성 버튼 문구가 올바르지 않습니다.", failures);
 assert(
-  report.pages.kiriDesktop.form.preparing.includes("입력 후 설정이 준비되면 신청할 수 있어요") ||
-    report.pages.kiriDesktop.form.preparing.includes("접수 설정을 마치면 신청 내용을 서버에 저장할 수 있어요"),
-  "KIRI 접수 설정 안내가 누락됐습니다.",
+  report.pages.kiriDesktop.scrollWidth <= report.pages.kiriDesktop.innerWidth,
+  "KIRI 데스크톱 화면에 페이지 가로 스크롤이 생겼습니다.",
   failures,
 );
-assert(report.pages.kiriDesktop.business.includes("624-21-02643"), "KIRI 푸터 사업자 정보가 누락됐습니다.", failures);
+assert(
+  report.pages.kiriDesktop.heroImage.src ===
+    "/images/kiri/KakaoTalk_20261116_010517345.png" &&
+    report.pages.kiriDesktop.heroImage.complete &&
+    report.pages.kiriDesktop.heroImage.naturalWidth === 1620 &&
+    report.pages.kiriDesktop.heroImage.naturalHeight === 2880 &&
+    Math.abs(report.pages.kiriDesktop.heroImage.renderedRatio - 1620 / 2880) < 0.04 &&
+    report.pages.kiriDesktop.heroImage.rect.width <= 340 &&
+    report.pages.kiriDesktop.heroImage.rect.left < report.pages.kiriDesktop.innerWidth &&
+    report.pages.kiriDesktop.heroImage.rect.top < 1000,
+  "KIRI 대표 이미지가 원본 비율로 로드되지 않았습니다.",
+  failures,
+);
+assert(
+  report.pages.kiriDesktop.storeLinks.length === 1 &&
+    report.pages.kiriDesktop.storeLinks.every(
+      (link) =>
+        link.href === "https://apps.apple.com/kr/app/%EB%81%BC%EB%A6%AC-kiri/id6835049058" &&
+        link.target === "_blank" &&
+        link.badgeSrc === "/images/badges/app-store-ko.svg",
+    ),
+  "KIRI App Store 링크 또는 공식 배지가 올바르지 않습니다.",
+  failures,
+);
+assert(
+  report.pages.kiriDesktop.googlePlayButtons.length === 1 &&
+    report.pages.kiriDesktop.googlePlayButtons.every(
+      (button) =>
+        button.disabled &&
+        button.href === null &&
+        button.text.includes("준비 중") &&
+        button.badgeSrc === "/images/badges/google-play-ko.png",
+    ),
+  "KIRI Google Play 공식 배지가 링크 없이 비활성 상태로 표시되지 않습니다.",
+  failures,
+);
+assert(
+  report.pages.kiriDesktop.showcase.tabCount === 5 &&
+    report.pages.kiriDesktop.showcase.selectedLabel.includes("홈") &&
+    report.pages.kiriDesktop.showcase.activeDescription.includes("추천 미션") &&
+    report.pages.kiriDesktop.showcase.cardCount === 5 &&
+    report.pages.kiriDesktop.showcase.cardWidths.every((width) => width <= 300) &&
+    report.pages.kiriDesktop.showcase.visibleCardCount >= 4 &&
+    report.pages.kiriDesktop.showcase.carouselDisplay === "grid" &&
+    report.pages.kiriDesktop.showcase.carouselOverflow === "auto",
+  "KIRI 데스크톱 기능 미리보기가 컴팩트한 가로 갤러리로 표시되지 않습니다.",
+  failures,
+);
+assert(!report.pages.kiriDesktop.hasPreregisterUi, "KIRI 사전예약 UI가 남아 있습니다.", failures);
+assert(
+  new Set(report.pages.kiriDesktop.imageSources).size === 6,
+  "KIRI 소개 이미지 6장이 모두 페이지에 연결되지 않았습니다.",
+  failures,
+);
+assert(
+  report.pages.kiriDesktop.business.includes("624-21-02643"),
+  "KIRI 푸터 사업자 정보가 누락됐습니다.",
+  failures,
+);
+await evaluate(client, `new Promise((resolve) => setTimeout(resolve, 240))`, true);
 report.screenshots.push(await screenshot(client, "kiri-desktop-hero.png"));
-report.pages.kiriDesktop.formInteraction = await evaluate(
+
+await evaluate(
   client,
-  `(async () => {
-    const setInput = (selector, value) => {
-      const input = document.querySelector(selector);
-      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
-      setter.call(input, value);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    };
-    setInput('#kiri-email', 'kiri-smoke@example.test');
-    setInput('#kiri-nickname', '브라우저 확인');
-    document.querySelector('input[name="device"][value="ios"]')?.click();
-    document.querySelector('input[name="familyTrial"]')?.click();
-    document.querySelector('input[name="privacyAgreed"]')?.click();
-    await new Promise((resolve) => setTimeout(resolve, 40));
-    return {
-      email: document.querySelector('#kiri-email')?.value,
-      nickname: document.querySelector('#kiri-nickname')?.value,
-      device: document.querySelector('input[name="device"]:checked')?.value,
-      familyTrial: document.querySelector('input[name="familyTrial"]')?.checked,
-      privacyAgreed: document.querySelector('input[name="privacyAgreed"]')?.checked
-    };
+  `(() => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    document.querySelector('#kiri-features')?.scrollIntoView();
   })()`,
-  true,
 );
-assert(report.pages.kiriDesktop.formInteraction.email === "kiri-smoke@example.test", "KIRI 이메일 입력이 반영되지 않습니다.", failures);
-assert(report.pages.kiriDesktop.formInteraction.nickname === "브라우저 확인", "KIRI 이름 입력이 반영되지 않습니다.", failures);
-assert(report.pages.kiriDesktop.formInteraction.device === "ios", "KIRI 기기 선택이 반영되지 않습니다.", failures);
-assert(report.pages.kiriDesktop.formInteraction.familyTrial, "KIRI 체험단 선택이 반영되지 않습니다.", failures);
-assert(report.pages.kiriDesktop.formInteraction.privacyAgreed, "KIRI 필수 동의 선택이 반영되지 않습니다.", failures);
-await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; const target = document.querySelector('#kiri-experience'); if (target) window.scrollTo(0, target.offsetTop); })()`);
 await waitForPaint(client);
-report.screenshots.push(await screenshot(client, "kiri-desktop-experience.png"));
-report.pages.kiriDesktop.showcaseKeyboard = await evaluate(
+report.pages.kiriDesktop.keyboard = await evaluate(
   client,
   `(async () => {
-    const firstTab = document.querySelector('[data-experience-index="0"]');
+    const firstTab = document.querySelector('.kiri-showcase__tabs [role="tab"]');
     firstTab?.focus();
     firstTab?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
-    await new Promise((resolve) => setTimeout(resolve, 120));
+    await new Promise((resolve) => setTimeout(resolve, 360));
+    const carousel = document.querySelector('.kiri-showcase__carousel');
     return {
-      selectedLabel: document.querySelector('.kiri-showcase__tabs [aria-selected="true"]')?.textContent.trim(),
-      focusedLabel: document.activeElement?.textContent.trim(),
-      imageSrc: document.querySelector('.kiri-showcase__panel img')?.getAttribute('src')
+      selected: document.querySelector('.kiri-showcase__tabs [aria-selected="true"]')?.textContent.trim(),
+      focused: document.activeElement?.textContent.trim(),
+      activeDescription: document.querySelector('.kiri-showcase__active-copy')?.textContent.trim(),
+      activeCardExists: Boolean(carousel?.querySelector('#kiri-feature-card-discovery'))
     };
   })()`,
   true,
 );
 assert(
-  report.pages.kiriDesktop.showcaseKeyboard.selectedLabel === "활동 발견" &&
-    report.pages.kiriDesktop.showcaseKeyboard.focusedLabel === "활동 발견" &&
-    report.pages.kiriDesktop.showcaseKeyboard.imageSrc === "/images/kiri/kiri-places.png",
-  "KIRI 쇼케이스의 방향키 탐색이 동작하지 않습니다.",
+  report.pages.kiriDesktop.keyboard.selected.includes("미션 둘러보기") &&
+    report.pages.kiriDesktop.keyboard.focused.includes("미션 둘러보기") &&
+    report.pages.kiriDesktop.keyboard.activeDescription.includes("활동을 찾아봐요") &&
+    report.pages.kiriDesktop.keyboard.activeCardExists,
+  "KIRI 기능 탭의 키보드 방향키 전환이 올바르지 않습니다.",
   failures,
 );
-await evaluate(client, `document.querySelector('[data-experience-index="2"]')?.click()`);
-await evaluate(client, `new Promise((resolve) => setTimeout(resolve, 240))`, true);
-await waitForImages(client);
-report.pages.kiriDesktop.showcaseClick = await evaluate(
-  client,
-  `({
-    selectedLabel: document.querySelector('.kiri-showcase__tabs [aria-selected="true"]')?.textContent.trim(),
-    imageSrc: document.querySelector('.kiri-showcase__panel img')?.getAttribute('src')
-  })`,
-);
-assert(
-  report.pages.kiriDesktop.showcaseClick.selectedLabel === "일정" &&
-    report.pages.kiriDesktop.showcaseClick.imageSrc === "/images/kiri/kiri-schedule.png",
-  "KIRI 쇼케이스 클릭 시 일정 화면으로 바뀌지 않습니다.",
-  failures,
-);
-report.screenshots.push(await screenshot(client, "kiri-desktop-experience-selected.png"));
-await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; const target = document.querySelector('#kiri-preregister'); if (target) window.scrollTo(0, target.offsetTop); })()`);
-await waitForPaint(client);
-report.screenshots.push(await screenshot(client, "kiri-desktop-form.png"));
-
-await evaluate(client, `document.querySelector('.kiri-form')?.requestSubmit()`);
-await evaluate(client, `new Promise((resolve) => setTimeout(resolve, 250))`, true);
-report.form.apiRequestCountAfterSubmitAttempt = apiRequests.length;
-assert(apiRequests.length === 0, "비활성 사전예약 폼이 API 요청을 보냈습니다.", failures);
+report.screenshots.push(await screenshot(client, "kiri-desktop-features.png"));
 
 await navigate(client, "/kiri", 390, 844);
 await waitForImages(client);
-report.pages.kiriMobile = await evaluate(
+report.pages.kiriMobileHero = await evaluate(
   client,
-  `({
-    scrollWidth: document.documentElement.scrollWidth,
-    innerWidth,
-    formVisible: Boolean(document.querySelector('.kiri-form')),
-    phoneWidths: [...document.querySelectorAll('.kiri-phone img')].map((image) => image.getBoundingClientRect().width),
-    tabCount: document.querySelectorAll('.kiri-showcase__tabs [role="tab"]').length,
-    tabHeights: [...document.querySelectorAll('.kiri-showcase__tabs [role="tab"]')].map((tab) => tab.getBoundingClientRect().height)
-  })`,
-);
-assert(report.pages.kiriMobile.scrollWidth <= 390, "KIRI 모바일 화면에 가로 넘침이 있습니다.", failures);
-assert(report.pages.kiriMobile.formVisible, "KIRI 모바일에서 폼 UI가 표시되지 않습니다.", failures);
-assert(report.pages.kiriMobile.phoneWidths.every((width) => width >= 260), "KIRI 모바일 앱 화면이 지나치게 작습니다.", failures);
-assert(
-  report.pages.kiriMobile.tabCount === 4 && report.pages.kiriMobile.tabHeights.every((height) => height >= 44),
-  "KIRI 모바일 쇼케이스 탭의 개수 또는 터치 영역이 올바르지 않습니다.",
-  failures,
+  `(() => {
+    const hero = document.querySelector('.kiri-hero');
+    const visual = document.querySelector('.kiri-hero__visual');
+    const image = visual?.querySelector('img');
+    const imageRect = image?.getBoundingClientRect();
+    return {
+      innerWidth: window.innerWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      heroHeight: hero?.getBoundingClientRect().height,
+      visualTop: visual?.getBoundingClientRect().top,
+      imageTop: imageRect?.top,
+      imageBottom: imageRect?.bottom,
+      imageWidth: imageRect?.width,
+      imageComplete: image?.complete
+    };
+  })()`,
 );
 report.screenshots.push(await screenshot(client, "kiri-mobile-hero.png"));
-await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; const target = document.querySelector('#kiri-experience'); if (target) window.scrollTo(0, target.offsetTop); document.querySelector('[data-experience-index="3"]')?.click(); })()`);
-await evaluate(client, `new Promise((resolve) => setTimeout(resolve, 240))`, true);
-await waitForImages(client);
-report.pages.kiriMobile.showcase = await evaluate(
+await evaluate(
   client,
-  `({
-    selectedLabel: document.querySelector('.kiri-showcase__tabs [aria-selected="true"]')?.textContent.trim(),
-    imageSrc: document.querySelector('.kiri-showcase__panel img')?.getAttribute('src'),
-    imageWidth: document.querySelector('.kiri-showcase__panel img')?.getBoundingClientRect().width
-  })`,
+  `(() => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    document.querySelector('#kiri-features')?.scrollIntoView();
+  })()`,
+);
+await waitForPaint(client);
+report.pages.kiriMobile = await evaluate(
+  client,
+  `(() => {
+    const carousel = document.querySelector('.kiri-showcase__carousel');
+    const cards = [...carousel.querySelectorAll('.kiri-showcase__card')];
+    const carouselRect = carousel.getBoundingClientRect();
+    const firstRect = cards[0].getBoundingClientRect();
+    const secondRect = cards[1].getBoundingClientRect();
+    return {
+      scrollWidth: document.documentElement.scrollWidth,
+      innerWidth,
+      tabCount: document.querySelectorAll('.kiri-showcase__tabs [role="tab"]').length,
+      tabHeights: [...document.querySelectorAll('.kiri-showcase__tabs [role="tab"]')]
+        .map((tab) => tab.getBoundingClientRect().height),
+      cardCount: cards.length,
+      carouselOverflow: getComputedStyle(carousel).overflowX,
+      carouselWidth: carouselRect.width,
+      firstCardWidth: firstRect.width,
+      nextCardVisible: secondRect.left < carouselRect.right,
+      activeLabel: document.querySelector('.kiri-showcase__tabs [aria-selected="true"]')?.textContent.trim(),
+      googlePlayDisabled: [...document.querySelectorAll('.kiri-store-badge--google')]
+        .every((button) => button.disabled && !button.getAttribute('href'))
+    };
+  })()`,
 );
 assert(
-  report.pages.kiriMobile.showcase.selectedLabel === "기록" &&
-    report.pages.kiriMobile.showcase.imageSrc === "/images/kiri/kiri-record.png" &&
-    report.pages.kiriMobile.showcase.imageWidth >= 260,
-  "KIRI 모바일 쇼케이스에서 기록 화면을 선택할 수 없습니다.",
+  report.pages.kiriMobile.scrollWidth <= report.pages.kiriMobile.innerWidth,
+  "KIRI 모바일 페이지에 전체 가로 스크롤이 생겼습니다.",
   failures,
 );
-report.screenshots.push(await screenshot(client, "kiri-mobile-experience-selected.png"));
-await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; const target = document.querySelector('#kiri-preregister'); if (target) window.scrollTo(0, target.offsetTop); })()`);
-await waitForPaint(client);
-report.screenshots.push(await screenshot(client, "kiri-mobile-form.png"));
+assert(
+  report.pages.kiriMobile.tabCount === 5 &&
+    report.pages.kiriMobile.tabHeights.every((height) => height >= 44),
+  "KIRI 모바일 기능 버튼의 개수 또는 터치 영역이 올바르지 않습니다.",
+  failures,
+);
+assert(
+  report.pages.kiriMobile.cardCount === 5 &&
+    report.pages.kiriMobile.carouselOverflow === "auto" &&
+    report.pages.kiriMobile.firstCardWidth < report.pages.kiriMobile.carouselWidth &&
+    report.pages.kiriMobile.nextCardVisible,
+  "KIRI 모바일 스와이프 영역에서 다음 카드가 보이지 않습니다.",
+  failures,
+);
+assert(
+  report.pages.kiriMobile.activeLabel.includes("홈") &&
+    report.pages.kiriMobile.googlePlayDisabled,
+  "KIRI 모바일 초기 선택 또는 Google Play 비활성 상태가 올바르지 않습니다.",
+  failures,
+);
 
+report.pages.kiriMobile.swipe = await evaluate(
+  client,
+  `(async () => {
+    const carousel = document.querySelector('.kiri-showcase__carousel');
+    const cards = [...carousel.querySelectorAll('.kiri-showcase__card')];
+    const carouselBounds = carousel.getBoundingClientRect();
+    const secondCardBounds = cards[1].getBoundingClientRect();
+    carousel.style.scrollBehavior = 'auto';
+    carousel.scrollTo({
+      left: carousel.scrollLeft + secondCardBounds.left - carouselBounds.left,
+      behavior: 'auto'
+    });
+    carousel.dispatchEvent(new Event('scroll'));
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    return {
+      selected: document.querySelector('.kiri-showcase__tabs [aria-selected="true"]')?.textContent.trim(),
+      scrollLeft: carousel.scrollLeft
+    };
+  })()`,
+  true,
+);
+assert(
+  report.pages.kiriMobile.swipe.selected.includes("미션 둘러보기") &&
+    report.pages.kiriMobile.swipe.scrollLeft > 0,
+  "KIRI 모바일 스와이프 후 활성 기능 버튼이 다음 카드로 동기화되지 않습니다.",
+  failures,
+);
+
+await evaluate(
+  client,
+  `document.querySelectorAll('.kiri-showcase__tabs [role="tab"]')[3]?.click()`,
+);
+await evaluate(client, `new Promise((resolve) => setTimeout(resolve, 320))`, true);
+report.pages.kiriMobile.buttonNavigation = await evaluate(
+  client,
+  `(() => {
+    const carousel = document.querySelector('.kiri-showcase__carousel');
+    return {
+      selected: document.querySelector('.kiri-showcase__tabs [aria-selected="true"]')?.textContent.trim(),
+      scrollLeft: carousel.scrollLeft
+    };
+  })()`,
+);
+assert(
+  report.pages.kiriMobile.buttonNavigation.selected.includes("미션 초대") &&
+    report.pages.kiriMobile.buttonNavigation.scrollLeft > 0,
+  "KIRI 모바일 기능 버튼이 해당 카드로 이동하지 않습니다.",
+  failures,
+);
+report.screenshots.push(await screenshot(client, "kiri-mobile-features.png"));
 for (const error of runtimeErrors) failures.push(`브라우저 런타임 오류: ${error}`);
 report.failures = failures;
 

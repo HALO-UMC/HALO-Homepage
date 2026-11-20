@@ -34,19 +34,19 @@ export const PAGE_METADATA = Object.freeze({
     }),
   }),
   kiri: Object.freeze({
-    title: "가족끼리, 취향부터 추억까지, KIRI",
+    title: "끼리(KIRI)",
     description:
-      "부모님과 서로의 취향을 알아가고, 함께할 일을 찾아 약속하고, 그날의 추억을 남겨보세요.",
+      "이번 주에 뭐 하지? 우리 가족이 함께할 활동을 찾고, 약속부터 그날의 기록까지 끼리에 남겨보세요.",
     socialDescription:
-      "부모님과 서로의 취향을 알아가고, 함께할 일을 찾아 약속하고, 그날의 추억을 남겨보세요.",
+      "가족과 함께할 활동을 찾고, 약속부터 그날의 기록까지 끼리에 남겨보세요.",
     themeColor: "#1a1a1a",
     canonicalUrl: `${PRODUCTION_ORIGIN}/kiri`,
     image: Object.freeze({
-      url: `${PRODUCTION_ORIGIN}/OG-IMAGE.jpg`,
-      type: "image/jpeg",
-      width: "600",
-      height: "600",
-      alt: "가족끼리, 취향부터 추억까지, KIRI",
+      url: `${PRODUCTION_ORIGIN}/images/kiri/KakaoTalk_20261116_010517345.png`,
+      type: "image/png",
+      width: "1620",
+      height: "2880",
+      alt: "끼리(KIRI)",
     }),
   }),
 });
