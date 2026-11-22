@@ -3,6 +3,12 @@ import { useEffect } from "react";
 const metadataAttributes = (metadata) => [
   ['meta[name="description"]', "content", metadata.description],
   ['meta[name="theme-color"]', "content", metadata.themeColor],
+  ...(metadata.robots
+    ? [['meta[name="robots"]', "content", metadata.robots]]
+    : []),
+  ...(metadata.referrer
+    ? [['meta[name="referrer"]', "content", metadata.referrer]]
+    : []),
   ['link[rel="canonical"]', "href", metadata.canonicalUrl],
   ['meta[property="og:url"]', "content", metadata.canonicalUrl],
   ['meta[property="og:title"]', "content", metadata.title],
@@ -30,6 +36,15 @@ const metadataAttributes = (metadata) => [
 export default function usePageMeta(metadata) {
   useEffect(() => {
     const previousTitle = document.title;
+    const createdElements = new Set();
+
+    if (metadata.robots && !document.querySelector('meta[name="robots"]')) {
+      const robots = document.createElement("meta");
+      robots.setAttribute("name", "robots");
+      document.head.appendChild(robots);
+      createdElements.add(robots);
+    }
+
     const attributes = metadataAttributes(metadata).map(
       ([selector, attribute, value]) => {
         const element = document.querySelector(selector);
@@ -46,6 +61,11 @@ export default function usePageMeta(metadata) {
     return () => {
       document.title = previousTitle;
       attributes.forEach(({ attribute, element, previousValue }) => {
+        if (createdElements.has(element)) {
+          element.remove();
+          return;
+        }
+
         if (previousValue === null) {
           element?.removeAttribute(attribute);
           return;

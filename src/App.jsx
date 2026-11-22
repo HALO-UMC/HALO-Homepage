@@ -2924,6 +2924,8 @@ function AppRoutes() {
   if (
     location.pathname === "/" ||
     location.pathname === "/kiri" ||
+    location.pathname === "/invite" ||
+    location.pathname.startsWith("/invite/") ||
     location.pathname === "/webeditorial" ||
     location.pathname === "/webeditorial/kiri" ||
     location.pathname === "/webeditorial/privacy"

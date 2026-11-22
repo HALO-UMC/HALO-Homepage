@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import CompanyPage from "./CompanyPage.jsx";
+import InvitePage from "./InvitePage.jsx";
 import KiriPage from "./KiriPage.jsx";
 import PrivacyDraftPage from "./PrivacyDraftPage.jsx";
 
@@ -11,6 +12,7 @@ export default function WebEditorialRoutes() {
     <Routes>
       <Route path="/" element={<CompanyPage />} />
       <Route path="/kiri" element={<KiriPage />} />
+      <Route path="/invite/*" element={<InvitePage />} />
       <Route path="/webeditorial" element={<Navigate to="/" replace />} />
       <Route path="/webeditorial/kiri" element={<Navigate to="/kiri" replace />} />
       <Route path="/webeditorial/privacy" element={<PrivacyDraftPage />} />

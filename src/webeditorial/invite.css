@@ -1,0 +1,286 @@
+.invite-page {
+  --invite-bg: #1a1a1a;
+  --invite-panel: #232323;
+  --invite-panel-soft: #2a2a2a;
+  --invite-text: #f7f8f5;
+  --invite-muted: #aeb1aa;
+  --invite-green: #9bea51;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100svh;
+  place-items: center;
+  overflow: hidden;
+  padding: max(28px, env(safe-area-inset-top)) 20px
+    max(24px, env(safe-area-inset-bottom));
+  color: var(--invite-text);
+  background:
+    radial-gradient(circle at 50% -12%, rgba(155, 234, 81, 0.14), transparent 38%),
+    var(--invite-bg);
+}
+
+.invite-page,
+.invite-page *,
+.invite-page *::before,
+.invite-page *::after {
+  box-sizing: border-box;
+}
+
+.invite-page::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 46px 46px;
+  content: "";
+  mask-image: linear-gradient(to bottom, black, transparent 70%);
+}
+
+.invite-page__glow {
+  position: absolute;
+  z-index: -1;
+  top: 8%;
+  left: 50%;
+  width: min(560px, 100vw);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: rgba(155, 234, 81, 0.08);
+  filter: blur(100px);
+  transform: translateX(-50%);
+}
+
+.invite-card {
+  width: 100%;
+  max-width: 480px;
+  min-width: 0;
+  justify-self: center;
+  padding: 42px 36px 34px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 30px;
+  background: linear-gradient(145deg, rgba(42, 42, 42, 0.98), rgba(31, 31, 31, 0.98));
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+
+.invite-card__brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.invite-card__brand img {
+  display: block;
+  width: 92px;
+  height: auto;
+}
+
+.invite-card__eyebrow {
+  margin-top: 34px;
+  color: var(--invite-green);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.18em;
+}
+
+.invite-card h1 {
+  margin: 13px 0 0;
+  font-size: clamp(27px, 7vw, 34px);
+  line-height: 1.25;
+  letter-spacing: -0.045em;
+}
+
+.invite-card__description {
+  margin: 15px auto 0;
+  max-width: 350px;
+  color: var(--invite-muted);
+  font-size: 16px;
+  line-height: 1.65;
+  letter-spacing: -0.02em;
+}
+
+.invite-open-button,
+.invite-store-link {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.invite-open-button {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+  border-radius: 16px;
+  color: #15200d;
+  background: var(--invite-green);
+  box-shadow: 0 14px 34px rgba(155, 234, 81, 0.16);
+  font-size: 16px;
+  font-weight: 750;
+  text-decoration: none;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.invite-open-button svg,
+.invite-store-link > svg:last-child {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.invite-open-button:hover {
+  background: #a9f263;
+  transform: translateY(-2px);
+}
+
+.invite-open-button:focus-visible,
+.invite-store-link:focus-visible,
+.invite-card__brand:focus-visible {
+  outline: 3px solid var(--invite-green);
+  outline-offset: 4px;
+}
+
+.invite-divider {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  margin: 27px 0 18px;
+  color: #81847e;
+  font-size: 12px;
+}
+
+.invite-divider::before,
+.invite-divider::after {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  content: "";
+}
+
+.invite-store-links {
+  display: grid;
+  gap: 10px;
+}
+
+.invite-store-link {
+  display: grid;
+  min-height: 54px;
+  grid-template-columns: 24px 1fr 20px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  color: var(--invite-text);
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 14px;
+  font-weight: 650;
+  text-align: left;
+  text-decoration: none;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.invite-store-link > svg:first-child {
+  width: 23px;
+  height: 23px;
+  fill: currentColor;
+}
+
+.invite-store-link:hover {
+  border-color: rgba(155, 234, 81, 0.46);
+  background: rgba(155, 234, 81, 0.06);
+}
+
+.invite-store-link--disabled {
+  grid-template-columns: 24px 1fr;
+  color: #797c76;
+  cursor: not-allowed;
+}
+
+.invite-store-link--disabled:hover {
+  border-color: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.invite-card__help {
+  margin: 20px 0 0;
+  color: #898c86;
+  font-size: 13px;
+  line-height: 1.55;
+  letter-spacing: -0.015em;
+}
+
+.invite-card__error {
+  margin: 28px 0 22px;
+  padding: 17px 18px;
+  border: 1px solid rgba(155, 234, 81, 0.22);
+  border-radius: 15px;
+  color: #d9ebc8;
+  background: rgba(155, 234, 81, 0.07);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: -0.02em;
+}
+
+.invite-page__footer {
+  position: absolute;
+  right: 20px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  left: 20px;
+  margin: 0;
+  color: #646760;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+@media (max-width: 540px) {
+  .invite-page {
+    align-items: center;
+    padding-inline: 16px;
+  }
+
+  .invite-card {
+    padding: 34px 22px 28px;
+    border-radius: 24px;
+  }
+
+  .invite-card__brand img {
+    width: 82px;
+  }
+
+  .invite-card__eyebrow {
+    margin-top: 27px;
+  }
+
+  .invite-open-button {
+    min-height: 56px;
+  }
+
+  .invite-page__footer {
+    display: none;
+  }
+}
+
+@media (max-height: 690px) {
+  .invite-page {
+    place-items: start center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invite-open-button,
+  .invite-store-link {
+    transition: none;
+  }
+}

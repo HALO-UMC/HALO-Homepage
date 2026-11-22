@@ -49,4 +49,22 @@ export const PAGE_METADATA = Object.freeze({
       alt: "끼리(KIRI)",
     }),
   }),
+  invite: Object.freeze({
+    title: "가족 초대가 도착했어요 | 끼리(KIRI)",
+    description:
+      "끼리 앱에서 초대를 확인하고 가족 공간에 참여해 보세요.",
+    socialDescription:
+      "끼리 앱에서 초대를 확인하고 가족 공간에 참여해 보세요.",
+    themeColor: "#1a1a1a",
+    canonicalUrl: `${PRODUCTION_ORIGIN}/invite`,
+    robots: "noindex, nofollow, noarchive",
+    referrer: "no-referrer",
+    image: Object.freeze({
+      url: `${PRODUCTION_ORIGIN}/images/kiri/KakaoTalk_20261116_010517345.png`,
+      type: "image/png",
+      width: "1620",
+      height: "2880",
+      alt: "가족 초대가 도착했어요 | 끼리(KIRI)",
+    }),
+  }),
 });

@@ -163,6 +163,27 @@ async function navigate(client, pathname, width, height) {
   await waitForPaint(client);
 }
 
+async function reload(client) {
+  const loaded = client.once("Page.loadEventFired");
+  await client.send("Page.reload", { ignoreCache: true });
+  await loaded;
+  const rendered = await evaluate(
+    client,
+    `new Promise((resolve) => {
+      const started = performance.now();
+      const check = () => {
+        if (document.querySelector('#root')?.firstElementChild) return resolve(true);
+        if (performance.now() - started > 5000) return resolve(false);
+        requestAnimationFrame(check);
+      };
+      check();
+    })`,
+    true,
+  );
+  if (!rendered) throw new Error("React root timeout after reload");
+  await waitForPaint(client);
+}
+
 async function waitForPath(client, expectedPath) {
   return evaluate(
     client,
@@ -867,6 +888,157 @@ assert(
   failures,
 );
 report.screenshots.push(await screenshot(client, "kiri-mobile-features.png"));
+
+await client.send("Emulation.setUserAgentOverride", {
+  userAgent:
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1",
+  platform: "iPhone",
+});
+await navigate(client, "/invite/test-family-token", 390, 844);
+await waitForImages(client);
+report.pages.inviteMobile = await evaluate(
+  client,
+  `(() => {
+    const card = document.querySelector('.invite-card');
+    const cardRect = card?.getBoundingClientRect();
+    const storeLinks = [...document.querySelectorAll('.invite-store-link[href]')];
+    const metadata = Object.fromEntries([
+      ['robots', document.querySelector('meta[name="robots"]')?.content],
+      ['referrer', document.querySelector('meta[name="referrer"]')?.content],
+      ['canonical', document.querySelector('link[rel="canonical"]')?.href],
+      ['ogUrl', document.querySelector('meta[property="og:url"]')?.content],
+      ['ogDescription', document.querySelector('meta[property="og:description"]')?.content],
+    ]);
+
+    return {
+      pathname: location.pathname,
+      scrollWidth: document.documentElement.scrollWidth,
+      innerWidth,
+      cardLeft: cardRect?.left,
+      cardRight: cardRect?.right,
+      title: document.querySelector('h1')?.textContent.trim(),
+      description: document.querySelector('.invite-card__description')?.textContent.trim(),
+      openButtonText: document.querySelector('.invite-open-button')?.textContent.trim(),
+      openButtonHref: document.querySelector('.invite-open-button')?.getAttribute('href'),
+      storeHrefs: storeLinks.map((link) => link.getAttribute('href')),
+      googlePlayText: document.querySelector('.invite-store-link--disabled')?.textContent.trim(),
+      helpText: document.querySelector('.invite-card__help')?.textContent.trim(),
+      gaScriptPresent: Boolean(document.querySelector('#halo-ga4-script')),
+      metadata,
+    };
+  })()`,
+);
+assert(
+  report.pages.inviteMobile.pathname === "/invite/test-family-token" &&
+    report.pages.inviteMobile.scrollWidth <= report.pages.inviteMobile.innerWidth &&
+    report.pages.inviteMobile.cardLeft >= 16 &&
+    report.pages.inviteMobile.cardRight <= report.pages.inviteMobile.innerWidth - 16,
+  "초대 페이지가 모바일에서 직접 열리거나 화면 너비 안에 맞지 않습니다.",
+  failures,
+);
+assert(
+  report.pages.inviteMobile.title === "가족 초대가 도착했어요" &&
+    report.pages.inviteMobile.description ===
+      "끼리 앱에서 초대를 확인하고 가족 공간에 참여해 보세요." &&
+    report.pages.inviteMobile.openButtonText.includes("끼리 앱에서 열기") &&
+    report.pages.inviteMobile.openButtonHref === "kiri://invite/test-family-token" &&
+    report.pages.inviteMobile.googlePlayText.includes("Google Play 다운로드 준비 중") &&
+    report.pages.inviteMobile.helpText ===
+      "앱을 설치한 뒤, 받은 초대 링크를 다시 눌러 주세요.",
+  "초대 페이지의 안내 문구 또는 앱 열기 동작이 올바르지 않습니다.",
+  failures,
+);
+assert(
+  report.pages.inviteMobile.storeHrefs.length === 1 &&
+    report.pages.inviteMobile.storeHrefs[0] ===
+      "https://apps.apple.com/kr/app/%EB%81%BC%EB%A6%AC-kiri/id6835049058" &&
+    report.pages.inviteMobile.storeHrefs.every(
+      (href) => !href.includes("test-family-token"),
+    ),
+  "초대 토큰이 스토어 링크에 포함됐거나 App Store 링크가 올바르지 않습니다.",
+  failures,
+);
+assert(
+  report.pages.inviteMobile.metadata.robots === "noindex, nofollow, noarchive" &&
+    report.pages.inviteMobile.metadata.referrer === "no-referrer" &&
+    report.pages.inviteMobile.metadata.canonical ===
+      "https://www.halo-official.co.kr/invite" &&
+    report.pages.inviteMobile.metadata.ogUrl ===
+      "https://www.halo-official.co.kr/invite" &&
+    !JSON.stringify(report.pages.inviteMobile.metadata).includes(
+      "test-family-token",
+    ) &&
+    !report.pages.inviteMobile.gaScriptPresent,
+  "초대 페이지의 비공개 메타데이터 또는 분석 제외 설정이 올바르지 않습니다.",
+  failures,
+);
+report.screenshots.push(await screenshot(client, "kiri-invite-mobile.png"));
+
+await reload(client);
+report.pages.inviteReload = await evaluate(
+  client,
+  `(() => ({
+    pathname: location.pathname,
+    title: document.querySelector('h1')?.textContent.trim(),
+    openButtonHref: document.querySelector('.invite-open-button')?.getAttribute('href'),
+  }))()`,
+);
+assert(
+  report.pages.inviteReload.pathname === "/invite/test-family-token" &&
+    report.pages.inviteReload.title === "가족 초대가 도착했어요" &&
+    report.pages.inviteReload.openButtonHref ===
+      "kiri://invite/test-family-token",
+  "초대 URL을 새로고침한 뒤 iOS 앱 열기 링크가 유지되지 않습니다.",
+  failures,
+);
+
+await client.send("Emulation.setUserAgentOverride", {
+  userAgent:
+    "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 Chrome/158.0.0.0 Mobile Safari/537.36",
+  platform: "Android",
+});
+await navigate(client, "/invite/android-test-token", 390, 844);
+report.pages.inviteAndroid = await evaluate(
+  client,
+  `(() => ({
+    pathname: location.pathname,
+    openButtonHref: document.querySelector('.invite-open-button')?.getAttribute('href'),
+    storeHrefs: [...document.querySelectorAll('.invite-store-link[href]')]
+      .map((link) => link.getAttribute('href')),
+  }))()`,
+);
+assert(
+  report.pages.inviteAndroid.pathname === "/invite/android-test-token" &&
+    report.pages.inviteAndroid.openButtonHref ===
+      "https://kiri.app/invite/android-test-token" &&
+    report.pages.inviteAndroid.storeHrefs.every(
+      (href) => !href.includes("android-test-token"),
+    ),
+  "Android 앱 열기 주소가 현재 앱 지원 경로를 사용하지 않거나 토큰이 스토어 링크에 포함됐습니다.",
+  failures,
+);
+
+await navigate(client, "/invite/", 390, 844);
+report.pages.inviteInvalid = await evaluate(
+  client,
+  `(() => ({
+    pathname: location.pathname,
+    message: document.querySelector('[role="alert"]')?.textContent.trim(),
+    hasOpenButton: Boolean(document.querySelector('.invite-open-button')),
+    hasAppStoreLink: Boolean(document.querySelector('.invite-store-link[href]')),
+  }))()`,
+);
+assert(
+  report.pages.inviteInvalid.pathname === "/invite/" &&
+    report.pages.inviteInvalid.message ===
+      "가족에게 받은 초대 링크 전체를 다시 열어 주세요" &&
+    !report.pages.inviteInvalid.hasOpenButton &&
+    report.pages.inviteInvalid.hasAppStoreLink,
+  "비어 있거나 잘못된 초대 링크 안내가 올바르지 않습니다.",
+  failures,
+);
+report.screenshots.push(await screenshot(client, "kiri-invite-invalid.png"));
+
 for (const error of runtimeErrors) failures.push(`브라우저 런타임 오류: ${error}`);
 report.failures = failures;
 

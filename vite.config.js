@@ -12,6 +12,7 @@ export default defineConfig({
         main: fileURLToPath(new URL("./index.html", import.meta.url)),
         halo: fileURLToPath(new URL("./halo.html", import.meta.url)),
         kiri: fileURLToPath(new URL("./kiri.html", import.meta.url)),
+        invite: fileURLToPath(new URL("./invite.html", import.meta.url)),
       },
     },
   },
