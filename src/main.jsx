@@ -11,8 +11,9 @@ const pathname =
   window.location.pathname.replace(/\/+$/, "") || "/";
 
 const isDemodayPage = pathname === "/demoday";
+const isInvitePage = pathname === "/invite" || pathname.startsWith("/invite/");
 
-if (!isDemodayPage) {
+if (!isDemodayPage && !isInvitePage) {
   initializeAnalytics();
 }
 

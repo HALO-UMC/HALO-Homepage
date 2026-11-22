@@ -49,6 +49,21 @@ const pages = [
     imageWidth: "1620",
     imageHeight: "2880",
   },
+  {
+    route: "/invite/{token}",
+    fileName: "invite.html",
+    title: "가족 초대가 도착했어요 | 끼리(KIRI)",
+    description:
+      "끼리 앱에서 초대를 확인하고 가족 공간에 참여해 보세요.",
+    socialDescription:
+      "끼리 앱에서 초대를 확인하고 가족 공간에 참여해 보세요.",
+    canonicalUrl: "https://www.halo-official.co.kr/invite",
+    imageUrl:
+      "https://www.halo-official.co.kr/images/kiri/KakaoTalk_20261116_010517345.png",
+    imageType: "image/png",
+    imageWidth: "1620",
+    imageHeight: "2880",
+  },
 ];
 
 function attributes(element) {
@@ -199,5 +214,15 @@ test("Vercel serves clean route HTML before the SPA fallback", async () => {
 
   assert.equal(config.cleanUrls, true);
   assert.equal(config.trailingSlash, false);
+  assert.deepEqual(config.rewrites[0], {
+    source: "/.well-known/assetlinks.json",
+    destination: "/api/assetlinks",
+  });
+  assert.deepEqual(config.rewrites[1], {
+    source: "/invite/(.*)",
+    destination: "/invite",
+  });
+  assert.match(config.rewrites.at(-1)?.source ?? "", /\\\.well-known\//);
   assert.equal(config.rewrites.at(-1)?.destination, "/index");
+  assert.equal(config.redirects, undefined);
 });

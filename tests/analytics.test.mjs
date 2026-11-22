@@ -17,6 +17,7 @@ test("측정 대상 세 경로만 고정 page_name으로 변환한다", () => {
   assert.equal(getTrackedPageName("/"), PAGE_NAMES.COMPANY);
   assert.equal(getTrackedPageName("/halo/"), PAGE_NAMES.HALO);
   assert.equal(getTrackedPageName("/kiri"), PAGE_NAMES.KIRI);
+  assert.equal(getTrackedPageName("/invite/private-family-token"), null);
   assert.equal(getTrackedPageName("/privacy"), null);
 });
 

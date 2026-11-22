@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "98W2DZGWNU.com.kiriteam.KIRI",
+        "paths": [
+          "/invite/*"
+        ]
+      }
+    ]
+  }
+}
