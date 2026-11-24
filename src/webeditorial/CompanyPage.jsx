@@ -1,3 +1,6 @@
+// @ts-check
+
+import { milestones, partners, partnershipStatuses } from "../data/companyData.js";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -5,7 +8,6 @@ import {
   ArrowIcon,
   CompanyWordmark,
   EditorialFooter,
-  SectionLabel,
 } from "./shared.jsx";
 import usePageMeta from "./usePageMeta.js";
 import { PAGE_METADATA } from "./pageMetadata.js";
@@ -38,10 +40,15 @@ const activitySlides = [
 const navigation = [
   { label: "회사", href: "#company" },
   { label: "서비스", href: "#services" },
+  { label: "파트너십", href: "#partners" },
+  { label: "연혁", href: "#journey" },
   { label: "제휴·협업", href: "#partnership" },
 ];
 
-function CompanyHeader() {
+export function CompanyHeader({ home = false }) {
+  const menuButton = useRef(null);
+  const mobileMenu = useRef(null);
+  const menuHref = (href) => home ? href : `/${href}`;
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -49,18 +56,34 @@ function CompanyHeader() {
       return undefined;
     }
 
+    const mediaQuery = window.matchMedia("(max-width: 800px)");
+    const closeOnDesktop = () => {
+      if (!mediaQuery.matches) setIsOpen(false);
+    };
+    const focusTargets = [menuButton.current, ...mobileMenu.current.querySelectorAll("a")];
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         setIsOpen(false);
+        menuButton.current?.focus();
+      }
+      if (event.key !== "Tab") return;
+      const current = focusTargets.indexOf(document.activeElement);
+      const next = current + (event.shiftKey ? -1 : 1);
+      if (current < 0 || next < 0 || next === focusTargets.length) {
+        event.preventDefault();
+        focusTargets[event.shiftKey ? focusTargets.length - 1 : 0]?.focus();
       }
     };
 
+    menuButton.current?.focus();
     document.documentElement.classList.add("editorial-menu-open");
     window.addEventListener("keydown", handleKeyDown);
+    mediaQuery.addEventListener("change", closeOnDesktop);
 
     return () => {
       document.documentElement.classList.remove("editorial-menu-open");
       window.removeEventListener("keydown", handleKeyDown);
+      mediaQuery.removeEventListener("change", closeOnDesktop);
     };
   }, [isOpen]);
 
@@ -71,7 +94,7 @@ function CompanyHeader() {
 
         <nav className="company-header__desktop" aria-label="기업 홈페이지 주요 메뉴">
           {navigation.map((item) => (
-            <a key={item.href} href={item.href}>
+            <a key={item.href} href={menuHref(item.href)}>
               {item.label}
             </a>
           ))}
@@ -79,6 +102,7 @@ function CompanyHeader() {
 
         <button
           type="button"
+          ref={menuButton}
           className="company-header__menu-button"
           aria-label={isOpen ? "메뉴 닫기" : "메뉴 열기"}
           aria-expanded={isOpen}
@@ -88,16 +112,19 @@ function CompanyHeader() {
           <span />
           <span />
         </button>
+        <Link className="halo-button halo-header-cta" to="/partnership">제휴 문의 <ArrowIcon /></Link>
       </div>
 
       <div
         id="company-mobile-menu"
+        ref={mobileMenu}
         className={`company-mobile-menu${isOpen ? " is-open" : ""}`}
+        inert={!isOpen}
         aria-hidden={!isOpen}
       >
         <nav aria-label="기업 홈페이지 모바일 메뉴">
           {navigation.map((item) => (
-            <a key={item.href} href={item.href} onClick={() => setIsOpen(false)}>
+            <a key={item.href} href={menuHref(item.href)} onClick={() => setIsOpen(false)}>
               {item.label}
             </a>
           ))}
@@ -156,7 +183,7 @@ function PlayPauseIcon({ isPlaying }) {
   );
 }
 
-function CompanyActivitySlider({ slides, label = "HALO 팀 활동 사진", kind = "activity" }) {
+function CompanyActivitySlider({ slides, label = "HALO 팀 활동 사진" }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
@@ -209,7 +236,8 @@ function CompanyActivitySlider({ slides, label = "HALO 팀 활동 사진", kind 
     if (
       !hasMultipleSlides ||
       !isPlaying ||
-      (kind === "activity" && (isHovered || isFocusWithin)) ||
+      isHovered ||
+      isFocusWithin ||
       !isPageVisible ||
       prefersReducedMotion
     ) {
@@ -223,7 +251,6 @@ function CompanyActivitySlider({ slides, label = "HALO 팀 활동 사진", kind 
     return () => window.clearInterval(timer);
   }, [
     hasMultipleSlides,
-    kind,
     isFocusWithin,
     isHovered,
     isPageVisible,
@@ -262,7 +289,7 @@ function CompanyActivitySlider({ slides, label = "HALO 팀 활동 사진", kind 
 
   return (
     <div
-      className={`company-activity-slider company-activity-slider--${kind}`}
+      className="company-activity-slider company-activity-slider--activity"
       aria-roledescription="carousel"
       aria-label={label}
       data-slide-count={slides.length}
@@ -285,15 +312,15 @@ function CompanyActivitySlider({ slides, label = "HALO 팀 활동 사진", kind 
               <img
                 src={slide.src}
                 alt={slide.alt}
-                style={{
+                style={/** @type {import("react").CSSProperties} */ ({
                   "--activity-focus": slide.objectPosition ?? "50% 50%",
                   "--activity-focus-mobile":
                     slide.mobileObjectPosition ?? slide.objectPosition ?? "50% 50%",
-                }}
+                })}
                 loading={index === 0 ? "eager" : "lazy"}
                 fetchPriority={index === 0 ? "high" : "auto"}
               />
-              {kind !== "store" && slide.caption && <figcaption>{slide.caption}</figcaption>}
+              {slide.caption && <figcaption>{slide.caption}</figcaption>}
             </figure>
           ))
         ) : (
@@ -302,23 +329,19 @@ function CompanyActivitySlider({ slides, label = "HALO 팀 활동 사진", kind 
           </div>
         )}
 
-        {kind === "activity" && (
-          <>
-            <div className="company-activity-slider__shade" aria-hidden="true" />
-            <div className="company-hero__copy">
-              <h1 id="company-hero-title">작은 안녕으로, 가족의 내일을 잇습니다.</h1>
-              <p>
-                HALO는 서로에게 건네는 인사와 평안한 일상을 뜻하는 ‘안녕’에서 시작합니다.
-              </p>
-              <a className="company-hero__cta" href="#services">
-                서비스 만나보기
-                <ArrowIcon />
-              </a>
-            </div>
-          </>
-        )}
+        <div className="company-activity-slider__shade" aria-hidden="true" />
+        <div className="company-hero__copy">
+          <h1 id="company-hero-title">작은 안녕으로, 가족의 내일을 잇습니다.</h1>
+          <p>
+            HALO는 서로에게 건네는 인사와 평안한 일상을 뜻하는 ‘안녕’에서 시작합니다.
+          </p>
+          <a className="company-hero__cta" href="#services">
+            서비스 만나보기
+            <ArrowIcon />
+          </a>
+        </div>
 
-        {hasMultipleSlides && kind === "activity" && (
+        {hasMultipleSlides && (
           <div className="company-activity-slider__controls">
             <div className="company-activity-slider__buttons">
               <button
@@ -380,7 +403,7 @@ function ServiceActions({ service }) {
             })
           }
         >
-          HALO 보러가기
+          HALO 보러 가기
           <ArrowIcon />
         </Link>
         <a
@@ -422,7 +445,7 @@ function ServiceActions({ service }) {
           })
         }
       >
-        KIRI 보러가기
+        끼리 보러 가기
         <ArrowIcon />
       </Link>
       <a
@@ -451,102 +474,140 @@ function ServiceActions({ service }) {
   );
 }
 
+function Journey() {
+  const timeline = useRef(null);
+
+  useEffect(() => {
+    if (!window.IntersectionObserver || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.animate([{ opacity: 0.5, transform: "translateY(12px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 420, easing: "ease-out" });
+        observer.unobserve(entry.target);
+      }
+    }, { threshold: 0.2 });
+    timeline.current.querySelectorAll("li").forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section id="journey" className="halo-section">
+      <div className="editorial-container halo-split">
+        <div><p className="halo-eyebrow">Our Journey</p><h2>HALO가 걸어온 길</h2></div>
+        <ol className="halo-timeline" ref={timeline}>
+          {milestones.map((milestone) => (
+            <li key={milestone.title}>
+              <time dateTime={milestone.month}>{milestone.month.replace("-", ".")}</time>
+              <h3>{milestone.title}</h3>
+              <p>{milestone.description}</p>
+              {milestone.href && <a className="halo-text-link" href={milestone.href}>{milestone.linkLabel} <ArrowIcon /></a>}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
 export default function CompanyPage() {
   usePageMeta(PAGE_METADATA.company);
 
   return (
-    <div className="editorial-shell company-page">
-      <CompanyHeader />
-
-      <main>
-        <section
-          id="company"
-          className="company-hero"
-          aria-labelledby="company-hero-title"
-        >
+    <div className="editorial-shell company-page halo-corporate">
+      <a className="halo-skip" href="#main-content">본문으로 건너뛰기</a>
+      <CompanyHeader home />
+      <main id="main-content" tabIndex={-1}>
+        <section id="company" className="company-hero" aria-labelledby="company-hero-title">
           <div className="editorial-container">
             <CompanyActivitySlider slides={activitySlides} />
           </div>
         </section>
 
-        <section id="services" className="company-services editorial-section">
-          <div className="editorial-container">
-            <div className="company-services__heading">
-              <p>서비스</p>
-              <h2>가족의 연결을 만드는 두 서비스</h2>
+        <section id="about" className="halo-section halo-tinted">
+          <div className="editorial-container halo-split">
+            <div>
+              <p className="halo-eyebrow">About HALO</p>
+              <h2>가족이 서로에게<br />더 자주 안녕을 건네도록.</h2>
             </div>
+            <p className="halo-lead">가까운 사이일수록 안부를 미루거나 함께할 시간을 놓치곤 합니다. HALO는 대화의 계기를 만들고, 가족이 함께 나갈 곳과 할 일을 발견하도록 돕고, 그날의 기억을 다시 꺼내 볼 수 있는 서비스를 만듭니다.</p>
+          </div>
+        </section>
 
-            <div className="company-services__grid">
-            <article className="service-feature service-feature--halo">
+        <section id="services" className="company-services halo-section">
+          <div className="editorial-container">
+            <p className="halo-eyebrow">Our Product</p>
+            <h2>우리 가족의 시간을 만드는 끼리</h2>
+            <article className="halo-product">
               <div className="service-feature__copy">
-                <img
-                  className="service-feature__app-logo service-feature__app-logo--halo"
-                  src="/logotypo.svg"
-                  alt="HALO 앱"
-                  width="918"
-                  height="250"
-                />
-                <h3>매일 한 장, 부모님과 이어가는 따뜻한 안녕</h3>
-                <p>
-                  사진과 질문으로 부모님의 삶과 취향을 알아가고, 매일의 대화를 한 권의 가족
-                  스토리북으로 기록합니다.
-                </p>
-                <ServiceActions service="halo" />
-              </div>
-
-            </article>
-
-            <article className="service-feature service-feature--kiri">
-              <div className="service-feature__copy">
-                <img
-                  className="service-feature__app-logo service-feature__app-logo--kiri"
-                  src="/images/kiri/kiri-logo.svg"
-                  alt="KIRI"
-                  width="276"
-                  height="100"
-                />
-                <h3>우리 가족만의 취향, 우리 가족만의 시간</h3>
-                <p>
-                  질문으로 서로를 알아가고, 가족에게 맞는 활동을 발견해 약속과 기록으로
-                  이어갑니다.
-                </p>
+                <img className="service-feature__app-logo service-feature__app-logo--kiri" src="/images/kiri/kiri-logo.svg" alt="끼리 KIRI" width="276" height="100" />
+                <h3>우리 가족만의 취향,<br />우리 가족만의 시간</h3>
+                <p>질문으로 서로를 알아가고, 가족에게 맞는 활동을 발견해 약속과 기록으로 이어갑니다.</p>
                 <ServiceActions service="kiri" />
               </div>
+              <div className="halo-product-art">
+                <img src="/images/kiri/KakaoTalk_20261116_010517345.png" alt="끼리 로고와 가족 활동을 탐색하는 앱 화면" width="1620" height="2880" loading="lazy" />
+              </div>
             </article>
+            <article className="halo-product halo-legacy">
+              <div className="service-feature__copy">
+                <img className="service-feature__app-logo service-feature__app-logo--halo" src="/logotypo.svg" alt="HALO 앱" width="918" height="250" />
+                <h3>매일 한 장, 부모님과 이어가는 따뜻한 안녕</h3>
+                <p>사진과 질문으로 부모님의 삶을 알아가고, 매일의 대화를 가족 스토리북으로 기록합니다.</p>
+                <ServiceActions service="halo" />
+              </div>
+              <div className="halo-product-art halo-product-art--activity">
+                <img src="/images/company-activities/halo_activity2.jpg" alt="데모데이에서 HALO 서비스를 소개하는 팀" width="4032" height="3024" loading="lazy" />
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="business" className="halo-section halo-tinted">
+          <div className="editorial-container">
+            <p className="halo-eyebrow">What We Do</p><h2>가족의 일상을 잇는 세 가지 일</h2>
+            <div className="halo-business-grid">
+              {[
+                ["가족 관계", "사진과 질문을 매개로 가족이 서로를 알아가고 대화할 수 있는 서비스를 개발합니다."],
+                ["가족 경험", "가족이 함께 갈 곳을 찾고, 약속을 정해 그날의 경험을 기록하도록 돕습니다."],
+                ["가족 돌봄", "떨어져 지내는 가족도 서로의 안부와 일상에 관심을 이어갈 방법을 살펴봅니다."],
+              ].map(([title, description]) => <article key={title}><h3>{title}</h3><p>{description}</p></article>)}
             </div>
           </div>
         </section>
 
-        <section id="partnership" className="company-partnership editorial-section">
+        <section id="partners" className="halo-section">
           <div className="editorial-container">
-            <SectionLabel>제휴·협업</SectionLabel>
-            <div className="company-partnership__content">
-              <div>
-                <h2>
-                  가족에게 새로운 경험을
-                  <br />
-                  건넬 장소와 브랜드를 기다립니다.
-                </h2>
-              </div>
-              <div className="company-partnership__details">
-                <p>
-                  가족이 함께 방문하고 경험할 수 있는 장소·브랜드의 제휴, 서비스와 콘텐츠
-                  협업을 이야기하고 싶습니다.
-                </p>
-                <a
-                  className="editorial-button"
-                  href="mailto:halo.official.app@gmail.com?subject=%5BHALO%5D%20%EC%A0%9C%ED%9C%B4%C2%B7%ED%98%91%EC%97%85%20%EB%AC%B8%EC%9D%98"
-                >
-                  제휴·협업 문의
-                  <ArrowIcon />
-                </a>
-                <small>halo.official.app@gmail.com</small>
+            <h2>Our Partners</h2>
+            <p className="halo-lead">함께 새로운 가족 경험을 만들어가는 파트너</p>
+            <ul className="halo-partner-logos">
+              {partners.map((partner) => (
+                <li key={partner.slug}>
+                  <div className="halo-partner-logo">
+                    {partner.logo ? <img src={partner.logo} alt={partner.name} /> : partner.name}
+                  </div>
+                  <span className="halo-partner-state">{partnershipStatuses[partner.status]}</span>
+                  <Link className="halo-button halo-button--outline" to={`/partners/${partner.slug}`} aria-label={`${partner.name} 상세 보기`}>
+                    상세 보기
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <Journey />
+
+        <section id="partnership" className="company-partnership halo-section">
+          <div className="editorial-container">
+            <div className="halo-callout halo-split">
+              <div><p className="halo-eyebrow">Partnership</p><h2>가족에게 새로운 경험을<br />함께 건네요.</h2></div>
+              <div><p>가족이 함께 즐길 수 있는 프로그램과 공간, 상품, 기술을 제안해 주세요. 입점과 공동 기획에 관한 이야기를 기다립니다.</p>
+                <div className="halo-actions"><Link className="halo-button" to="/partnership">제휴·입점 문의 <ArrowIcon /></Link><a className="halo-text-link" href="mailto:halo.official.app@gmail.com?subject=%5BHALO%5D%20%EC%A0%9C%ED%9C%B4%C2%B7%EC%9E%85%EC%A0%90%20%EB%AC%B8%EC%9D%98">이메일 문의</a></div>
               </div>
             </div>
           </div>
         </section>
       </main>
-
       <EditorialFooter />
     </div>
   );

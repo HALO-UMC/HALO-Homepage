@@ -1,3 +1,7 @@
+// @ts-check
+
+import { partners } from "../data/companyData.js";
+
 const PRODUCTION_ORIGIN = "https://www.halo-official.co.kr";
 
 export const PAGE_METADATA = Object.freeze({
@@ -7,7 +11,7 @@ export const PAGE_METADATA = Object.freeze({
       "서로에게 건네는 안녕에서, 함께하는 하루까지. 가족의 이야기를 담는 HALO와 함께할 시간을 만드는 KIRI를 만듭니다.",
     socialDescription:
       "서로에게 건네는 안녕에서, 함께하는 하루까지. 가족의 이야기를 담고 함께할 시간을 만듭니다.",
-    themeColor: "#fafafa",
+    themeColor: "#ffffff",
     canonicalUrl: `${PRODUCTION_ORIGIN}/`,
     image: Object.freeze({
       url: `${PRODUCTION_ORIGIN}/OG-IMAGE.jpg`,
@@ -68,3 +72,35 @@ export const PAGE_METADATA = Object.freeze({
     }),
   }),
 });
+
+/**
+ * @param {string} path
+ * @param {string} title
+ * @param {string} description
+ * @param {{url: string, type: string, width: string, height: string, alt: string}} [image]
+ */
+function createCorporateMetadata(path, title, description, image = PAGE_METADATA.company.image) {
+  return {
+    ...PAGE_METADATA.company,
+    title,
+    description,
+    socialDescription: description,
+    canonicalUrl: `${PRODUCTION_ORIGIN}${path}`,
+    image,
+  };
+}
+
+export const corporateMetadata = Object.fromEntries([
+  ...partners.map((partner) => {
+    const path = `/partners/${partner.slug}`;
+    const image = {
+      url: `${PRODUCTION_ORIGIN}${partner.conceptImage.src}`,
+      type: "image/jpeg",
+      width: "1440",
+      height: "810",
+      alt: partner.conceptImage.alt,
+    };
+    return [path, createCorporateMetadata(path, `${partner.name} | HALO 파트너십`, partner.description, image)];
+  }),
+  ["/partnership", createCorporateMetadata("/partnership", "제휴·입점 문의 | HALO", "HALO에 가족 프로그램 입점과 공간·상품·기술 제휴를 제안해 주세요.")],
+]);

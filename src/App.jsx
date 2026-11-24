@@ -30,7 +30,7 @@ import {
 
 import WebEditorialRoutes from "./webeditorial/WebEditorialRoutes.jsx";
 import usePageMeta from "./webeditorial/usePageMeta.js";
-import { PAGE_METADATA } from "./webeditorial/pageMetadata.js";
+import { corporateMetadata, PAGE_METADATA } from "./webeditorial/pageMetadata.js";
 import AnalyticsRouteTracker from "./analytics/AnalyticsRouteTracker.jsx";
 import {
   ANALYTICS_EVENT_NAMES,
@@ -2924,6 +2924,7 @@ function AppRoutes() {
   if (
     location.pathname === "/" ||
     location.pathname === "/kiri" ||
+    Object.hasOwn(corporateMetadata, location.pathname.replace(/\/+$/, "")) ||
     location.pathname === "/invite" ||
     location.pathname.startsWith("/invite/") ||
     location.pathname === "/webeditorial" ||
