@@ -2,6 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/partnership-inquiry.js": {
+      "maxDuration": 15
+    }
+  },
   "headers": [
     {
       "source": "/.well-known/apple-app-site-association",
@@ -61,7 +66,7 @@
       "destination": "/invite"
     },
     {
-      "source": "/((?!api/|\\.well-known/|googleeeae8ed3060fa079\\.html).*)",
+      "source": "/((?!partners/(?:sheimspa|sig-corporation)$|partnership$|api/|\\.well-known/|googleeeae8ed3060fa079\\.html).*)",
       "destination": "/index"
     }
   ]

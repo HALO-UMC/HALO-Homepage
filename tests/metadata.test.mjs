@@ -226,3 +226,29 @@ test("Vercel serves clean route HTML before the SPA fallback", async () => {
   assert.equal(config.rewrites.at(-1)?.destination, "/index");
   assert.equal(config.redirects, undefined);
 });
+
+test("corporate subpages emit their own metadata and resolve outside the SPA fallback", async () => {
+  const config = JSON.parse(await readFile(new URL("../vercel.json", import.meta.url), "utf8"));
+  const fallback = new RegExp(`^${config.rewrites.at(-1).source}$`);
+  const pages = {
+    "/partners/sheimspa": "쉼스파 | HALO 파트너십",
+    "/partners/sig-corporation": "시그코퍼레이션 | HALO 파트너십",
+    "/partnership": "제휴·입점 문의 | HALO",
+  };
+  for (const [path, title] of Object.entries(pages)) {
+    const html = await readFile(new URL(`../dist${path}.html`, import.meta.url), "utf8");
+    assert.equal(html.match(/<title>([^<]+)<\/title>/)?.[1], title);
+    assert.equal(metaContent(html, "property", "og:title"), title);
+    assert.equal(elementWith(html, "link", "rel", "canonical").get("href"), `https://www.halo-official.co.kr${path}`);
+    if (path.startsWith("/partners/")) {
+      const image = new URL(metaContent(html, "property", "og:image"));
+      assert.match(image.pathname, new RegExp(`^/images${path}/.+\\.jpg$`));
+      assert.equal(metaContent(html, "name", "twitter:image"), image.href);
+      assert.equal(metaContent(html, "property", "og:image:width"), "1440");
+      assert.equal(metaContent(html, "property", "og:image:height"), "810");
+      await readFile(new URL(`../dist${image.pathname}`, import.meta.url));
+    }
+    assert.equal(fallback.test(path), false);
+  }
+  assert.equal(fallback.test("/demoday"), true);
+});

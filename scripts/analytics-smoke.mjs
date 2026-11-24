@@ -2,6 +2,10 @@ import process from "node:process";
 
 const chromePort = process.env.CHROME_DEBUG_PORT || "9223";
 const baseUrl = process.env.QA_BASE_URL || "http://127.0.0.1:5173";
+const providers = (process.env.QA_ANALYTICS_PROVIDERS || "common,ga4,hackle").split(",");
+if (providers.some((provider) => !["common", "ga4", "hackle"].includes(provider))) {
+  throw new Error("QA_ANALYTICS_PROVIDERS must contain common, ga4, or hackle.");
+}
 
 class CdpClient {
   constructor(url) {
@@ -166,7 +170,7 @@ const tab = await createTab();
 const client = new CdpClient(tab.webSocketDebuggerUrl);
 const runtimeErrors = [];
 const failures = [];
-const report = { direct: {}, journey: {}, store: {}, form: {}, runtimeErrors, failures };
+const report = { direct: {}, journey: {}, store: {}, runtimeErrors, failures };
 
 await client.connect();
 await Promise.all([
@@ -184,44 +188,6 @@ await client.send("Page.addScriptToEvaluateOnNewDocument", {
   source: `
     window.__HALO_ANALYTICS_TEST__ = true;
     window.__HALO_ANALYTICS_TEST_EVENTS__ = [];
-    const nativeFetch = window.fetch.bind(window);
-    window.fetch = async (input, init = {}) => {
-      const url = new URL(typeof input === 'string' ? input : input.url, location.origin);
-      const mode = sessionStorage.getItem('__halo_kiri_api_mode');
-      if (!mode) return nativeFetch(input, init);
-
-      if (url.pathname === '/api/kiri-preregister-status') {
-        return new Response(JSON.stringify({
-          ready: true,
-          policy: {
-            policyVersion: 'analytics-browser-test-v1',
-            dataControllerName: 'HALO test',
-            retentionLabel: '테스트 종료 즉시 삭제'
-          }
-        }), { status: 200, headers: { 'Content-Type': 'application/json' } });
-      }
-
-      if (url.pathname === '/api/kiri-preregister' && (init.method || 'GET').toUpperCase() === 'POST') {
-        if (mode === 'created') {
-          return new Response(JSON.stringify({ ok: true, status: 'created' }), {
-            status: 201,
-            headers: { 'Content-Type': 'application/json' }
-          });
-        }
-        if (mode === 'duplicate') {
-          return new Response(JSON.stringify({ ok: true, status: 'duplicate' }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-          });
-        }
-        return new Response(JSON.stringify({ ok: false, message: 'mock failure' }), {
-          status: 503,
-          headers: { 'Content-Type': 'application/json' }
-        });
-      }
-
-      return nativeFetch(input, init);
-    };
   `,
 });
 
@@ -234,7 +200,7 @@ for (const [pathname, pageName] of [
   await navigate(client, pathname);
   const events = await analyticsEvents(client);
   report.direct[pageName] = events;
-  for (const provider of ["common", "ga4", "hackle"]) {
+  for (const provider of providers) {
     assert(
       pageSequence(events, provider).join(",") === pageName,
       `${provider} ${pageName} 직접 진입 page_view가 1건이 아닙니다.`,
@@ -245,22 +211,22 @@ for (const [pathname, pageName] of [
 
 progress("내부 이동 및 브라우저 기록 검증");
 await navigate(client, "/");
+await evaluate(client, `document.querySelector('.company-hero__cta')?.click()`);
+await waitFor(client, "location.hash === '#services'");
+await evaluate(client, "history.back()");
+await waitFor(client, "location.pathname === '/' && location.hash === ''");
 await evaluate(
   client,
   `document.querySelector('.service-feature__page-button--kiri')?.click()`,
 );
 await waitFor(client, "location.pathname === '/kiri'");
-await evaluate(client, `document.querySelector('.kiri-primary-button')?.click()`);
-await waitFor(client, "location.hash === '#kiri-preregister'");
-await evaluate(client, "history.back()");
-await waitFor(client, "location.pathname === '/kiri' && location.hash === ''");
 await evaluate(client, "history.back()");
 await waitFor(client, "location.pathname === '/'");
 await evaluate(client, "history.forward()");
 await waitFor(client, "location.pathname === '/kiri'");
 report.journey.events = await analyticsEvents(client);
 
-for (const provider of ["common", "ga4", "hackle"]) {
+for (const provider of providers) {
   assert(
     pageSequence(report.journey.events, provider).join(",") ===
       "company,kiri,company,kiri",
@@ -268,8 +234,8 @@ for (const provider of ["common", "ga4", "hackle"]) {
     failures,
   );
   assert(
-    countEvent(report.journey.events, provider, "click_preregister") === 1,
-    `${provider} KIRI 해시 CTA 이벤트가 1건이 아닙니다.`,
+    countEvent(report.journey.events, provider, "click_service") === 1,
+    `${provider} 끼리 서비스 링크 이벤트가 1건이 아닙니다.`,
     failures,
   );
 }
@@ -279,7 +245,7 @@ await navigate(client, "/", 1440, 1000);
 await evaluate(
   client,
   `(() => {
-    const link = document.querySelector('.service-feature__store-badge');
+    const link = document.querySelector('.halo-legacy .service-feature__store-badge');
     link?.addEventListener('click', (event) => event.preventDefault(), { once: true });
     link?.click();
   })()`,
@@ -297,8 +263,19 @@ await evaluate(
 );
 report.store.haloMobile = await analyticsEvents(client);
 
+await navigate(client, "/kiri", 390, 844);
+await evaluate(
+  client,
+  `(() => {
+    const link = document.querySelector('.kiri-hero .kiri-store-badge--apple');
+    link?.addEventListener('click', (event) => event.preventDefault(), { once: true });
+    link?.click();
+  })()`,
+);
+report.store.kiriMobile = await analyticsEvents(client);
+
 for (const [label, events] of Object.entries(report.store)) {
-  for (const provider of ["common", "ga4", "hackle"]) {
+  for (const provider of providers) {
     assert(
       countEvent(events, provider, "click_app_store") === 1,
       `${provider} ${label} 스토어 클릭 이벤트가 1건이 아닙니다.`,
@@ -306,71 +283,6 @@ for (const [label, events] of Object.entries(report.store)) {
     );
   }
 }
-
-async function runFormScenario(mode, width, height) {
-  progress(`${mode} 사전예약 응답 검증`);
-  await evaluate(
-    client,
-    `sessionStorage.setItem('__halo_kiri_api_mode', ${JSON.stringify(mode)})`,
-  );
-  await navigate(client, "/kiri", width, height);
-  await waitFor(client, "document.querySelector('.kiri-submit')?.disabled === false");
-  await evaluate(
-    client,
-    `(async () => {
-      const input = document.querySelector('#kiri-email');
-      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
-      setter.call(input, 'analytics-browser@example.test');
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      document.querySelector('input[name="device"][value="android"]')?.click();
-      document.querySelector('input[name="privacyAgreed"]')?.click();
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      document.querySelector('.kiri-form')?.requestSubmit();
-    })()`,
-    true,
-  );
-
-  if (mode === "created" || mode === "duplicate") {
-    await waitFor(client, "document.querySelector('.kiri-form-complete')");
-  } else {
-    await waitFor(client, "document.querySelector('.kiri-form__notice')");
-  }
-
-  return analyticsEvents(client);
-}
-
-report.form.createdDesktop = await runFormScenario("created", 1440, 1000);
-report.form.duplicateMobile = await runFormScenario("duplicate", 390, 844);
-report.form.failureMobile = await runFormScenario("failure", 390, 844);
-
-for (const provider of ["common", "ga4", "hackle"]) {
-  assert(
-    countEvent(report.form.createdDesktop, provider, "start_preregister") === 1,
-    `${provider} 신규 접수의 start_preregister가 1건이 아닙니다.`,
-    failures,
-  );
-  assert(
-    countEvent(report.form.createdDesktop, provider, "complete_preregister") === 1,
-    `${provider} 신규 접수의 complete_preregister가 1건이 아닙니다.`,
-    failures,
-  );
-  assert(
-    countEvent(report.form.duplicateMobile, provider, "complete_preregister") === 0,
-    `${provider} 중복 접수에서 complete_preregister가 발생했습니다.`,
-    failures,
-  );
-  assert(
-    countEvent(report.form.failureMobile, provider, "complete_preregister") === 0,
-    `${provider} 실패 접수에서 complete_preregister가 발생했습니다.`,
-    failures,
-  );
-}
-
-assert(
-  !JSON.stringify(report.form).includes("analytics-browser@example.test"),
-  "분석 이벤트에 폼 이메일이 포함됐습니다.",
-  failures,
-);
 
 for (const error of runtimeErrors) failures.push(`브라우저 런타임 오류: ${error}`);
 

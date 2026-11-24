@@ -34,10 +34,8 @@ export function CompanyWordmark({ light = false }) {
     <Link
       to="/"
       className={`company-wordmark${light ? " company-wordmark--light" : ""}`}
-      aria-label="HALO 회사 홈페이지"
     >
-      <span>HALO</span>
-      <small>COMPANY</small>
+      <span>HALO</span>{" "}<small>COMPANY</small>
     </Link>
   );
 }

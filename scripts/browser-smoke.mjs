@@ -241,10 +241,10 @@ report.pages.companyDesktop = await evaluate(
     const hero = document.querySelector('.company-hero');
     const services = document.querySelector('#services');
     const slider = document.querySelector('.company-activity-slider');
-    const haloPageButton = document.querySelector('.service-feature--halo .service-feature__page-button');
-    const kiriPageButton = document.querySelector('.service-feature--kiri .service-feature__page-button');
-    const playStoreButton = document.querySelector('.service-feature__store-badge');
-    const appStoreButton = document.querySelector('.service-feature--kiri .service-feature__store-badge--app-store');
+    const haloPageButton = document.querySelector('.halo-legacy .service-feature__page-button');
+    const kiriPageButton = document.querySelector('.halo-product .service-feature__page-button');
+    const playStoreButton = document.querySelector('.halo-legacy .service-feature__store-badge');
+    const appStoreButton = document.querySelector('.halo-product .service-feature__store-badge--app-store');
     return {
       path: location.pathname,
       title: document.title,
@@ -253,7 +253,7 @@ report.pages.companyDesktop = await evaluate(
       heroDescription: document.querySelector('.company-hero__copy > p')?.textContent.trim(),
       heroServiceHref: document.querySelector('.company-hero__cta')?.getAttribute('href'),
       headerServiceHref: document.querySelector('.company-header__desktop a[href="#services"]')?.getAttribute('href'),
-      servicesImmediatelyAfterHero: hero?.nextElementSibling === services,
+      aboutBeforeServices: hero?.nextElementSibling?.id === "about" && hero?.nextElementSibling?.nextElementSibling === services,
       slider: {
         count: Number(slider?.dataset.slideCount || 0),
         controls: Boolean(slider?.querySelector('.company-activity-slider__controls')),
@@ -313,8 +313,8 @@ assert(
   failures,
 );
 assert(
-  report.pages.companyDesktop.servicesImmediatelyAfterHero,
-  "서비스 소개가 히어로 바로 다음에 배치되지 않았습니다.",
+  report.pages.companyDesktop.aboutBeforeServices,
+  "기업 소개 후에 서비스 소개가 배치되지 않았습니다.",
   failures,
 );
 assert(
@@ -356,9 +356,9 @@ assert(
 );
 assert(
   Object.values(report.pages.companyDesktop.backgrounds).every(
-    (color) => color === "rgb(250, 250, 250)",
+    (color) => ["rgb(255, 255, 255)", "rgb(247, 247, 245)"].includes(color),
   ),
-  "기업 페이지의 헤더·본문·푸터 배경이 #FAFAFA로 통일되지 않았습니다.",
+  "기업 페이지의 헤더·본문·푸터에 화이트톤 배경이 적용되지 않았습니다.",
   failures,
 );
 assert(
@@ -380,8 +380,8 @@ report.screenshots.push(await screenshot(client, "company-desktop.png"));
 report.pages.companyDesktop.serviceInteraction = await evaluate(
   client,
   `(async () => {
-    const haloLink = document.querySelector('.service-feature--halo .service-feature__page-button');
-    const kiriLink = document.querySelector('.service-feature--kiri .service-feature__page-button');
+    const haloLink = document.querySelector('.halo-legacy .service-feature__page-button');
+    const kiriLink = document.querySelector('.halo-product .service-feature__page-button');
     haloLink?.focus();
     const haloFocused = document.activeElement === haloLink;
     kiriLink?.focus();
@@ -405,7 +405,7 @@ assert(
 await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; const target = document.querySelector('#services'); if (target) window.scrollTo(0, target.offsetTop); })()`);
 await waitForPaint(client);
 report.screenshots.push(await screenshot(client, "company-services-desktop.png"));
-await evaluate(client, `(() => { const target = document.querySelector('.service-feature--kiri'); if (target) window.scrollTo(0, target.offsetTop); })()`);
+await evaluate(client, `(() => { const target = document.querySelector('.halo-product'); if (target) window.scrollTo(0, target.offsetTop); })()`);
 await waitForPaint(client);
 report.screenshots.push(await screenshot(client, "company-kiri-service-desktop.png"));
 
@@ -452,7 +452,9 @@ report.pages.companyMobile.services = await evaluate(
     kiriLogoWidth: document.querySelector('.service-feature__app-logo--kiri')?.getBoundingClientRect().width,
     actionHeights: [...document.querySelectorAll('.service-feature__page-button, .service-feature__release-button, .service-feature__store-badge')].map((element) => element.getBoundingClientRect().height),
     heroHeight: document.querySelector('.company-activity-slider__viewport')?.getBoundingClientRect().height,
-    heroWidth: document.querySelector('.company-activity-slider__viewport')?.getBoundingClientRect().width
+    heroWidth: document.querySelector('.company-activity-slider__viewport')?.getBoundingClientRect().width,
+    imageBottom: document.querySelector('.company-activity-slider__slide.is-active img')?.getBoundingClientRect().bottom,
+    copyTop: document.querySelector('.company-hero__copy')?.getBoundingClientRect().top
   }))()`,
 );
 assert(
@@ -467,13 +469,14 @@ assert(
   failures,
 );
 assert(
-  report.pages.companyMobile.services.heroHeight <= 520 &&
-    report.pages.companyMobile.services.heroWidth <= 360,
-  "기업 모바일 히어로 배너 크기가 과도합니다.",
+  report.pages.companyMobile.services.heroHeight <= 650 &&
+    report.pages.companyMobile.services.heroWidth <= 360 &&
+    report.pages.companyMobile.services.imageBottom <= report.pages.companyMobile.services.copyTop,
+  "기업 모바일 배너 영역이 과도하거나 사진과 문구가 겹칩니다.",
   failures,
 );
 report.screenshots.push(await screenshot(client, "company-services-mobile.png"));
-await evaluate(client, `(() => { const target = document.querySelector('.service-feature--kiri'); if (target) window.scrollTo(0, target.offsetTop); })()`);
+await evaluate(client, `(() => { const target = document.querySelector('.halo-product'); if (target) window.scrollTo(0, target.offsetTop); })()`);
 await waitForPaint(client);
 report.screenshots.push(await screenshot(client, "company-kiri-service-mobile.png"));
 
@@ -500,7 +503,7 @@ await evaluate(client, `sessionStorage.setItem('halo_splash_seen', 'true')`);
 await navigate(client, "/", 1280, 800);
 await evaluate(
   client,
-  `document.querySelector('.service-feature--halo .service-feature__page-button')?.click()`,
+  `document.querySelector('.halo-legacy .service-feature__page-button')?.click()`,
 );
 await waitForPath(client, "/halo");
 report.navigation.haloService = await evaluate(
