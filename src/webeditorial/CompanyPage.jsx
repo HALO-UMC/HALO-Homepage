@@ -331,9 +331,9 @@ function CompanyActivitySlider({ slides, label = "HALO 팀 활동 사진" }) {
 
         <div className="company-activity-slider__shade" aria-hidden="true" />
         <div className="company-hero__copy">
-          <h1 id="company-hero-title">작은 안녕으로, 가족의 내일을 잇습니다.</h1>
+          <h1 id="company-hero-title">함께하는 시간을 만듭니다.</h1>
           <p>
-            HALO는 서로에게 건네는 인사와 평안한 일상을 뜻하는 ‘안녕’에서 시작합니다.
+            디지털 서비스와 오프라인 경험을 통해 가족이 함께하는 시간을 만드는 기업입니다.
           </p>
           <a className="company-hero__cta" href="#services">
             서비스 만나보기
@@ -526,10 +526,10 @@ export default function CompanyPage() {
         <section id="about" className="halo-section halo-tinted">
           <div className="editorial-container halo-split">
             <div>
-              <p className="halo-eyebrow">About HALO</p>
-              <h2>가족이 서로에게<br />더 자주 안녕을 건네도록.</h2>
+              <p className="halo-eyebrow">More time together.</p>
+              <h2>가족이 서로를 더 잘 알아가고<br />함께하는 시간을 만들도록.</h2>
             </div>
-            <p className="halo-lead">가까운 사이일수록 안부를 미루거나 함께할 시간을 놓치곤 합니다. HALO는 대화의 계기를 만들고, 가족이 함께 나갈 곳과 할 일을 발견하도록 돕고, 그날의 기억을 다시 꺼내 볼 수 있는 서비스를 만듭니다.</p>
+            <p className="halo-lead">HALO는 가족이 서로를 더 잘 알아가고 함께하는 시간을 만들어갈 수 있도록 돕습니다. 실제 사람들의 이야기를 듣고, 그 경험을 바탕으로 디지털 서비스와 오프라인 프로그램을 기획하고 개발합니다.</p>
           </div>
         </section>
 
@@ -540,8 +540,8 @@ export default function CompanyPage() {
             <article className="halo-product">
               <div className="service-feature__copy">
                 <img className="service-feature__app-logo service-feature__app-logo--kiri" src="/images/kiri/kiri-logo.svg" alt="끼리 KIRI" width="276" height="100" />
-                <h3>우리 가족만의 취향,<br />우리 가족만의 시간</h3>
-                <p>질문으로 서로를 알아가고, 가족에게 맞는 활동을 발견해 약속과 기록으로 이어갑니다.</p>
+                <h3>가족끼리, 취향부터 활동까지.</h3>
+                <p>가족 구성원의 취향을 알아가고, 맞춤 활동과 장소 추천부터 가족 일정, 사진과 리뷰 기록까지 연결합니다.</p>
                 <ServiceActions service="kiri" />
               </div>
               <div className="halo-product-art">
@@ -551,8 +551,8 @@ export default function CompanyPage() {
             <article className="halo-product halo-legacy">
               <div className="service-feature__copy">
                 <img className="service-feature__app-logo service-feature__app-logo--halo" src="/logotypo.svg" alt="HALO 앱" width="918" height="250" />
-                <h3>매일 한 장, 부모님과 이어가는 따뜻한 안녕</h3>
-                <p>사진과 질문으로 부모님의 삶을 알아가고, 매일의 대화를 가족 스토리북으로 기록합니다.</p>
+                <h3>부모님과의 이야기를, 하루 한 장씩.</h3>
+                <p>10개의 스토리북 테마로 평소 나누지 못한 이야기를 시작하고, 가족과 함께한 활동과 사진, 대화를 기록합니다.</p>
                 <ServiceActions service="halo" />
               </div>
               <div className="halo-product-art halo-product-art--activity">
@@ -567,9 +567,9 @@ export default function CompanyPage() {
             <p className="halo-eyebrow">What We Do</p><h2>가족의 일상을 잇는 세 가지 일</h2>
             <div className="halo-business-grid">
               {[
-                ["가족 관계", "사진과 질문을 매개로 가족이 서로를 알아가고 대화할 수 있는 서비스를 개발합니다."],
-                ["가족 경험", "가족이 함께 갈 곳을 찾고, 약속을 정해 그날의 경험을 기록하도록 돕습니다."],
-                ["가족 돌봄", "떨어져 지내는 가족도 서로의 안부와 일상에 관심을 이어갈 방법을 살펴봅니다."],
+                ["디지털 서비스", "가족의 취향을 발견하고 함께할 활동을 찾으며 경험을 기록하는 서비스를 개발하고 운영합니다."],
+                ["가족 프로그램", "가족이 함께 참여하는 체험과 소통 프로그램을 기획합니다. HALO만의 프로그램 운영을 준비하고 있습니다."],
+                ["기업·기관 협력", "기업·기관과의 협력을 모색해 가족에게 필요한 활동과 상품·서비스를 연결하고, 지역사회 연계 프로그램을 준비합니다."],
               ].map(([title, description]) => <article key={title}><h3>{title}</h3><p>{description}</p></article>)}
             </div>
           </div>
@@ -578,7 +578,7 @@ export default function CompanyPage() {
         <section id="partners" className="halo-section">
           <div className="editorial-container">
             <h2>Our Partners</h2>
-            <p className="halo-lead">함께 새로운 가족 경험을 만들어가는 파트너</p>
+            <p className="halo-lead">가족에게 더 다양한 경험을 제공하기 위해 여러 기업 및 기관과의 협력을 만들어가고 있습니다.</p>
             <ul className="halo-partner-logos">
               {partners.map((partner) => (
                 <li key={partner.slug}>
@@ -600,8 +600,8 @@ export default function CompanyPage() {
         <section id="partnership" className="company-partnership halo-section">
           <div className="editorial-container">
             <div className="halo-callout halo-split">
-              <div><p className="halo-eyebrow">Partnership</p><h2>가족에게 새로운 경험을<br />함께 건네요.</h2></div>
-              <div><p>가족이 함께 즐길 수 있는 프로그램과 공간, 상품, 기술을 제안해 주세요. 입점과 공동 기획에 관한 이야기를 기다립니다.</p>
+              <div><p className="halo-eyebrow">Partnership</p><h2>가족을 위한 경험을<br />함께할 파트너를 기다립니다.</h2></div>
+              <div><p>가족 체험과 문화·여가 프로그램, 가족 관련 상품·서비스, 지역 연계와 케어, 공동 마케팅까지 함께할 제안을 기다립니다.</p>
                 <div className="halo-actions"><Link className="halo-button" to="/partnership">제휴·입점 문의 <ArrowIcon /></Link><a className="halo-text-link" href="mailto:halo.official.app@gmail.com?subject=%5BHALO%5D%20%EC%A0%9C%ED%9C%B4%C2%B7%EC%9E%85%EC%A0%90%20%EB%AC%B8%EC%9D%98">이메일 문의</a></div>
               </div>
             </div>

@@ -9,11 +9,12 @@ const pages = [
   {
     route: "/",
     fileName: "index.html",
-    title: "HALO, 가족의 일상을 잇다",
+    title: "HALO | 함께하는 시간을 만듭니다.",
+    socialTitle: "HALO — More time together.",
     description:
-      "서로에게 건네는 안녕에서, 함께하는 하루까지. 가족의 이야기를 담는 HALO와 함께할 시간을 만드는 KIRI를 만듭니다.",
+      "HALO는 디지털 서비스와 오프라인 경험을 통해 가족이 함께하는 시간을 만드는 기업입니다. 가족 활동 플랫폼 끼리(KIRI)를 개발하고 운영합니다.",
     socialDescription:
-      "서로에게 건네는 안녕에서, 함께하는 하루까지. 가족의 이야기를 담고 함께할 시간을 만듭니다.",
+      "HALO는 디지털 서비스와 오프라인 경험을 통해 가족이 함께하는 시간을 만드는 기업입니다. 가족 활동 플랫폼 끼리(KIRI)를 개발하고 운영합니다.",
     canonicalUrl: "https://www.halo-official.co.kr/",
     imageUrl: "https://www.halo-official.co.kr/OG-IMAGE.jpg",
     imageType: "image/jpeg",
@@ -153,7 +154,7 @@ test("production HTML entry points contain route-specific metadata", async (t) =
         page.canonicalUrl,
       );
       assert.equal(metaContent(html, "property", "og:url"), page.canonicalUrl);
-      assert.equal(metaContent(html, "property", "og:title"), page.title);
+      assert.equal(metaContent(html, "property", "og:title"), page.socialTitle ?? page.title);
       assert.equal(
         metaContent(html, "property", "og:description"),
         page.socialDescription,
