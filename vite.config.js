@@ -28,7 +28,7 @@ function corporateHtml() {
             description: metadata.description,
             "og:description": metadata.socialDescription,
             "twitter:description": metadata.socialDescription,
-            "og:title": metadata.title,
+            "og:title": metadata.socialTitle ?? metadata.title,
             "twitter:title": metadata.title,
             "og:url": metadata.canonicalUrl,
             "og:image": metadata.image.url,

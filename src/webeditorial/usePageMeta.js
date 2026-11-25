@@ -11,7 +11,7 @@ const metadataAttributes = (metadata) => [
     : []),
   ['link[rel="canonical"]', "href", metadata.canonicalUrl],
   ['meta[property="og:url"]', "content", metadata.canonicalUrl],
-  ['meta[property="og:title"]', "content", metadata.title],
+  ['meta[property="og:title"]', "content", metadata.socialTitle ?? metadata.title],
   [
     'meta[property="og:description"]',
     "content",

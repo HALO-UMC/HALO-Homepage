@@ -251,6 +251,10 @@ report.pages.companyDesktop = await evaluate(
       hero: Boolean(document.querySelector('#company-hero-title')),
       heroHeading: document.querySelector('#company-hero-title')?.textContent.trim(),
       heroDescription: document.querySelector('.company-hero__copy > p')?.textContent.trim(),
+      companyIntroduction: document.querySelector('#about .halo-lead')?.textContent.trim(),
+      kiriIntroduction: document.querySelector('.halo-product .service-feature__copy > p')?.textContent.trim(),
+      haloIntroduction: document.querySelector('.halo-legacy .service-feature__copy > p')?.textContent.trim(),
+      timeline: [...document.querySelectorAll('.halo-timeline > li')].map((item) => item.textContent.trim()),
       heroServiceHref: document.querySelector('.company-hero__cta')?.getAttribute('href'),
       headerServiceHref: document.querySelector('.company-header__desktop a[href="#services"]')?.getAttribute('href'),
       aboutBeforeServices: hero?.nextElementSibling?.id === "about" && hero?.nextElementSibling?.nextElementSibling === services,
@@ -296,20 +300,37 @@ report.pages.companyDesktop = await evaluate(
 );
 assert(report.pages.companyDesktop.path === "/", "기본 경로에 기업 페이지가 표시되지 않습니다.", failures);
 assert(
-  report.pages.companyDesktop.title === "HALO, 가족의 일상을 잇다",
+  report.pages.companyDesktop.title === "HALO | 함께하는 시간을 만듭니다.",
   "회사 페이지 브라우저 제목이 올바르지 않습니다.",
   failures,
 );
 assert(report.pages.companyDesktop.hero, "기업 첫 화면이 표시되지 않습니다.", failures);
 assert(
-  report.pages.companyDesktop.heroHeading === "작은 안녕으로, 가족의 내일을 잇습니다.",
+  report.pages.companyDesktop.heroHeading === "함께하는 시간을 만듭니다.",
   "기업 히어로 핵심 문구가 요청한 내용과 다릅니다.",
   failures,
 );
 assert(
   report.pages.companyDesktop.heroDescription ===
-    "HALO는 서로에게 건네는 인사와 평안한 일상을 뜻하는 ‘안녕’에서 시작합니다.",
+    "디지털 서비스와 오프라인 경험을 통해 가족이 함께하는 시간을 만드는 기업입니다.",
   "기업 히어로 보조 문구가 요청한 내용과 다릅니다.",
+  failures,
+);
+assert(
+  report.pages.companyDesktop.companyIntroduction.includes("실제 사람들의 이야기를 듣고") &&
+    report.pages.companyDesktop.companyIntroduction.includes("오프라인 프로그램") &&
+    report.pages.companyDesktop.kiriIntroduction.includes("사진과 리뷰") &&
+    report.pages.companyDesktop.haloIntroduction.includes("10개의 스토리북 테마"),
+  "회사 소개 또는 서비스 핵심 정보가 페이지에 표시되지 않습니다.",
+  failures,
+);
+assert(
+  report.pages.companyDesktop.timeline.length >= 8 &&
+    report.pages.companyDesktop.timeline.some((item) => item.includes("부산 UMC 10기 데모데이")) &&
+    report.pages.companyDesktop.timeline.some((item) => item.includes("모두의 창업 2차 1라운드 진출")) &&
+    report.pages.companyDesktop.timeline.some((item) => item.includes("끼리(KIRI) iOS 정식 출시")) &&
+    report.pages.companyDesktop.timeline.every((item) => !item.includes("Android 출시")),
+  "연혁이 확인된 사업·출시 이력을 반영하지 않습니다.",
   failures,
 );
 assert(
@@ -377,6 +398,15 @@ assert(
   failures,
 );
 report.screenshots.push(await screenshot(client, "company-desktop.png"));
+await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; document.querySelector('#journey')?.scrollIntoView({ block: 'start' }); })()`);
+await waitForImages(client);
+await evaluate(client, `new Promise((resolve) => setTimeout(resolve, 500))`, true);
+report.screenshots.push(await screenshot(client, "company-journey-desktop.png"));
+await evaluate(client, `document.querySelector('#partnership')?.scrollIntoView({ block: 'start' })`);
+await waitForImages(client);
+report.screenshots.push(await screenshot(client, "company-partnership-desktop.png"));
+await evaluate(client, `window.scrollTo(0, 0)`);
+await waitForPaint(client);
 report.pages.companyDesktop.serviceInteraction = await evaluate(
   client,
   `(async () => {
@@ -506,13 +536,14 @@ await evaluate(
   `document.querySelector('.halo-legacy .service-feature__page-button')?.click()`,
 );
 await waitForPath(client, "/halo");
+await waitForPaint(client);
 report.navigation.haloService = await evaluate(
   client,
   `({ path: location.pathname, title: document.title })`,
 );
 assert(
   report.navigation.haloService.path === "/halo" &&
-    report.navigation.haloService.title === "HALO, 가족의 일상을 잇다",
+  report.navigation.haloService.title === "HALO, 가족의 일상을 잇다",
   "회사 페이지에서 HALO로 이동할 때 브라우저 제목이 갱신되지 않습니다.",
   failures,
 );
