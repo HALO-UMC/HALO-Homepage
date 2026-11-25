@@ -255,6 +255,14 @@ report.pages.companyDesktop = await evaluate(
       kiriIntroduction: document.querySelector('.halo-product .service-feature__copy > p')?.textContent.trim(),
       haloIntroduction: document.querySelector('.halo-legacy .service-feature__copy > p')?.textContent.trim(),
       timeline: [...document.querySelectorAll('.halo-timeline > li')].map((item) => item.textContent.trim()),
+      currentMilestone: (() => {
+        const item = document.querySelector('.halo-timeline > li.is-current');
+        return item ? {
+          text: item.textContent.trim(),
+          background: getComputedStyle(item).backgroundColor,
+          border: getComputedStyle(item).borderLeftColor,
+        } : null;
+      })(),
       heroServiceHref: document.querySelector('.company-hero__cta')?.getAttribute('href'),
       headerServiceHref: document.querySelector('.company-header__desktop a[href="#services"]')?.getAttribute('href'),
       aboutBeforeServices: hero?.nextElementSibling?.id === "about" && hero?.nextElementSibling?.nextElementSibling === services,
@@ -325,11 +333,14 @@ assert(
   failures,
 );
 assert(
-  report.pages.companyDesktop.timeline.length >= 8 &&
-    report.pages.companyDesktop.timeline.some((item) => item.includes("부산 UMC 10기 데모데이")) &&
-    report.pages.companyDesktop.timeline.some((item) => item.includes("모두의 창업 2차 1라운드 진출")) &&
-    report.pages.companyDesktop.timeline.some((item) => item.includes("끼리(KIRI) iOS 정식 출시")) &&
-    report.pages.companyDesktop.timeline.every((item) => !item.includes("Android 출시")),
+  report.pages.companyDesktop.timeline.length === 6 &&
+    report.pages.companyDesktop.timeline.some((item) => item.includes("부산 UMC 데모데이 5위")) &&
+    report.pages.companyDesktop.timeline.some((item) => item.includes("모두의 창업 진출")) &&
+    report.pages.companyDesktop.timeline.some((item) => item.includes("끼리(KIRI) iOS 출시")) &&
+    report.pages.companyDesktop.timeline.every((item) => !item.includes("Android 출시")) &&
+    report.pages.companyDesktop.currentMilestone?.text.includes("현재") &&
+    report.pages.companyDesktop.currentMilestone.background === "rgb(240, 249, 231)" &&
+    report.pages.companyDesktop.currentMilestone.border === "rgb(155, 234, 81)",
   "연혁이 확인된 사업·출시 이력을 반영하지 않습니다.",
   failures,
 );
@@ -442,6 +453,12 @@ report.screenshots.push(await screenshot(client, "company-kiri-service-desktop.p
 await navigate(client, "/", 390, 844);
 await waitForImages(client);
 report.screenshots.push(await screenshot(client, "company-mobile.png"));
+await evaluate(client, `(() => { document.documentElement.style.scrollBehavior = 'auto'; document.querySelector('#journey')?.scrollIntoView({ block: 'start' }); })()`);
+await waitForImages(client);
+await evaluate(client, `new Promise((resolve) => setTimeout(resolve, 500))`, true);
+report.screenshots.push(await screenshot(client, "company-journey-mobile.png"));
+await evaluate(client, `window.scrollTo(0, 0)`);
+await waitForPaint(client);
 await evaluate(client, `document.querySelector('.company-header__menu-button')?.click()`);
 await waitForPaint(client);
 report.pages.companyMobile = await evaluate(
@@ -449,6 +466,10 @@ report.pages.companyMobile = await evaluate(
   `({
     scrollWidth: document.documentElement.scrollWidth,
     innerWidth,
+    currentTimelineBounds: (() => {
+      const rect = document.querySelector('.halo-timeline > li.is-current')?.getBoundingClientRect();
+      return rect ? { left: rect.left, right: rect.right } : null;
+    })(),
     expanded: document.querySelector('.company-header__menu-button')?.getAttribute('aria-expanded'),
     menuOpen: document.querySelector('.company-mobile-menu')?.classList.contains('is-open'),
     htmlLocked: document.documentElement.classList.contains('editorial-menu-open'),
@@ -456,6 +477,12 @@ report.pages.companyMobile = await evaluate(
   })`,
 );
 assert(report.pages.companyMobile.scrollWidth <= 390, "기업 모바일 화면에 가로 넘침이 있습니다.", failures);
+assert(
+  report.pages.companyMobile.currentTimelineBounds?.left >= 0 &&
+    report.pages.companyMobile.currentTimelineBounds?.right <= 390,
+  "현재 연혁 항목이 모바일 화면을 벗어납니다.",
+  failures,
+);
 assert(report.pages.companyMobile.expanded === "true", "기업 모바일 메뉴가 열리지 않습니다.", failures);
 assert(report.pages.companyMobile.htmlLocked, "모바일 메뉴에서 배경 스크롤이 잠기지 않습니다.", failures);
 assert(

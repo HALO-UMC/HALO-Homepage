@@ -166,11 +166,15 @@
 .halo-partner-state { color: var(--muted); font-size: 13px; }
 
 .halo-timeline { margin: 0; padding: 0; list-style: none; }
-.halo-timeline li { position: relative; padding: 0 0 38px 25px; border-left: 1px solid #cbceca; }
+.halo-timeline li { position: relative; padding: 0 0 24px 25px; border-left: 1px solid #cbceca; }
 .halo-timeline li:last-child { padding-bottom: 0; }
 .halo-timeline li::before { content: ""; position: absolute; top: 5px; left: -6px; width: 11px; height: 11px; border: 2px solid #626a64; border-radius: 50%; background: #626a64; }
 .halo-timeline h3, .halo-timeline p { margin: 7px 0 0; }
 .halo-timeline time { font-weight: 750; color: var(--blue); }
+.halo-timeline li.is-current { margin-left: -12px; padding: 14px 18px 18px 37px; border-left: 2px solid #9bea51; border-radius: 0 14px 14px 0; background: #f0f9e7; }
+.halo-timeline li.is-current::before { left: 5px; border-color: #9bea51; background: #9bea51; }
+.halo-timeline li.is-current time { color: #4b811e; }
+.halo-timeline li.is-current h3 { color: #2d491a; }
 
 .halo-corporate .company-partnership { background: var(--paper); padding-top: 0; }
 .halo-callout { align-items: center; border-radius: 22px; padding: clamp(24px, 5vw, 68px); background: var(--paper-deep); border: 1px solid var(--line); }

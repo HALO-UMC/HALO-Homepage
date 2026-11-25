@@ -496,8 +496,8 @@ function Journey() {
         <div><p className="halo-eyebrow">Our Journey</p><h2>HALO가 걸어온 길</h2></div>
         <ol className="halo-timeline" ref={timeline}>
           {milestones.map((milestone) => (
-            <li key={milestone.title}>
-              <time dateTime={milestone.month}>{milestone.month.replace("-", ".")}</time>
+            <li key={milestone.title} className={milestone.current ? "is-current" : undefined}>
+              <time dateTime={milestone.month}>{milestone.displayDate ?? milestone.month.replace("-", ".")}</time>
               <h3>{milestone.title}</h3>
               <p>{milestone.description}</p>
               {milestone.href && <a className="halo-text-link" href={milestone.href}>{milestone.linkLabel} <ArrowIcon /></a>}
