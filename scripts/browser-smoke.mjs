@@ -261,6 +261,9 @@ report.pages.companyDesktop = await evaluate(
           text: item.textContent.trim(),
           background: getComputedStyle(item).backgroundColor,
           border: getComputedStyle(item).borderLeftColor,
+          lineAxis: item.getBoundingClientRect().left + parseFloat(getComputedStyle(item).borderLeftWidth) / 2,
+          nextLineAxis: item.nextElementSibling.getBoundingClientRect().left + parseFloat(getComputedStyle(item.nextElementSibling).borderLeftWidth) / 2,
+          markerLeft: getComputedStyle(item, '::before').left,
         } : null;
       })(),
       heroServiceHref: document.querySelector('.company-hero__cta')?.getAttribute('href'),
@@ -340,7 +343,9 @@ assert(
     report.pages.companyDesktop.timeline.every((item) => !item.includes("Android 출시")) &&
     report.pages.companyDesktop.currentMilestone?.text.includes("현재") &&
     report.pages.companyDesktop.currentMilestone.background === "rgb(240, 249, 231)" &&
-    report.pages.companyDesktop.currentMilestone.border === "rgb(155, 234, 81)",
+    report.pages.companyDesktop.currentMilestone.border === "rgb(155, 234, 81)" &&
+    Math.abs(report.pages.companyDesktop.currentMilestone.lineAxis - report.pages.companyDesktop.currentMilestone.nextLineAxis) < 0.1 &&
+    report.pages.companyDesktop.currentMilestone.markerLeft === "-6px",
   "연혁이 확인된 사업·출시 이력을 반영하지 않습니다.",
   failures,
 );
