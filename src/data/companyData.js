@@ -44,25 +44,22 @@ export const partners = [
 export const milestones = [
   {
     month: "2026-11",
-    title: "끼리(KIRI) iOS 정식 출시",
-    description: "가족 취향 발견부터 활동 추천, 일정 관리와 경험 기록을 연결하는 서비스를 출시하고 개선을 이어가고 있습니다.",
+    displayDate: "현재",
+    current: true,
+    title: "가족 프로그램 및 기업·기관 협력 준비",
+    description: "HALO 자체 가족 프로그램 운영과 지역사회 연계 사업을 준비하며, 가족에게 필요한 활동과 서비스를 살펴보고 있습니다.",
+  },
+  {
+    month: "2026-11",
+    title: "끼리(KIRI) iOS 출시 및 사업화 추진",
+    description: "iOS 정식 출시 후 서비스를 개선하고 있습니다. 모두의 창업 멘토링과 기업 네트워킹으로 사업 방향을 구체화했으며, 인터뷰 영상 2편은 누적 약 3,000회 조회됐습니다.",
     href: "/kiri",
     linkLabel: "끼리 서비스 보기",
   },
   {
-    month: "2026-11",
-    title: "모두의 창업 참여 및 창업 멘토링",
-    description: "창업 멘토링과 기업 관계자 교류로 고객 검증과 사업 방향을 구체화했습니다. 고객 인터뷰 영상 2편은 누적 약 3,000회 조회됐으며 SNS 운영도 확대했습니다.",
-  },
-  {
     month: "2026-10",
-    title: "가족 활동 플랫폼 끼리 개발 및 고객 인터뷰",
-    description: "잠재 고객을 만나 가족의 취향과 활동, 소통에 관한 요구를 듣고 서비스 방향과 사업 가설을 구체화했습니다.",
-  },
-  {
-    month: "2026-10",
-    title: "모두의 창업 2차 1라운드 진출",
-    description: "모두의 창업 2차 모집에서 1라운드에 진출했습니다.",
+    title: "끼리 개발·고객 인터뷰 및 모두의 창업 진출",
+    description: "잠재 고객 인터뷰로 가족의 취향과 활동 요구를 살피고, 모두의 창업 2차 1라운드에 진출했습니다.",
   },
   {
     month: "2026-09",
@@ -71,24 +68,15 @@ export const milestones = [
   },
   {
     month: "2026-08",
-    title: "개인사업자 등록 및 HALO Google Play 출시",
-    description: "HALO 앱을 Google Play에 정식 출시하고 자체적으로 서비스 운영과 개선을 시작했습니다.",
+    title: "HALO 출시 및 부산 UMC 데모데이 5위",
+    description: "개인사업자 등록 후 HALO를 Google Play에 출시했습니다. 데모데이에서 잠재 고객 약 50명에게 서비스를 소개하고 5위를 기록했습니다.",
     href: "https://play.google.com/store/apps/details?id=com.umc.halo",
     linkLabel: "Google Play에서 보기",
   },
   {
-    month: "2026-08",
-    title: "부산 UMC 10기 데모데이 참가 및 5위",
-    description: "현장에서 잠재 고객 약 50명에게 HALO를 소개하고 체험과 반응을 확인했습니다. 서비스에 정서적으로 공감하는 반응도 살폈습니다.",
-  },
-  {
-    month: "2026-07",
-    title: "HALO 오프라인 사용자 테스트",
-    description: "실제 사용자의 서비스 이용 경험과 가족 콘텐츠에 대한 반응을 살피고 제품 개선 방향을 찾았습니다.",
-  },
-  {
     month: "2026-06",
-    title: "HALO 팀 구성 및 서비스 기획·개발 시작",
-    description: "가족 기록 서비스 HALO를 기획하고 첫 제품 개발을 시작했습니다.",
+    displayDate: "2026.06–07",
+    title: "팀 구성, HALO 기획·개발 및 사용자 테스트",
+    description: "6월 팀을 구성해 가족 기록 서비스 기획·개발을 시작하고, 7월 오프라인 테스트에서 사용 경험과 개선점을 확인했습니다.",
   },
 ];
