@@ -468,23 +468,13 @@
 
 .social-links__button--instagram {
   border: 0;
-  background: #171614;
+  background: linear-gradient(135deg, #833ab4 5%, #c13584 42%, #e1306c 66%, #fd1d1d 82%, #fcb045 100%);
 }
 
-.social-links__instagram-crop {
-  position: relative;
-  width: 28px;
-  height: 28px;
-  overflow: hidden;
-}
-
-.social-links__instagram-crop img {
-  position: absolute;
-  top: -11px;
-  left: -42px;
-  width: 140px;
-  max-width: none;
-  height: auto;
+.social-links__button--instagram img {
+  display: block;
+  width: 24px;
+  height: 24px;
 }
 
 .social-links__button--threads {
