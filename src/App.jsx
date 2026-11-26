@@ -3034,9 +3034,7 @@ function SocialLinks() {
         rel="noopener noreferrer"
         aria-label="HALO 공식 Instagram 계정 새 탭에서 열기"
       >
-        <span className="social-links__instagram-crop" aria-hidden="true">
-          <img src="/images/social/instagram-brand.png" alt="" />
-        </span>
+        <img src="/images/social/instagram-brand.svg" alt="" aria-hidden="true" />
       </a>
       <a
         className="social-links__button social-links__button--threads"
