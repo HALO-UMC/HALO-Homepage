@@ -3019,7 +3019,35 @@ function App() {
     <BrowserRouter>
       <AnalyticsRouteTracker />
       <AppRoutes />
+      <SocialLinks />
     </BrowserRouter>
+  );
+}
+
+function SocialLinks() {
+  return (
+    <nav className="social-links" aria-label="HALO 공식 SNS">
+      <a
+        className="social-links__button social-links__button--instagram"
+        href="https://www.instagram.com/kiri.app.official/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="HALO 공식 Instagram 계정 새 탭에서 열기"
+      >
+        <span className="social-links__instagram-crop" aria-hidden="true">
+          <img src="/images/social/instagram-brand.png" alt="" />
+        </span>
+      </a>
+      <a
+        className="social-links__button social-links__button--threads"
+        href="https://www.threads.com/@kiri.app.official?hl=ko"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="HALO 공식 Threads 계정 새 탭에서 열기"
+      >
+        <img src="/images/social/threads-brand.svg" alt="" aria-hidden="true" />
+      </a>
+    </nav>
   );
 }
 
